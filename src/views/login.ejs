@@ -26,12 +26,12 @@
                     <% } %>
                     <div class="inputbox">
                         <ion-icon name="mail-outline"></ion-icon>
-                        <input type="text" class="input" id="username" name="username"/>
+                        <input type="text" class="input" id="username" name="username" required/>
                         <label for="username">User Name</label>
                     </div>
                     <div class="inputbox">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" class="input" id="password" name="password"/>
+                        <input type="password" class="input" id="password" name="password" required/>
                         <label for="password">Password</label>
                     </div>
                     <% if(typeof success !== 'undefined') { %>

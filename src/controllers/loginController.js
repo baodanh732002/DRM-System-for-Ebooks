@@ -35,13 +35,14 @@ class LoginController {
                         const tokenUser = await createToken(existUSer._id)
                         const userData = {
                             _id: existUSer._id,
-                            username: existUSer.user_name,
+                            username: existUSer.username,
                             email: existUSer.email,
                             password: existUSer.password,
                             token: tokenUser,
                         }
 
                         req.session.user = userData
+                        console.log(req.session.user)
 
                         res.status(200).redirect("/");
 

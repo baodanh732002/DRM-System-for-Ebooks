@@ -1,6 +1,11 @@
 class IndexController{
     getIndex(req, res){
-        res.render("index.ejs")
+        if(req.session.user){
+            res.render("index.ejs")
+        }else{
+            res.redirect("/login")
+        }
+        
     }
 }
 module.exports = new IndexController()

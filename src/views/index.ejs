@@ -21,43 +21,10 @@
 
 <body>
     <!-- ======= HEADER ======= -->
-    <div class="header">
-        <nav class="navbar navbar-expand-lg p-4">
-            <div class="container-fluid">
-                <div class="navbar-brand">
-                    <a class="navbar-brand ps-3 me-0 me-lg-2" href="#">
-                        <!-- <img src="/images/logo.png" alt="logo" width="50" /> -->
-                        <a href="/" class="logo text-white">DRM-EBOOKS</a>
-                    </a>
-                </div>  
-        
-                <div class="collapse navbar-collapse">
-                    <form class="d-flex align-items-center w-50" role="search">
-                        <input
-                            class="form-control me-2 w-100"
-                            type="search"
-                            placeholder="Nhập tên sách"
-                            aria-label="Search"
-                            id="charSearch"/>
-                        <button class="btn w-auto" type="submit"><ion-icon name="search-circle-outline"></ion-icon></button>
-                    </form>
-                </div>
-
-                <div class="header-user d-flex pe-5 w-auto">
-                    <a href="#" class="me-1">
-                        <ion-icon name="person-circle-outline"></ion-icon>
-                    </a>
-                    <label class="text-white" style="font-size: xx-large;"> | </label>
-                    <a href="/logout" class="nav__logout ms-1">
-                        <ion-icon name="log-out-outline"></ion-icon>
-                    </a>    
-                </div>
-            </div>
-        </nav>
-    </div>
+    <%- include('./partials/header'); -%>
 
     <!-- ======= BODY ======= -->
-    <div class="body bg-dark">
+    <div class="body">
         <!-- SIDEBAR -->
         <div class="contain-fluild">
             <div class="row">
@@ -72,25 +39,13 @@
                         <li>
                             <a href="#" class="nav-link">
                                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-                                Yêu thích
+                                Home Page
                             </a>
                         </li>
                         <li>
                             <a href="#" class="nav-link">
-                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-                                Lịch sử
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                                Xem gần đây
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link">
-                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-                                ...
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                                My Ebooks
                             </a>
                         </li>
                     </ul>
@@ -102,11 +57,17 @@
                         <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
                             <a href="#">
                                 <div class="card">
-                                    <img src="/static/img/background.jpg" class="card-img-top" alt="">
+                                    <img src="/images/background_1.jpg" class="card-img-top" alt="">
                                     <div class="card-body">
                                         <h5 class="card-title text-white">Card title</h5>
-                                        <div class="d-flex">
-                                            <p class="card-text text-white">Mô tả</p>
+
+                                        <div class="category">
+                                            <span class="text-white">Category - </span>
+                                            <a href="" class="category">Love Language</a>
+                                        </div>
+                                        
+                                        <div class="author">
+                                            By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
                                         </div>
                                     </div>
                                 </div>
@@ -121,37 +82,78 @@
     <!-- DIALOG CREATE -->
     <div >
         <div id="dialog"  class="dialog-modal">
-            <div class="form">
+            <div class="form-box">
                 <ion-icon id="close" name="close-circle-outline" class="close mt-3 me-4"></ion-icon>
                 <div>
-                    <h2 class="mb-4">Tải lên mẫu sách mới</h2>
+                    <h2 class="d-flex justify-content-center mb-4">CREATE NEW EBOOK</h2>
                 </div>
-                <input type="hidden" id="nameCurrent" class="form-control" name="currentEbook">
-                <div class="book_name"> 
-                    <input type="text" class="form-control" name="book_name" id="book_name" placeholder="Tên sách"> <br>
-                </div>
-
-                <div class="describe"> 
-                    <textarea class="form-control" name="describe" id="describe" placeholder="Mô tả"></textarea> <br>
-                </div>
-
-                <div class="book_img"> 
-                    <input type="file" class="form-control" name="book_img" id="book_img"> <br>
-                </div>
-        
-                <div id="createDialog">
-                    
+                <div class="row">
+                    <div class="inputbox">
+                        <ion-icon name="book-outline"></ion-icon>
+                        <input type="text" class="input" id="title" name="title" required/>
+                        <label for="Tilte">Title</label>
+                    </div>
                 </div>
                 
-                <div class="create"><input type="submit" placeholder="Tạo mới"></input></div>
+                <div class="row">
+                    <div class="inputbox col-lg-4">
+                        <ion-icon name="keypad-outline"></ion-icon>
+                        <input type="text" class="input" id="type" name="type" required/>
+                        <label for="type">Type</label>
+                    </div>
+                    <div class="inputbox col-lg-4">
+                        <ion-icon name="language-outline"></ion-icon>
+                        <input type="text" class="input" id="Language" name="Language" required/>
+                        <label for="type">Language</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="inputbox">
+                        <ion-icon name="pencil-outline"></ion-icon>
+                        <input type="text" class="input" id="describe" name="Describe" required/>
+                        <label for="describe">Describe</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
+                        <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium">
+                    </div>
+
+                    <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
+                        <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="inputbox col-lg-4">
+                        <ion-icon name="list-outline"></ion-icon>
+                        <input type="text" class="input" id="state" name="state" required/>
+                        <label for="state">State</label>
+                    </div>
+                    <div class="inputbox col-lg-4">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <input type="text" class="input" id="author" name="author" required/>
+                        <label for="author">Author</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="inputbox">
+                        <input type="date" class="input" id="date" name="date" required/>
+                    </div>
+                </div>
+
+                <div class="create d-flex justify-content-center">
+                    <input type="submit" class="w-50"></input>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ======= FOOTER ======= -->
-    <div class="footer">
-        <p class="text-white">FOOTER</p>
-    </div>
+    <%- include('./partials/footer'); -%>
 </body>
 
 <script>

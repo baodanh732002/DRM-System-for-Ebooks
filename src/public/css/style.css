@@ -31,7 +31,7 @@ a:hover {
 }
 
 .header .logo {
-    color: yellow;
+    color: white;
 }
 
 .header .logo:hover {
@@ -46,7 +46,7 @@ a:hover {
 }
 
 .header .collapse ion-icon:hover {
-    color: teal;
+    color: #f7ba2b;
 }
 
 .header .header-user a {
@@ -55,12 +55,13 @@ a:hover {
 }
 
 .header .header-user a:hover {
-    color:teal;
+    color: #f7ba2b;
 }
 
 /*--------------------------------------------------------------
-# Header
+# Body
 --------------------------------------------------------------*/
+/* sidebar */
 .sidebar {
     height: 100vh;
     background-color: rgb(33, 33, 33);
@@ -71,10 +72,11 @@ a:hover {
 }
 
 .sidebar a:hover {
-    color: teal;
+    color: #f7ba2b;
     font-size: medium;
 }
 
+/* display */
 .display .row {
     margin: 0 10px 20px 10px;
 }
@@ -84,7 +86,7 @@ a:hover {
 }
 
 .display .card {
-    --background: linear-gradient(to left, #aa927c 0%, #BF5B04 100%);
+    --background: linear-gradient(to left, #6a6969 0%, #898684 100%);
     max-width: 100%;
     padding: 20px;
     margin-top: 30px;
@@ -100,6 +102,7 @@ a:hover {
     width: 100%;
     object-fit: cover;
     height: auto;
+    border-radius: 3%;
 }
 
 .display .card::after {
@@ -122,6 +125,40 @@ a:hover {
     opacity: 0;
 }
 
+.display .card-body {
+    padding-top: 10px 0 0 0;
+}
+
+.display .card .card-title {
+    text-transform: uppercase;
+}
+ 
+.display .card .card-body .category {
+    color: white;
+}
+
+.display .card .card-body .category:hover {
+    font-weight: 600;
+    color: black;
+}
+
+.display .card .author {
+    color: white;
+    font-weight: 400;
+    font-size: 11px;
+    padding-top: 20px;
+}
+
+.display .card .author-name {
+    font-weight: 600;
+    color: white;
+}
+
+.display .card .author .author-name:hover {
+    color: black;
+}
+
+/* dialog */
 .dialog {
     display: none;
     /* mặc định được ẩn đi */
@@ -156,39 +193,101 @@ a:hover {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.dialog-modal .form {
+.dialog-modal .form-box {
     font-family: Verdana, sans-serif;
     width: 50%;
     margin: auto;
     min-height: fit-content;
     border: solid 1px #f7ba2b;
     border-radius: 50px;
-    background-color: #333;
     display: block;
     padding-bottom: 45px;
 }
 
-.dialog-modal .form div {
-    display: flex;
-    justify-content: center;
-    max-width: 100%;
-}
-
-.dialog-modal .form h2 {
+.dialog-modal .form-box h2 {
     margin: 45px 0 0 40px;
     color: #f7ba2b;
 }
 
-.dialog-modal .form input {
+.form-box {
+    position: relative;
+    min-height: fit-content;
+    padding: 30px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
     display: flex;
     justify-content: center;
-    width: 70%;
-    height: 40px;
-    line-height: 50px;
-    margin: 15px 0 20px;
+    align-items: center;
 }
 
-.dialog-modal .form textarea {
+.form-box .row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputbox {
+    width: -webkit-fill-available;
+    position: relative;
+    margin: 30px 50px 30px 50px;
+    border-bottom: 2px solid #fff; }
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1em;
+    pointer-events: none;
+    transition: .5s; }
+
+input:focus ~ label,
+input:valid ~ label {
+    top: -5px; }
+
+.inputbox input {
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    padding: 0 35px 0 5px;
+    color: #fff; }
+
+.dialog .form-box .create {
+    margin-top: 20px;
+}
+
+.inputbox ion-icon {
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1.2em;
+    top: 20px; }
+
+.forget label input {
+    margin-right: 3px; }
+
+.forget label a {
+    color: #fff;
+    text-decoration: none; }
+
+.forget label a:hover {
+    text-decoration: underline; }
+
+input {
+    width: 100%;
+    height: 40px;
+    border-radius: 40px;
+    background: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600; }
+
+.dialog-modal .form-box textarea {
     width: 70%;
     height: auto;
     line-height: 50px;
@@ -228,7 +327,6 @@ a:hover {
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
-
 .footer {
     display: flex;
     justify-content: center;

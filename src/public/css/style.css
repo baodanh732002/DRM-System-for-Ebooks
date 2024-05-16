@@ -64,7 +64,7 @@ a:hover {
 /* sidebar */
 .sidebar {
     height: 100vh;
-    background-color: rgb(33, 33, 33);
+    background-color: #131c23;
 }
 
 .sidebar a {
@@ -77,6 +77,9 @@ a:hover {
 }
 
 /* display */
+.display {
+    background-color: #1d2a35;
+}
 .display .row {
     margin: 0 10px 20px 10px;
 }
@@ -86,7 +89,7 @@ a:hover {
 }
 
 .display .card {
-    --background: linear-gradient(to left, #6a6969 0%, #898684 100%);
+    --background: linear-gradient(to left, #55a185 0%, #04AA6D 100%);
     max-width: 100%;
     padding: 20px;
     margin-top: 30px;
@@ -116,7 +119,6 @@ a:hover {
     width: 100%;
     transform: scale(0.8);
     filter: blur(50px);
-    background: #f7ba2b;
     background: var(--background);
     transition: opacity .5s;
 }
@@ -198,7 +200,7 @@ a:hover {
     width: 50%;
     margin: auto;
     min-height: fit-content;
-    border: solid 1px #f7ba2b;
+    border: solid 1px #04AA6D;
     border-radius: 50px;
     display: block;
     padding-bottom: 45px;
@@ -206,7 +208,7 @@ a:hover {
 
 .dialog-modal .form-box h2 {
     margin: 45px 0 0 40px;
-    color: #f7ba2b;
+    color: #04AA6D;
 }
 
 .form-box {

@@ -3,6 +3,7 @@ const express = require('express')
 const path = require('path')
 const configViewEngine = require('./config/viewEngine')
 const webRoute = require('./routes/web')
+const apiRoute = require('./routes/api')
 const mongoose = require('mongoose')
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
@@ -31,6 +32,7 @@ app.use(session({
 }));
 
 app.use('/', webRoute)
+app.use('/api', apiRoute)
 
 
 mongoose.connect(urlConnect).

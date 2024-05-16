@@ -5,6 +5,7 @@ const registerController = require('../controllers/registerController')
 const indexController = require('../controllers/indexController')
 const logoutController = require('../controllers/logoutController')
 
+
 route.get('/', indexController.getIndex)
 
 route.get('/login', loginController.getLoginForm)
@@ -14,6 +15,8 @@ route.get('/register', registerController.getRegisterForm)
 route.post('/register', registerController.createAccount)
 
 route.get('/logout', logoutController.logout)
+
+
 
 
 

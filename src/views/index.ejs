@@ -31,7 +31,7 @@
                 <div class="sidebar col-lg-2 col-md-0 d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px;">
                     <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
-                            <a href="#" class="nav-link" aria-current="page" id="create-ebook" onclick="showCreateDialog()">
+                            <a class="nav-link" aria-current="page" id="create-ebook" onclick="showCreateDialog()">
                                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
                                 New
                             </a>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- DIALOG CREATE -->
-    <form action="" method="post">
+    <form id="ebookForm" action="/api/ebook" method="post" enctype="multipart/form-data">
         <div id="dialog"  class="dialog-modal">
             <div class="form-box">
                 <ion-icon id="close" name="close-circle-outline" class="close mt-3 me-4"></ion-icon>
@@ -103,26 +103,26 @@
                     </div>
                     <div class="inputbox col-lg-4">
                         <ion-icon name="language-outline"></ion-icon>
-                        <input type="text" class="input" id="Language" name="Language" required/>
-                        <label for="type">Language</label>
+                        <input type="text" class="input" id="Language" name="language" required/>
+                        <label for="language">Language</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="inputbox">
                         <ion-icon name="pencil-outline"></ion-icon>
-                        <input type="text" class="input" id="describe" name="Describe" required/>
-                        <label for="describe">Describe</label>
+                        <input type="text" class="input" id="describe" name="description" required/>
+                        <label for="description">Description</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
-                        <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium">
+                        <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="imageFile">
                     </div>
 
                     <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
-                        <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium">
+                        <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="ebookFile">
                     </div>
                 </div>
 
@@ -135,7 +135,25 @@
                 </div>
 
                 <div class="create d-flex justify-content-center">
-                    <input type="submit" class="w-50"></input>
+                    <input type="submit" class="w-50">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    New eBook has been added successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
                 </div>
             </div>
         </div>
@@ -160,5 +178,32 @@
             dialog.style.display = "none";
         }
     }
+
+    document.getElementById('ebookForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+  
+        const form = event.target;
+        const formData = new FormData(form);
+  
+        fetch(form.action, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+          } else {
+            $('#successModal').modal('show');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('reloadPageButton').addEventListener('click', function() {
+        location.reload();
+    });
 </script>
 </html>

@@ -25,25 +25,31 @@
 
     <!-- ======= BODY ======= -->
     <div class="body">
-        <!-- SIDEBAR -->
-        <div class="contain-fluild">
+        <div class="contain">
             <div class="row">
+                <!-- SIDEBAR -->
                 <div class="sidebar col-lg-2 col-md-0 d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px;">
                     <ul class="nav nav-pills flex-column mb-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" id="create-ebook" onclick="showCreateDialog()">
-                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-                                New
-                            </a>
-                        </li>
                         <li>
-                            <a href="#" class="nav-link">
+                            <a href="/" class="nav-link">
                                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
                                 Home Page
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link">
+                            <a href="/newest" class="nav-link">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                                Newest
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/popular" class="nav-link">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                                Popular
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/myEbooks" class="nav-link">
                                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
                                 My Ebooks
                             </a>
@@ -53,107 +59,92 @@
         
                 <!-- DISPLAY -->
                 <div class="display col-lg-10 col-md-12">
-                    <div class="row mb-3">
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                            <a href="#">
-                                <div class="card">
-                                    <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-white">Card title</h5>
+                    <!-- NEWEST -->
+                    <div class="newest">
+                        <div class="heading d-flex align-items-center mt-5 ml-5">
+                            <h1 class="text-white">NEWEST</h1>
+                            <a href="/newest" class="text-success ml-5">See all >></a>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                <a href="#">
+                                    <div class="card">
+                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white">Card title</h5>
 
-                                        <div class="category">
-                                            <span class="text-white">Category - </span>
-                                            <a href="" class="category">Love Language</a>
-                                        </div>
-                                        
-                                        <div class="author">
-                                            By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
+                                            <div class="category">
+                                                <span class="text-white">Category - </span>
+                                                <a href="" class="category-name">Love Language</a>
+                                            </div>
+                                            
+                                            <div class="author">
+                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DIALOG CREATE -->
-    <form id="ebookForm" action="/api/ebook" method="post" enctype="multipart/form-data">
-        <div id="dialog"  class="dialog-modal">
-            <div class="form-box">
-                <ion-icon id="close" name="close-circle-outline" class="close mt-3 me-4"></ion-icon>
-                <div>
-                    <h2 class="d-flex justify-content-center mb-4">CREATE NEW EBOOK</h2>
-                </div>
-                <div class="row">
-                    <div class="inputbox">
-                        <ion-icon name="book-outline"></ion-icon>
-                        <input type="text" class="input" id="title" name="title" required/>
-                        <label for="Tilte">Title</label>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="inputbox col-lg-4">
-                        <ion-icon name="keypad-outline"></ion-icon>
-                        <input type="text" class="input" id="type" name="type" required/>
-                        <label for="type">Type</label>
-                    </div>
-                    <div class="inputbox col-lg-4">
-                        <ion-icon name="language-outline"></ion-icon>
-                        <input type="text" class="input" id="Language" name="language" required/>
-                        <label for="language">Language</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="inputbox">
-                        <ion-icon name="pencil-outline"></ion-icon>
-                        <input type="text" class="input" id="describe" name="description" required/>
-                        <label for="description">Description</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
-                        <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="imageFile">
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
-                        <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="ebookFile">
+                    <!-- POPULAR -->
+                    <div class="popular">
+                        <div class="heading d-flex align-items-center mt-5 ml-5">
+                            <h1 class="text-white">POPULAR</h1>
+                            <a href="/popular" class="text-success ml-5">See all >></a>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                <a href="#">
+                                    <div class="card">
+                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white">Card title</h5>
+    
+                                            <div class="category">
+                                                <span class="text-white">Category - </span>
+                                                <a href="" class="category-name">Love Language</a>
+                                            </div>
+                                            
+                                            <div class="author">
+                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div> 
+                        </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="inputbox">
-                        <ion-icon name="person-circle-outline"></ion-icon>
-                        <input type="text" class="input" id="author" name="author" required/>
-                        <label for="author">Author</label>
+                    <!-- MY EBOOKS -->
+                    <div class="my-ebooks">
+                        <div class="heading d-flex align-items-center mt-5 ml-5">
+                            <h1 class="text-white">MY EBOOKS</h1>
+                            <a href="/myEbooks" class="text-success ml-5">See all >></a>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                <a href="#">
+                                    <div class="card">
+                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white">Card title</h5>
+    
+                                            <div class="category">
+                                                <span class="text-white">Category - </span>
+                                                <a href="" class="category-name">Love Language</a>
+                                            </div>
+                                            
+                                            <div class="author">
+                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>                        
+                        </div>
                     </div>
-                </div>
-
-                <div class="create d-flex justify-content-center">
-                    <input type="submit" class="w-50">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    New eBook has been added successfully.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
                 </div>
             </div>
         </div>
@@ -162,48 +153,4 @@
     <!-- ======= FOOTER ======= -->
     <%- include('./partials/footer'); -%>
 </body>
-
-<script>
-    document.getElementById('create-ebook').addEventListener('click', function() {
-        document.getElementById('dialog').style.display = 'block';
-    });
-
-    document.getElementById('close').addEventListener('click', function() {
-        document.getElementById('dialog').style.display = 'none';
-    });
-
-    window.onclick = function(event) {
-        var dialog = document.getElementById('dialog');
-        if (event.target == dialog) {
-            dialog.style.display = "none";
-        }
-    }
-
-    document.getElementById('ebookForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-  
-        const form = event.target;
-        const formData = new FormData(form);
-  
-        fetch(form.action, {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) {
-            alert(data.error);
-          } else {
-            $('#successModal').modal('show');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    });
-
-    document.getElementById('reloadPageButton').addEventListener('click', function() {
-        location.reload();
-    });
-</script>
 </html>

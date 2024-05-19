@@ -46,7 +46,7 @@ a:hover {
 }
 
 .header .collapse ion-icon:hover {
-    color: #f7ba2b;
+    color: #04AA6D;
 }
 
 .header .header-user a {
@@ -55,7 +55,7 @@ a:hover {
 }
 
 .header .header-user a:hover {
-    color: #f7ba2b;
+    color: #04AA6D;
 }
 
 /*--------------------------------------------------------------
@@ -63,7 +63,6 @@ a:hover {
 --------------------------------------------------------------*/
 /* sidebar */
 .sidebar {
-    height: 100vh;
     background-color: #131c23;
 }
 
@@ -72,8 +71,7 @@ a:hover {
 }
 
 .sidebar a:hover {
-    color: #f7ba2b;
-    font-size: medium;
+    color: #04AA6D;
 }
 
 /* display */
@@ -82,10 +80,23 @@ a:hover {
 }
 .display .row {
     margin: 0 10px 20px 10px;
+    display: flex;
+    justify-content: space-around;
 }
 
-.display .row {
-    margin: 0 10px 20px 10px;
+.display .newest .heading,
+.display .popular .heading,
+.display .my-ebooks .heading {
+    position: relative;
+}
+
+.display .heading a {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.display .heading:hover a {
+    opacity: 1;
 }
 
 .display .card {
@@ -135,11 +146,13 @@ a:hover {
     text-transform: uppercase;
 }
  
-.display .card .card-body .category {
+.display .card .card-body .category-name {
     color: white;
+    font-weight: 500;
+    transition: opacity 2s ease;
 }
 
-.display .card .card-body .category:hover {
+.display .card .card-body .category-name:hover {
     font-weight: 600;
     color: black;
 }
@@ -154,6 +167,7 @@ a:hover {
 .display .card .author-name {
     font-weight: 600;
     color: white;
+    transition: opacity 2s ease;
 }
 
 .display .card .author .author-name:hover {

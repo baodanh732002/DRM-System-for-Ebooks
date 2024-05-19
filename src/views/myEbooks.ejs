@@ -81,7 +81,70 @@
     </div>
 
     <!-- DIALOG CREATE -->
-    <form id="ebookForm" action="/api/ebook" method="post" enctype="multipart/form-data">
+    <div id="modal-container">
+        <div id="modal" class="dialog-modal">
+            <form id="ebookForm" action="/api/ebook" method="post" enctype="multipart/form-data">
+                <div class="form-box">
+                    <ion-icon id="close" name="close-circle-outline" class="close mt-3 me-4"></ion-icon>
+                    <div>
+                        <h2 class="d-flex justify-content-center mb-4">CREATE NEW EBOOK</h2>
+                    </div>
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="book-outline"></ion-icon>
+                            <input type="text" class="input" id="title" name="title" required/>
+                            <label for="Tilte">Title</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="inputbox col-lg-4">
+                            <ion-icon name="keypad-outline"></ion-icon>
+                            <input type="text" class="input" id="type" name="type" required/>
+                            <label for="type">Type</label>
+                        </div>
+                        <div class="inputbox col-lg-4">
+                            <ion-icon name="language-outline"></ion-icon>
+                            <input type="text" class="input" id="Language" name="language" required/>
+                            <label for="language">Language</label>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                            <input type="text" class="input" id="describe" name="description" required/>
+                            <label for="description">Description</label>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
+                            <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="imageFile">
+                        </div>
+    
+                        <div class="inputbox w-full max-w-xs items-center gap-1.5 col-lg-4">
+                            <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium" name="ebookFile">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <input type="text" class="input" id="author" name="author" required/>
+                            <label for="author">Author</label>
+                        </div>
+                    </div>
+    
+                    <div class="create d-flex justify-content-center">
+                        <input type="submit" class="w-50">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- <form id="ebookForm" action="/api/ebook" method="post" enctype="multipart/form-data">
         <div id="dialog"  class="dialog-modal">
             <div class="form-box">
                 <ion-icon id="close" name="close-circle-outline" class="close mt-3 me-4"></ion-icon>
@@ -140,7 +203,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -165,20 +228,21 @@
 </body>
 
 <script>
-    document.getElementById('create-ebook').addEventListener('click', function() {
-        document.getElementById('dialog').style.display = 'block';
-    });
-
-    document.getElementById('close').addEventListener('click', function() {
-        document.getElementById('dialog').style.display = 'none';
-    });
-
-    window.onclick = function(event) {
-        var dialog = document.getElementById('dialog');
-        if (event.target == dialog) {
-            dialog.style.display = "none";
+    const btn_new = document.getElementById('create-ebook');
+    const btn_close = document.getElementById('close');
+    const modal_container = document.getElementById('modal-container');
+    btn_new.addEventListener('click', function() {
+        modal_container.classList.add('show');
+    })
+    btn_close.addEventListener('click', function() {
+        modal_container.classList.remove('show');
+    })
+    
+    modal_container.addEventListener('click', (event) => {
+        if (event.target === modal_container) {
+            modal_container.classList.remove('show');
         }
-    }
+    });
 
     document.getElementById('ebookForm').addEventListener('submit', function(event) {
         event.preventDefault();

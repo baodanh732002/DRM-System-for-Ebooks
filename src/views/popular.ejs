@@ -21,12 +21,12 @@
 
 <body>
     <!-- ======= HEADER ======= -->
-    <%- include('./partials/header'); -%>
+    <%- include('./partials/header'); %>
 
     <!-- ======= BODY ======= -->
     <div class="body">
         <!-- SIDEBAR -->
-        <div class="contain-fluild">
+        <div class="container-fluid">
             <div class="row">
                 <div class="sidebar col-lg-2 col-md-0 d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px;">
                     <ul class="nav nav-pills flex-column mb-auto">
@@ -61,54 +61,33 @@
                 <div class="display col-lg-10 col-md-12">
                     <h1 class="my-ebooks-heading text-success d-flex justify-content-center mt-5">POPULAR</h1>
                     <div class="row mb-3">
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                            <a href="/popular/popularDetail">
-                                <div class="card">
-                                    <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-white">Card title</h5>
-
-                                        <div class="category">
-                                            <span class="text-white">Category - </span>
-                                            <a href="" class="category-name">Love Language</a>
+                        <% if (formattedEbookData && formattedEbookData.length > 0) { %>
+                            <% formattedEbookData.forEach(ebook => { %>
+                                <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                    <a href="/popularDetail?id=<%= ebook._id %>">
+                                        <div class="card">
+                                            <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                <div class="category">
+                                                    <span class="text-white">Category - </span>
+                                                    <a href="" class="category-name"><%= ebook.type %></a>
+                                                </div>
+                                                <div class="author">
+                                                    By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        
-                                        <div class="author">
-                                            By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
+                            <% }) %>
+                        <% } %>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    New eBook has been added successfully.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- ======= FOOTER ======= -->
-    <%- include('./partials/footer'); -%>
+    <%- include('./partials/footer'); %>
 </body>
-
-<script>
-
-</script>
 </html>

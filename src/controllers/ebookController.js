@@ -4,6 +4,7 @@ const Ebook = require('../models/Ebooks')
 class EbookController {
     async createNewEbook(req, res) {
         try {
+            const user = req.session.user || null;
             let { title, type, language, description, author } = req.body
 
             const state = 'Pending'
@@ -12,7 +13,12 @@ class EbookController {
             const files = req.files
 
             if (!files || !files.imageFile || !files.ebookFile) {
-                return res.render("index.ejs", {message: 'Both image and ebook file must be uploaded.'})
+                return res.render("myEbooks.ejs", {message: 'Both image and ebook file must be uploaded.'})
+            }
+
+            const existTitile = await Ebook.findOne({title: title})
+            if(existTitile){
+                return res.render("myEbooks.ejs", {message: "Title already existed. Please use another one!" });
             }
 
             const imageFile = files.imageFile[0];
@@ -30,14 +36,85 @@ class EbookController {
                 date: date
             })
 
+
             await newEbook.save();
-            res.status(200).render("index.ejs",{ message: 'New eBook has been added successfully.' });
+
+            const ebooksData = await Ebook.find({ author: author });
+
+            const formattedEbookData = ebooksData.map((ebook) => {
+                const date = new Date(ebook.date);
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                return {
+                    ...ebook.toObject(),
+                    formattedDate
+                };
+            });
+
+            res.render("myEbooks",{ message: 'success', formattedEbookData, user});
         } catch (error) {
             console.error(error);
-            if(error.code === 11000){
-                res.status(400).render("index.ejs", { error: 'Description must be unique. This description already exists.' });
+            res.status(500).render("myEbooks", { error: 'Fail to upload new Ebook, please try again later!' });
+        }
+    }
+
+    async getMyEbooks(req, res) {
+        const user = req.session.user || null;
+        if (user) {
+            try {
+                const ebooksData = await Ebook.find({ author: user.username });
+
+                const formattedEbookData = ebooksData.map((ebook) => {
+                    const date = new Date(ebook.date);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    return {
+                        ...ebook.toObject(),
+                        formattedDate
+                    };
+                });
+
+                res.render("myEbooks", {formattedEbookData, user });
+            } catch (error) {
+                console.error('Error fetching ebooks:', error);
+                res.status(500).send('Internal Server Error');
             }
-            res.status(500).render("index.ejs", { error: 'Fail to upload new Ebook, please try again later!' });
+        } else {
+            res.redirect("login");
+        }
+    }
+    async getPopular(req, res) {
+        const user = req.session.user || null;
+        if (user) {
+            try {
+                const ebooksData = await Ebook.find();
+
+                const formattedEbookData = ebooksData.map((ebook) => {
+                    const date = new Date(ebook.date);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    return {
+                        ...ebook.toObject(),
+                        formattedDate
+                    };
+                });
+
+                res.render("popular", {formattedEbookData, user });
+            } catch (error) {
+                console.error('Error fetching ebooks:', error);
+                res.status(500).send('Internal Server Error');
+            }
+        } else {
+            res.redirect("login");
         }
     }
 }

@@ -66,25 +66,27 @@
                             <a href="/newest" class="text-success ml-5">See all >></a>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                <a href="/newest/newestDetail">
-                                    <div class="card">
-                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-white">Card title</h5>
-
-                                            <div class="category">
-                                                <span class="text-white">Category - </span>
-                                                <a href="" class="category-name">Love Language</a>
+                            <% if (formattedEbookDataNewest && formattedEbookDataNewest.length > 0) { %>
+                                <% formattedEbookDataNewest.forEach(ebook => { %>
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                        <a href="/newestDetail?id=<%= ebook._id %>">
+                                            <div class="card">
+                                                <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                    <div class="category">
+                                                        <span class="text-white">Category - </span>
+                                                        <a href="" class="category-name"><%= ebook.type %></a>
+                                                    </div>
+                                                    <div class="author">
+                                                        By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            
-                                            <div class="author">
-                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
-                                            </div>
-                                        </div>
+                                        </a>
                                     </div>
-                                </a>
-                            </div>
+                                <% }) %>
+                            <% } %>
                         </div>
                     </div>
 
@@ -95,25 +97,27 @@
                             <a href="/popular" class="text-success ml-5">See all >></a>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                <a href="/popular/popularDetail">
-                                    <div class="card">
-                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-white">Card title</h5>
-    
-                                            <div class="category">
-                                                <span class="text-white">Category - </span>
-                                                <a href="" class="category-name">Love Language</a>
+                            <% if (formattedEbookDataPopular && formattedEbookDataPopular.length > 0) { %>
+                                <% formattedEbookDataPopular.forEach(ebook => { %>
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                        <a href="/popularDetail?id=<%= ebook._id %>">
+                                            <div class="card">
+                                                <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                    <div class="category">
+                                                        <span class="text-white">Category - </span>
+                                                        <a href="" class="category-name"><%= ebook.type %></a>
+                                                    </div>
+                                                    <div class="author">
+                                                        By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            
-                                            <div class="author">
-                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div> 
+                                        </a>
+                                    </div> 
+                                <% }) %>
+                            <% } %>
                         </div>
                     </div>
 
@@ -124,25 +128,27 @@
                             <a href="/myEbooks" class="text-success ml-5">See all >></a>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                <a href="#">
-                                    <div class="card">
-                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-white">Card title</h5>
-    
-                                            <div class="category">
-                                                <span class="text-white">Category - </span>
-                                                <a href="" class="category-name">Love Language</a>
+                            <% if (formattedEbookDataUser && formattedEbookDataUser.length > 0) { %>
+                                <% formattedEbookDataUser.forEach(ebook => { %>
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                        <a href="/ebookDetail?id=<%= ebook._id %>">
+                                            <div class="card">
+                                                <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                    <div class="category">
+                                                        <span class="text-white">Category - </span>
+                                                        <a href="" class="category-name"><%= ebook.type %></a>
+                                                    </div>
+                                                    <div class="author">
+                                                        By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            
-                                            <div class="author">
-                                                By <a href="" class="author-name">Author</a> - <span class="post-date">15/5/2024</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>                        
+                                        </a>
+                                    </div> 
+                                <% }) %>
+                            <% } %>
                         </div>
                     </div>
                 </div>

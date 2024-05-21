@@ -296,24 +296,11 @@ button {
     background-color: #f44336; /* Màu nút Cancel */
     color: white;
 }
-
-  
-.alert {
-    display: none;
-    position: fixed;
-    left: 50%;
-    padding: 20px;
-    background-color: #f44336;
-    color: white;
-    border-radius: 5px;
-    z-index: 999;
-}
   
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
 footer {
-    position: fixed;
     left: 0;
     bottom: 0;
     display: flex;

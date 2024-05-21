@@ -101,6 +101,33 @@ label {
     color: #04AA6D;
 }
 
+.sidebar button {
+    font-family: inherit;
+    font-weight: 400;
+    font-size: 13px;
+    width: 150px;
+    padding: 0.8em 1.5em 0.8em 1.2em;
+    color: white;
+    background: #04AA6D;
+    background: linear-gradient(0deg, #04AA6D 0%, #21986c 100%);
+    border: none;
+    box-shadow: 0 0.7em 1.5em -0.5em #131c23;
+    letter-spacing: 0.05em;
+    border-radius: 20em;
+}
+  
+.sidebar button:hover {
+    box-shadow: 0 0.5em 1.5em -0.5em #04AA6D;
+}
+  
+.sidebar button:active {
+    box-shadow: 0 0.3em 1em -0.5em #04AA6D;
+}
+
+.hidden {
+    display: none;
+}
+
 /* display */
 .display {
     background-color: #1d2a35;

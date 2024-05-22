@@ -117,6 +117,85 @@ class EbookController {
             res.redirect("login");
         }
     }
+
+    async getMyEbooksDetail(req, res) {
+        const user = req.session.user || null;
+        if (user) {
+            const ebookId = req.query.id;
+            const ebookData = await Ebook.findById(ebookId);
+    
+            if (ebookData) {
+                const date = new Date(ebookData.date);
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                const formattedEbookData = {
+                    ...ebookData.toObject(),
+                    formattedDate
+                };
+    
+                res.render('myEbookDetail', { user, formattedEbookData });
+            } else {
+                res.status(404).send('Ebook not found');
+            }
+        } else {
+            res.status(401).send('Unauthorized');
+        }
+    }
+
+    async updateMyEbookDetail(req, res){
+        try{
+            const user = req.session.user || null;
+            if(user){
+                const {id, title, type, language, description, author} = req.body
+                const state = 'Pending'
+                const date = new Date()
+                const updateEbook = {
+                    title: title,
+                    type: type,
+                    language: language,
+                    description: description,
+                    author: author,
+                    state: state,
+                    date: date
+                }
+
+                console.log(req.body)
+    
+                const ebook = await Ebook.findByIdAndUpdate(id, updateEbook)
+                if(!ebook){
+                    return res.status(404).send("Ebook not found");
+                }
+    
+                res.redirect('/myEbooks')
+    
+            }
+        }catch(error){
+            console.error(error);
+            res.status(500).render("myEbookDetail", {
+              message: "Failed to update ebook.",
+            });
+        }
+    }
+
+    async deleteMyEbookDetail(req, res){
+        try{
+            const user = req.session.user || null;
+            if(user){
+                const {id} = req.body
+                await Ebook.deleteOne({_id: id})
+                res.redirect("/myEbooks")
+            }
+        }catch(error){
+            console.error(error);
+            res.status(500).render("myEbookDetail", {
+              message: "Failed to delete ebook.",
+            });
+        }
+    }
+
 }
 
 module.exports = new EbookController()

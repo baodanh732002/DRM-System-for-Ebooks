@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebook Detail</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <link rel="stylesheet" href="/css/ebookDetailStyle.css">
+</head>
+
+<body>
+    <!-- ======= HEADER ======= -->
+    <%- include('./partials/header'); -%>
+
+    <!-- ======= BODY ======= -->
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-lg-3">
+                <img src="/images/background_1.jpg" class="ebook-image" alt="">
+            </div>
+
+            <div class="ebook-detail col-lg-9">
+                <h1 class="ebook-title"><%= formattedEbookData.title %></h1>
+                <hr>
+                <table>
+                    <tr>
+                        <th>Type: </th>
+                        <td><%= formattedEbookData.type %></td>
+                    </tr>
+                    <tr>
+                        <th>Author: </th>
+                        <td><a href=""><%= formattedEbookData.author %></a></td>
+                    </tr>
+                    <tr>
+                        <th>Language: </th>
+                        <td><%= formattedEbookData.language %></td>
+                    </tr>
+                    <tr>
+                        <th>Date Posted: </th>
+                        <td><%= formattedEbookData.formattedDate %></td>
+                    </tr>
+                </table>
+                <hr>
+                <div class="row">
+                    <input class="btn-edit col-lg-4 btn-success" id="btn-edit" type="button" value="Edit">
+                    <button class="btn" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>" style="background-color: #db7346; color: white;"></button>
+                </div>
+
+                <div class="ebook-describe">
+                    <h3>Description</h3>
+                    <span class="text-white">
+                        <%= formattedEbookData.description %>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+    <!-- DELETE MODAL -->
+    <div class="modal fade deleteEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Ebook</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <form action="/myEbookDetail_delete" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
+                    <h5>Are you sure you want to delete room: <strong><%= formattedEbookData.title%>?</strong></h5>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn" style="background-color: #78635A; color: white;">Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <!-- EDIT MODAL -->
+    <div id="modal-container">
+        <div id="modal" class="dialog-modal">
+            <form id="ebookForm" action="/myEbookDetail_update" method="post" enctype="multipart/form-data">
+                <div class="form-box">
+                    <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>" required>
+                    <ion-icon id="close" name="close-circle-outline" class="close text-success mt-3 me-4"></ion-icon>
+                    <div>
+                        <h2 class="d-flex justify-content-center mb-4">EDIT EBOOK</h2>
+                    </div>
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="book-outline"></ion-icon>
+                            <input type="text" class="input" id="title" name="title" value="<%= formattedEbookData.title %>" required/>
+                            <label for="Tilte">Title</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="inputbox col-lg-4">
+                            <ion-icon name="keypad-outline"></ion-icon>
+                            <input type="text" class="input" id="type" name="type" value="<%= formattedEbookData.type %>" required/>
+                            <label for="type">Type</label>
+                        </div>
+                        <div class="inputbox col-lg-4">
+                            <ion-icon name="language-outline"></ion-icon>
+                            <input type="text" class="input" id="Language" name="language" value="<%= formattedEbookData.language %>" required/>
+                            <label for="language">Language</label>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                            <input type="text" class="input" id="describe" name="description" value="<%= formattedEbookData.description %>" required/>
+                            <label for="description">Description</label>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <input type="text" class="input" id="author" name="author" value="<%= formattedEbookData.author %>" required/>
+                            <label for="author">Author</label>
+                        </div>
+                    </div>
+    
+                    <div class="create d-flex justify-content-center">
+                        <input type="submit" class="btn-success w-50" id="update-ebook" value="Update">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="alert" class="alert"></div>
+    <!-- ======= FOOTER ======= -->
+    <%- include('./partials/footer'); -%>
+</body>
+
+<script>
+    // OPEN & CLOSE EDIT MODAL
+    const btn_edit = document.getElementById('btn-edit');
+    const btn_close = document.getElementById('close');
+    const modal_container = document.getElementById('modal-container');
+    btn_edit.addEventListener('click', function() {
+        modal_container.classList.add('show');
+    })
+    btn_close.addEventListener('click', function() {
+        modal_container.classList.remove('show');
+    })
+
+    // TASK CONFIRMATION
+    const task_confirm = document.getElementById('task-confirm');
+    const btn_delete = document.getElementById('btn-delete');
+    const update_ebook = document.getElementById('update-ebook');
+    const close_confirm = document.getElementById('close-confirm');
+    const btn_yes = document.getElementById('btn-yes');
+    const btn_no = document.getElementById('btn-no');
+
+    btn_delete.onclick = () => {
+        task_confirm.style.display = 'block';
+    }
+
+    update_ebook.onclick = (event) => {
+        event.preventDefault();  // Prevent the default form submission
+        task_confirm.style.display = 'block';
+    }
+
+    close_confirm.addEventListener('click', function(){
+        task_confirm.style.display = "none";
+    }) 
+
+    window.onclick = function(event) {
+        if (event.target == task_confirm) {
+            task_confirm.style.display = "none";
+        }
+    }
+
+    function showAlert(message, isSuccess) {
+        var alertBox = document.getElementById("alert");
+        alertBox.textContent = message;
+        
+        if (isSuccess) {
+            alertBox.style.backgroundColor = "#4CAF50"; // Success color
+        } else {
+            alertBox.style.backgroundColor = "#f44336"; // Error color
+        }
+        
+        alertBox.style.display = "block"; // Show alert
+        alertBox.style.transition = "all 0.5s ease-in-out"; 
+        setTimeout(function(){ alertBox.style.display = "none"; }, 3000); // Hide alert after 3 seconds
+    }
+
+    btn_yes.onclick = function() {
+        document.getElementById('ebookForm').submit();  // Submit the form
+        task_confirm.style.display = "none";
+    }
+
+    btn_no.onclick = function() {
+        showAlert("Task Cancelled!", false);
+        task_confirm.style.display = "none";
+    }
+</script>
+
+</html>

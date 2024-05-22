@@ -1,0 +1,136 @@
+body, html {
+    font-family: Verdana, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    background-color: whitesmoke;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #04AA6D;
+}
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+.header {
+    align-items: center;
+    background-color: rgb(33, 33, 33);
+}
+
+.header .collapse .nav-link {
+    color: white;
+}
+
+.header .collapse .nav-link:hover {
+    color: #04AA6D;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+}
+
+.header-user img {
+    width: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
+    height: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
+    border-radius: 50%; /* Nếu bạn muốn hình ảnh có dạng tròn */
+}
+
+.admin {
+    margin-left: 10px; /* Khoảng cách giữa hình ảnh và tên người dùng */
+    color: white; /* Màu chữ */
+    font-size: 16px; /* Điều chỉnh kích thước chữ nếu cần */
+}
+
+.nav__logout ion-icon {
+    font-size: 24px; /* Điều chỉnh kích thước biểu tượng */
+    color: white; /* Màu biểu tượng */
+}
+
+label {
+    margin: 0 10px; /* Khoảng cách giữa các phần tử */
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+
+.header .header-user a:hover {
+    color: #04AA6D;
+}
+
+/*--------------------------------------------------------------
+# Body
+--------------------------------------------------------------*/
+
+/* styles.css */
+.content .container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#items-table td, 
+#items-table th {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+#items-table #items-body .wait {
+    display: none;
+}
+
+#items-table #items-body .accepted {
+    display: none;
+}
+
+#items-table #items-body .denied {
+    display: none;
+}
+
+.content .pagination {
+    margin-top: 20px;
+}
+
+.content .pagination button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #04AA6D;
+    color: white;
+    cursor: pointer;
+}
+
+.content .pagination button:disabled {
+    background-color: #ccc;
+}
+
+.content .pagination #page-info {
+    font-size: 18px;
+    margin: 0 10px;
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <link rel="stylesheet" href="/css/adminStyle.css">
+</head>
+
+<body>
+    <!-- ======= HEADER ======= -->
+    <div class="header">
+        <nav class="navbar navbar-expand-lg p-4">
+            <div class="container-fluid">
+                <div class="navbar-brand">
+                    <a class="navbar-brand ps-3 me-0 me-lg-2" href="#">
+                        <!-- <img src="/images/logo.png" alt="logo" width="50" /> -->
+                        <a href="/" class="logo">DRM-Management</a>
+                    </a>
+                </div>  
+
+                <div class="collapse navbar-collapse ml-5">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item ml-3">
+                            <a class="nav-link" href="ebookAdmin.html">E-book Management</a>
+                        </li>
+                        <li class="nav-item ml-3">
+                            <a class="nav-link" href="userAdmin.html">User Management</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="header-user d-flex pe-5 w-auto">
+                    <a href="#" class="d-flex align-items-center me-1">
+                        <img src="/images/admin.png" alt="">
+                        <span class="admin ml-3">Admin</span>
+                    </a>
+                    <label class="text-white" style="font-size: xx-large;"> | </label>
+                    <a href="/logout" class="nav__logout d-flex align-items-center ms-1">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </a>    
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ======= BODY ======= -->
+    <div class="content">
+        <div class="container">
+            <!-- PAGINATION -->
+            <h1 class="mt-5 mb-3">USER MANAGEMENT</h1>
+            <table id="items-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Date Create</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="items-body">
+                    <tr id="item-1">
+                        <th scope="row"></th>
+                        <td>1</td>
+                        <td>Nguyễn Quốc Bình</td>
+                        <td>nguyenquocbinh@gmail.com</td>
+                        <td>0123456789</td>
+                        <td>5/22/2024</td>
+                        <td>
+                            <button class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon>Delete</button>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <div class="pagination">
+                <button id="prev" onclick="prevPage()">Prev</button>
+                <span id="page-info"></span>
+                <button id="next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+<script>
+    // script.js
+    const itemsPerPage = 10;
+    let currentPage = 1;
+
+    const itemsBody = document.getElementById('items-body');
+    const pageInfo = document.getElementById('page-info');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+
+    function renderItems() {
+        const items = Array.from(document.querySelectorAll('#items-body tr'));
+        const totalItems = items.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, totalItems);
+
+        items.forEach((item, index) => {
+            if (index >= start && index < end) {
+                item.style.display = 'table-row'; // Hiển thị mỗi hàng
+                item.querySelector('th[scope="row"]').textContent = index + 1; // Cập nhật số thứ tự
+            } else {
+                item.style.display = 'none'; // Ẩn các hàng không thuộc trang hiện tại
+            }
+        });
+
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages;
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderItems();
+        }
+    }
+
+    function nextPage() {
+        const items = Array.from(document.querySelectorAll('#items-body tr'));
+        if (currentPage < Math.ceil(items.length / itemsPerPage)) {
+            currentPage++;
+            renderItems();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderItems);
+
+</script>
+</html>

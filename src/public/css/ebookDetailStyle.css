@@ -66,6 +66,11 @@ body, html {
     border: solid 1px #04AA6D;
     border-radius: 10%;
 }
+
+.ebook-detail .ebook-title {
+    text-transform: uppercase;
+}
+
 table a {
     color: white;
     text-decoration: none;
@@ -75,6 +80,7 @@ table a:hover {
     color: #04AA6D;
     text-decoration: none;
 }
+
 .ebook-detail .ebook-title {
     font-weight: 600;
     color: #04AA6D;
@@ -91,9 +97,42 @@ table a:hover {
     line-height: 2.0;
 }
 
-.ebook-detail .btn-edit,
+.ebook-detail .btn-edit {
+    padding: 15px 25px;
+    border: unset;
+    border-radius: 15px;
+    color: #212121;
+    z-index: 1;
+    background: #e8e8e8;
+    position: relative;
+    font-weight: 1000;
+    font-size: 17px;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .ebook-detail .btn-delete {
-    height: 50px;
+    padding: 15px 25px;
+    border: unset;
+    border-radius: 15px;
+    color: #212121;
+    z-index: 1;
+    background: #e8e8e8;
+    position: relative;
+    font-weight: 1000;
+    font-size: 17px;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ebook-detail .ebook-describe h3 {

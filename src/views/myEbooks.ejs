@@ -42,12 +42,13 @@
                                             <img src="/images/background_1.jpg" class="card-img-top" alt="">
                                             <div class="card-body">
                                                 <h5 class="card-title text-white"><%= ebook.title %></h5>
-                                                <div class="category">
+                                                <div class="category mb-2">
                                                     <span class="text-white">Category - </span>
                                                     <a href="" class="category-name"><%= ebook.type %></a>
                                                 </div>
-                                                <div class="state">
-                                                    State: <span class="post-date"><%= ebook.state %></span>
+                                                <div class="state text-white">
+                                                    <span class="text-white">State - </span>
+                                                    <a href="" class="post-date"><%= ebook.state %></a>
                                                 </div>
                                                 <div class="author">
                                                     By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date">
@@ -116,7 +117,7 @@
                     </div>
                     
                     <%if(user){%>
-                        <div class="row">
+                        <div class="row" style="display: none;">
                             <div class="inputbox">
                                 <ion-icon name="person-circle-outline"></ion-icon>
                                 <input type="text" class="input" id="author" name="author" value="<%= user.username%>" required/>
@@ -127,7 +128,10 @@
                     
 
                     <div class="create d-flex justify-content-center">
-                        <button type="submit" class="tn-success w-50" data-target=".addNewEbook">Submit</button>
+                        <button type="submit" class="full-rounded" data-target=".addNewEbook">
+                            <span>Submit</span>
+                            <div class="border full-rounded"></div>
+                        </button>
                     </div>
                 </form>     
             </div>

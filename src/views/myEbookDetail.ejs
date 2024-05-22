@@ -53,8 +53,14 @@
                 </table>
                 <hr>
                 <div class="row">
-                    <input class="btn-edit col-lg-4 btn-success" id="btn-edit" type="button" value="Edit">
-                    <button class="btn" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>" style="background-color: #db7346; color: white;"></button>
+                    <button class="btn-edit col-lg-4 btn-success" id="btn-edit" type="submit">
+                        <ion-icon name="create-outline" class="mr-2"></ion-icon>
+                        Edit
+                    </button>
+                    <button class="btn-delete col-lg-4 btn-danger" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>">
+                        <ion-icon name="trash-outline" class="mr-2"></ion-icon>
+                        Delete
+                    </button>
                 </div>
 
                 <div class="ebook-describe">
@@ -151,7 +157,9 @@
 
     <div id="alert" class="alert"></div>
     <!-- ======= FOOTER ======= -->
-    <%- include('./partials/footer'); -%>
+    <div style="position: fixed; width: 100%; bottom: 0;">
+        <%- include('./partials/footer'); -%>
+    </div>
 </body>
 
 <script>

@@ -167,6 +167,7 @@
     const btn_edit = document.getElementById('btn-edit');
     const btn_close = document.getElementById('close');
     const modal_container = document.getElementById('modal-container');
+    const btn_update = document.getElementById('update-ebook');
     btn_edit.addEventListener('click', function() {
         modal_container.classList.add('show');
     })
@@ -174,57 +175,9 @@
         modal_container.classList.remove('show');
     })
 
-    // TASK CONFIRMATION
-    const task_confirm = document.getElementById('task-confirm');
-    const btn_delete = document.getElementById('btn-delete');
-    const update_ebook = document.getElementById('update-ebook');
-    const close_confirm = document.getElementById('close-confirm');
-    const btn_yes = document.getElementById('btn-yes');
-    const btn_no = document.getElementById('btn-no');
-
-    btn_delete.onclick = () => {
-        task_confirm.style.display = 'block';
-    }
-
-    update_ebook.onclick = (event) => {
-        event.preventDefault();  // Prevent the default form submission
-        task_confirm.style.display = 'block';
-    }
-
-    close_confirm.addEventListener('click', function(){
-        task_confirm.style.display = "none";
-    }) 
-
-    window.onclick = function(event) {
-        if (event.target == task_confirm) {
-            task_confirm.style.display = "none";
-        }
-    }
-
-    function showAlert(message, isSuccess) {
-        var alertBox = document.getElementById("alert");
-        alertBox.textContent = message;
-        
-        if (isSuccess) {
-            alertBox.style.backgroundColor = "#4CAF50"; // Success color
-        } else {
-            alertBox.style.backgroundColor = "#f44336"; // Error color
-        }
-        
-        alertBox.style.display = "block"; // Show alert
-        alertBox.style.transition = "all 0.5s ease-in-out"; 
-        setTimeout(function(){ alertBox.style.display = "none"; }, 3000); // Hide alert after 3 seconds
-    }
-
-    btn_yes.onclick = function() {
-        document.getElementById('ebookForm').submit();  // Submit the form
-        task_confirm.style.display = "none";
-    }
-
-    btn_no.onclick = function() {
-        showAlert("Task Cancelled!", false);
-        task_confirm.style.display = "none";
-    }
+    btn_update.addEventListener('click', function() {
+        modal_container.classList.remove('show');
+    })
 </script>
 
 </html>

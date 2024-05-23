@@ -39,6 +39,6 @@ route.get('/myEbookDetail', ebookController.getMyEbooksDetail)
 route.post('/myEbookDetail_update', ebookController.updateMyEbookDetail)
 route.post('/myEbookDetail_delete', ebookController.deleteMyEbookDetail)
 
-route.get('/ebookManagement', adminController.getEbookManagement)
+route.get('/indexManagement', adminController.getEbookManagement)
 
 module.exports = route

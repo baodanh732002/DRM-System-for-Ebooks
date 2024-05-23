@@ -76,29 +76,29 @@
     <!-- DELETE MODAL -->
     <div class="modal fade deleteEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-          <div class="modal-content">
-          
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Delete Ebook</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
+            <div class="modal-content">
             
-            <!-- Modal body -->
-            <form action="/myEbookDetail_delete" method="post">
-                <div class="modal-body">
-                    <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
-                    <h5>Are you sure you want to delete ebook: <strong><%= formattedEbookData.title%>?</strong></h5>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                <h4 class="modal-title">Delete Ebook</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="submit" class="btn" style="background-color: #78635A; color: white;">Yes</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                </div>
-            </form>
-          </div>
+                
+                <!-- Modal body -->
+                <form action="/myEbookDetail_delete" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
+                        <h5>Are you sure you want to delete ebook: <strong><%= formattedEbookData.title%>?</strong></h5>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Ok</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
+    </div>
 
     <!-- EDIT MODAL -->
     <div id="modal-container">

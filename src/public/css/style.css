@@ -135,6 +135,7 @@ label {
 /* display */
 .display {
     background-color: #1d2a35;
+    max-width: 100%;
 }
 .display .row {
     margin: 0 10px 20px 10px;
@@ -206,23 +207,23 @@ label {
  
 .display .card .card-body .category-name {
     color: white;
-    font-weight: 500;
+    font-weight: 30;
     transition: opacity 2s ease;
 }
 
 .display .card .card-body .category-name:hover {
-    font-weight: 600;
+    font-weight: 400;
     color: black;
 }
 
 .display .card .card-body .post-date {
     color: white;
-    font-weight: 500;
+    font-weight: 300;
     transition: opacity 2s ease;
 }
 
 .display .card .card-body .post-date:hover {
-    font-weight: 600;
+    font-weight: 400;
     color: black;
 }
 

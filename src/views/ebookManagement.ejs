@@ -21,40 +21,7 @@
 
 <body>
     <!-- ======= HEADER ======= -->
-    <div class="header">
-        <nav class="navbar navbar-expand-lg p-4">
-            <div class="container-fluid">
-                <div class="navbar-brand">
-                    <a class="navbar-brand ps-3 me-0 me-lg-2" href="#">
-                        <!-- <img src="/images/logo.png" alt="logo" width="50" /> -->
-                        <a href="/" class="logo">DRM-Management</a>
-                    </a>
-                </div>  
-
-                <div class="collapse navbar-collapse ml-5">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item ml-3">
-                            <a class="nav-link" href="ebookAdmin.html">E-book Management</a>
-                        </li>
-                        <li class="nav-item ml-3">
-                            <a class="nav-link" href="userAdmin.html">User Management</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="header-user d-flex pe-5 w-auto">
-                    <a href="#" class="d-flex align-items-center me-1">
-                        <img src="/images/admin.png" alt="">
-                        <span class="admin ml-3">Admin</span>
-                    </a>
-                    <label class="text-white" style="font-size: xx-large;"> | </label>
-                    <a href="/logout" class="nav__logout d-flex align-items-center ms-1">
-                        <ion-icon name="log-out-outline"></ion-icon>
-                    </a>    
-                </div>
-            </div>
-        </nav>
-    </div>
+    <%- include('./partials/headerAdmin'); -%>
 
     <!-- ======= BODY ======= -->
     <div class="content">
@@ -64,8 +31,7 @@
             <table id="items-table">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">ID</th>
+                        <th scope="col"></th>
                         <th scope="col">Title</th>
                         <th scope="col">Type</th>
                         <th scope="col">Language</th>
@@ -75,23 +41,22 @@
                     </tr>
                 </thead>
                 <tbody id="items-body">
-                    <tr id="item-1">
-                        <th scope="row"></th>
-                        <td>1</td>
-                        <td>DRM for E-book</td>
-                        <td>Science</td>
-                        <td>English</td>
-                        <td>Nguyễn Quốc Bình</td>
-                        <td>
-                            <span id="wait">Waiting for progressing</span>
-                            <span id="accepted" class="accepted text-success">Accepted</span>
-                            <span id="denied" class="denied text-danger">Denied</span>
-                        </td>
-                        <td>
-                            <button id="btn-accept" class="btn btn-success">Accept</button>
-                            <button id="btn-deny" class="btn btn-danger">Deny</button>
-                        </td>
-                    </tr>
+                        <tr id="item-1">
+                            <th scope="row"></th>
+                            <td>DRM for E-book</td>
+                            <td>Science</td>
+                            <td>English</td>
+                            <td>Nguyễn Quốc Bình</td>
+                            <td>
+                                <span id="wait">Waiting for progressing</span>
+                            </td>
+                            <td>
+                                <a class="detail" href="ebookDetail/ebookDetailManagement">
+                                    <ion-icon name="eye-outline" class="mr-2"></ion-icon>
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
                 </tbody>
             </table>
             <div class="pagination">

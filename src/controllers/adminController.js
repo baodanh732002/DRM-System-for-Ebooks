@@ -1,6 +1,6 @@
 class AdminController{
     async getEbookManagement(req, res){
-        res.render("ebookManagement")
+        res.render("indexManagement")
     }
 }
 

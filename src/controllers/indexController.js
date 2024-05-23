@@ -39,6 +39,7 @@ class IndexController {
                     };
                 });
 
+                const user = req.session.user || null
                 const username = req.session.user.username;
 
                 // Fetch 5 random eBooks authored by the user
@@ -60,7 +61,7 @@ class IndexController {
                         formattedDate
                     };
                 });
-                res.render("index.ejs", { formattedEbookDataNewest, formattedEbookDataPopular, formattedEbookDataUser});
+                res.render("index.ejs", { formattedEbookDataNewest, formattedEbookDataPopular, formattedEbookDataUser, user});
             } catch (error) {
                 console.error('Error fetching ebooks:', error);
                 res.status(500).send('Internal Server Error');

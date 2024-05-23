@@ -145,13 +145,14 @@ class EbookController {
         }
     }
 
-    async updateMyEbookDetail(req, res){
-        try{
+    async updateMyEbookDetail(req, res) {
+        try {
             const user = req.session.user || null;
-            if(user){
-                const {id, title, type, language, description, author} = req.body
-                const state = 'Pending'
-                const date = new Date()
+            if (user) {
+                const { id, title, type, language, description, author } = req.body;
+                const state = 'Pending';
+                const date = new Date();
+    
                 const updateEbook = {
                     title: title,
                     type: type,
@@ -160,25 +161,26 @@ class EbookController {
                     author: author,
                     state: state,
                     date: date
-                }
-
-                console.log(req.body)
+                };
     
-                const ebook = await Ebook.findByIdAndUpdate(id, updateEbook)
-                if(!ebook){
+    
+                const ebook = await Ebook.findByIdAndUpdate(id, updateEbook, { new: true });
+                if (!ebook) {
                     return res.status(404).send("Ebook not found");
                 }
     
-                res.redirect('/myEbooks')
-    
+                res.redirect('/myEbooks');
+            } else {
+                res.status(401).send("Unauthorized");
             }
-        }catch(error){
+        } catch (error) {
             console.error(error);
             res.status(500).render("myEbookDetail", {
-              message: "Failed to update ebook.",
+                message: "Failed to update ebook.",
             });
         }
     }
+    
 
     async deleteMyEbookDetail(req, res){
         try{

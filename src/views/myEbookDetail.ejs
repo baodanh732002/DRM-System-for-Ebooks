@@ -88,7 +88,7 @@
             <form action="/myEbookDetail_delete" method="post">
                 <div class="modal-body">
                     <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
-                    <h5>Are you sure you want to delete room: <strong><%= formattedEbookData.title%>?</strong></h5>
+                    <h5>Are you sure you want to delete ebook: <strong><%= formattedEbookData.title%>?</strong></h5>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -103,7 +103,7 @@
     <!-- EDIT MODAL -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
-            <form id="ebookForm" action="/myEbookDetail_update" method="post" enctype="multipart/form-data">
+            <form id="ebookForm" action="/myEbookDetail_update" method="post">
                 <div class="form-box">
                     <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>" required>
                     <ion-icon id="close" name="close-circle-outline" class="close text-success mt-3 me-4"></ion-icon>
@@ -148,7 +148,7 @@
                     </div>
     
                     <div class="create d-flex justify-content-center">
-                        <input type="submit" class="btn-success w-50" id="update-ebook" value="Update">
+                        <button type="submit" class="btn-success w-50" id="update-ebook">Update</button>
                     </div>
                 </div>
             </form>

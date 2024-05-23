@@ -7,6 +7,7 @@ const registerController = require('../controllers/registerController')
 const indexController = require('../controllers/indexController')
 const logoutController = require('../controllers/logoutController')
 const ebookController = require('../controllers/ebookController')
+const adminController = require('../controllers/adminController')
 
 
 
@@ -37,5 +38,7 @@ route.post('/myEbooks', upload.fields(uploadFields), ebookController.createNewEb
 route.get('/myEbookDetail', ebookController.getMyEbooksDetail)
 route.post('/myEbookDetail_update', ebookController.updateMyEbookDetail)
 route.post('/myEbookDetail_delete', ebookController.deleteMyEbookDetail)
+
+route.get('/ebookManagement', adminController.getEbookManagement)
 
 module.exports = route

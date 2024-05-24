@@ -54,11 +54,11 @@
                 <hr>
                 <div class="row">
                     <button class="btn btn-download col-lg-4 btn-success" id="btn-download" type="submit">
-                        <ion-icon name="cloud-download-outline"></ion-icon>
+                        <ion-icon name="cloud-download-outline" class="mr-2"></ion-icon>
                         Download
                     </button>
                     <button class="btn btn-review col-lg-4 btn-primary" id="btn-review" type="submit">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="eye-outline" class="mr-2"></ion-icon>
                         Review
                     </button>
                 </div>
@@ -73,51 +73,7 @@
         </div>
     </div>   
 
-    <!-- TASK CONFIRMATION -->
-    <div id="task-confirm" class="task-confirm">
-        <div class="confirm-content">
-            <ion-icon id="close-confirm" name="close-circle-outline" class="close-confirm text-success mt-3 me-4"></ion-icon>
-            <p class="text-white">Are you sure you want to perform this action?</p>
-            <button class="btn-success w-25" id="btn-yes">OK</button>
-            <button class="btn-danger w-25" id="btn-no">Cancel</button>
-        </div>
-    </div>
-
     <!-- ======= FOOTER ======= -->
     <%- include('./partials/footer'); %>
 </body>
-
-<script>
-    // TASK CONFIRMATION
-    const task_confirm = document.getElementById('task-confirm');
-    const btn_download = document.getElementById('btn-download');
-    const update_ebook = document.getElementById('update-ebook');
-    const close_confirm = document.getElementById('close-confirm');
-
-    btn_download.onclick = () => {
-        task_confirm.style.display = 'block';
-    }
-
-    close_confirm.addEventListener('click', function(){
-        task_confirm.style.display = "none";
-    }) 
-
-    window.onclick = function(event) {
-        if (event.target == task_confirm) {
-            task_confirm.style.display = "none";
-        }
-    }
-
-    const btn_yes = document.getElementById('btn-yes');
-    const btn_no = document.getElementById('btn-no');
-
-    btn_yes.onclick = function() {
-        task_confirm.style.display = "none";
-    }
-
-    btn_no.onclick = function() {
-        task_confirm.style.display = "none";
-    }
-</script>
-
 </html>

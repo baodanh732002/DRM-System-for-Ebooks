@@ -31,7 +31,7 @@
                 <%- include('./partials/sidebar'); -%>
         
                 <!-- DISPLAY -->
-                <div class="display col-lg-9 col-md-12">
+                <div class="display col-lg-10 col-md-12">
                     <h1 class="my-ebooks-heading text-success d-flex justify-content-center mt-5">POPULAR</h1>
                     <div class="row mb-3">
                         <% if (formattedEbookData && formattedEbookData.length > 0) { %>
@@ -59,10 +59,11 @@
                         <% } %>
                     </div>
                 </div>
-                <!-- ======= FOOTER ======= -->
-                <%- include('./partials/footer'); %>
             </div>
         </div>
     </div>
+
+    <!-- ======= FOOTER ======= -->
+    <%- include('./partials/footer'); %>
 </body>
 </html>

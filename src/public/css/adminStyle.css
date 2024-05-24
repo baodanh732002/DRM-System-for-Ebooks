@@ -136,6 +136,7 @@ label {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    color: #333;
 }
 
 #items-table td, 

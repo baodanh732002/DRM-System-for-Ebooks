@@ -156,7 +156,10 @@
                     </div>
     
                     <div class="row">
-                        <div class="inputbox">
+                        <div class="author text-white d-flex justify-content-center mb-4">
+                            <strong>Author: <span>Username</span></strong>
+                        </div>
+                        <div class="inputbox" style="display: none;">
                             <ion-icon name="person-circle-outline"></ion-icon>
                             <input type="text" class="input" id="author" name="author" value="<%= formattedEbookData.author %>" required/>
                             <label for="author">Author</label>
@@ -164,7 +167,7 @@
                     </div>
     
                     <div class="create d-flex justify-content-center">
-                        <button type="submit" class="btn-success w-50" id="update-ebook">Update</button>
+                        <button type="submit" class="btn btn-success w-50" id="update-ebook">Update</button>
                     </div>
                 </div>
             </form>

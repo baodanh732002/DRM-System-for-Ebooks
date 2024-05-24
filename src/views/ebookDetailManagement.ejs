@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="/css/adminStyle.css">
 </head>
 
-<body style="background: #1d2a35;">
+<body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/headerAdmin'); -%>
 
@@ -33,7 +33,7 @@
             <div class="ebook-detail col-lg-9">
                 <h1 class="ebook-title"><%= formattedEbookData.title %></h1>
                 <hr>
-                <table>
+                <table style="color: #333;">
                     <tr>
                         <th>Type: </th>
                         <td><%= formattedEbookData.type %></td>
@@ -82,7 +82,7 @@
                 <% } %>
                 <div class="ebook-describe">
                     <h3>Description</h3>
-                    <span class="text-white">
+                    <span>
                         <%= formattedEbookData.description %>
                     </span>
                 </div>

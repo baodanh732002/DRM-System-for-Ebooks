@@ -10,7 +10,8 @@ const ebookSchema = new Schema({
   imageFile: { type: String, required: true },
   state: { type: String, require: true},
   author: { type: String, require: true},
-  date: { type: Date, require: true}
+  date: { type: Date, require: true},
+  note: { type: String, require: true}
 });
 
 const Ebook = mongoose.model("Ebook", ebookSchema);

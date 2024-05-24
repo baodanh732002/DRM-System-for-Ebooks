@@ -33,7 +33,8 @@ class EbookController {
                 imageFile: imageFile.path,
                 state: state,
                 author: author,
-                date: date
+                date: date,
+                note: ''
             })
 
 
@@ -145,6 +146,33 @@ class EbookController {
         }
     }
 
+    async getEbookDetail(req, res){
+        const user = req.session.user || null;
+        if (user) {
+            const ebookId = req.query.id;
+            const ebookData = await Ebook.findById(ebookId);
+    
+            if (ebookData) {
+                const date = new Date(ebookData.date);
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                const formattedEbookData = {
+                    ...ebookData.toObject(),
+                    formattedDate
+                };
+    
+                res.render('ebookDetail', { user, formattedEbookData });
+            } else {
+                res.status(404).send('Ebook not found');
+            }
+        } else {
+            res.status(401).send('Unauthorized');
+        }
+    }
+
     async updateMyEbookDetail(req, res) {
         try {
             const user = req.session.user || null;
@@ -160,7 +188,8 @@ class EbookController {
                     description: description,
                     author: author,
                     state: state,
-                    date: date
+                    date: date,
+                    note: ''
                 };
     
     

@@ -40,18 +40,47 @@
                     </tr>
                 </thead>
                 <tbody id="items-body">
-                    <a href="">
-                        <tr id="item-1">
-                            <th scope="row"></th>
-                            <td>Nguyễn Quốc Bình</td>
-                            <td>nguyenquocbinh@gmail.com</td>
-                            <td>0123456789</td>
-                            <td>5/22/2024</td>
-                            <td>
-                                <button class="btn btn-danger " data-toggle="modal" data-target=".deleteUser"><ion-icon name="trash-outline"></ion-icon>Delete</button>
-                            </td>
-                        </tr>
-                    </a>
+                    <% if (formattedUserData && formattedUserData.length > 0) { 
+                        formattedUserData.forEach(user => { %>
+                            <tr id="item-1">
+                                <th scope="row"></th>
+                                <td><%= user.username %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.phone %></td>
+                                <td><%= user.formattedDate %></td>
+                                <td>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target=".deleteUser<%= user._id %>">
+                                        <ion-icon name="trash-outline"></ion-icon> Delete
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade deleteUser<%= user._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Delete User</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        
+                                        <!-- Modal body -->
+                                        <form action="/userManagement_delete" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" id="id" name="id" placeholder="" value="<%= user._id %>">
+                                                <h5>Are you sure you want to delete this user: <strong><%= user.username %></strong>?</h5>
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Yes</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
                 </tbody>
             </table>
             <div class="pagination">
@@ -63,31 +92,6 @@
     </div>
     
     <!-- DELETE USER MODAL -->
-    <div class="modal fade deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            
-                <!-- Modal Header -->
-                <div class="modal-header">
-                <h4 class="modal-title">Delete User</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                
-                <!-- Modal body -->
-                <form action="" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" id="id" name="id" placeholder="" value="">
-                        <h5>Are you sure you want to delete this user?<strong></strong></h5>
-                    </div>
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Yes</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </body>
 <script>
     // script.js
@@ -108,10 +112,10 @@
 
         items.forEach((item, index) => {
             if (index >= start && index < end) {
-                item.style.display = 'table-row'; // Hiển thị mỗi hàng
-                item.querySelector('th[scope="row"]').textContent = index + 1; // Cập nhật số thứ tự
+                item.style.display = 'table-row'; // Display each row
+                item.querySelector('th[scope="row"]').textContent = index + 1; // Update row number
             } else {
-                item.style.display = 'none'; // Ẩn các hàng không thuộc trang hiện tại
+                item.style.display = 'none'; // Hide rows not on the current page
             }
         });
 

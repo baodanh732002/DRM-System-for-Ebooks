@@ -30,7 +30,14 @@ class LoginController {
             }else{
 
                 if(username === 'admin123' && password === '123456'){
-                    res.status(200).redirect("/ebookManagement");
+                    const adminData = {
+                        username: 'admin123',
+                        password: '123456'
+                    }
+
+                    req.session.admin = adminData
+                    res.status(200).redirect("/indexManagement");
+                    return;
                 }
 
                 const existUSer = await User.findOne({username: username})

@@ -41,22 +41,26 @@
                     </tr>
                 </thead>
                 <tbody id="items-body">
-                        <tr id="item-1">
-                            <th scope="row"></th>
-                            <td>DRM for E-book</td>
-                            <td>Science</td>
-                            <td>English</td>
-                            <td>Nguyễn Quốc Bình</td>
-                            <td>
-                                <span id="wait">Waiting for progressing</span>
-                            </td>
-                            <td>
-                                <a class="detail" href="ebookDetail/ebookDetailManagement">
-                                    <ion-icon name="eye-outline" class="mr-2"></ion-icon>
-                                    Detail
-                                </a>
-                            </td>
-                        </tr>
+                    <% if (ebookData && ebookData.length > 0) { %>
+                        <% ebookData.forEach(ebook => { %>
+                            <tr id="item-1">
+                                <th scope="row"></th>
+                                <td><%= ebook.title %></td>
+                                <td><%= ebook.type %></td>
+                                <td><%= ebook.language %></td>
+                                <td><%= ebook.author %></td>
+                                <td>
+                                    <span id="wait"><%= ebook.state %></span>
+                                </td>
+                                <td>
+                                    <a class="detail" href="/ebookDetailManagement?id=<%= ebook._id %>">
+                                        <ion-icon name="eye-outline" class="mr-2"></ion-icon>
+                                        Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>                    
                 </tbody>
             </table>
             <div class="pagination">

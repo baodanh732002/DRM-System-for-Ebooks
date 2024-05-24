@@ -61,6 +61,7 @@ class IndexController {
                         formattedDate
                     };
                 });
+
                 res.render("index.ejs", { formattedEbookDataNewest, formattedEbookDataPopular, formattedEbookDataUser, user});
             } catch (error) {
                 console.error('Error fetching ebooks:', error);

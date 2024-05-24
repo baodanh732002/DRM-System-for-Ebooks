@@ -50,6 +50,22 @@
                         <th>Date Posted: </th>
                         <td><%= formattedEbookData.formattedDate %></td>
                     </tr>
+                    <tr>
+                        <th>State: </th>
+                        <% if (formattedEbookData.state === 'Pending') { %>
+                            <td style="color: #ff8c00;"><%= formattedEbookData.state %></td>
+                        <% } else if (formattedEbookData.state === 'Accepted') { %>
+                            <td style="color: #08a045;"><%= formattedEbookData.state %></td>
+                        <% } else if (formattedEbookData.state === 'Denied') { %>
+                            <td style="color: #e50000;"><%= formattedEbookData.state %></td>
+                        <% } else { %>
+                            <td><%= formattedEbookData.state %></td>
+                        <% } %>
+                    </tr>
+                    <tr>
+                        <th>Note: </th>
+                        <td><%= formattedEbookData.note %></td>
+                    </tr>
                 </table>
                 <hr>
                 <div class="row">

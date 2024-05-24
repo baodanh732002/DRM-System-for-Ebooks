@@ -31,71 +31,85 @@
             </div>
 
             <div class="ebook-detail col-lg-9">
-                <h1 class="ebook-title">DRM for Ebook</h1>
+                <h1 class="ebook-title"><%= formattedEbookData.title %></h1>
                 <hr>
                 <table>
                     <tr>
                         <th>Type: </th>
-                        <td>Science</td>
+                        <td><%= formattedEbookData.type %></td>
                     </tr>
                     <tr>
                         <th>Author: </th>
-                        <td>Nguyễn Quốc Bình</a></td>
+                        <td><a><%= formattedEbookData.author %></a></td>
                     </tr>
                     <tr>
                         <th>Language: </th>
-                        <td>English</td>
+                        <td><%= formattedEbookData.language %></td>
                     </tr>
                     <tr>
                         <th>Date Posted: </th>
-                        <td>24/5/2024</td>
+                        <td><%= formattedEbookData.formattedDate %></td>
                     </tr>
                     <tr>
                         <th>State: </th>
+                        <% if (formattedEbookData.state === 'Pending') { %>
+                            <td style="color: #ff8c00;"><%= formattedEbookData.state %></td>
+                        <% } else if (formattedEbookData.state === 'Accepted') { %>
+                            <td style="color: #08a045;"><%= formattedEbookData.state %></td>
+                        <% } else if (formattedEbookData.state === 'Denied') { %>
+                            <td style="color: #e50000;"><%= formattedEbookData.state %></td>
+                        <% } else { %>
+                            <td><%= formattedEbookData.state %></td>
+                        <% } %>
+                    </tr>
+                    <tr>
+                        <th>Note: </th>
                         <td>
-                            <span>Waiting for progressing</span>
+                            <span><%= formattedEbookData.note %></span>
                         </td>
                     </tr>
                 </table>
                 <hr>
-                <div class="row">
-                    <button class="btn-accept col-lg-4 btn-success" data-toggle="modal" data-target=".acceptEbook" id="btn-edit" type="submit">
-                        Accept
-                    </button>
-                    <button class="btn-deny col-lg-4 btn-danger" data-toggle="modal" data-target=".denyEbook">
-                        Deny
-                    </button>
-                </div>
-
+                <% if (formattedEbookData.state === 'Pending') { %>
+                    <div class="row">
+                        <button class="btn-accept col-lg-4 btn-success" data-toggle="modal" data-target=".acceptEbook<%= formattedEbookData._id %>" id="btn-edit" type="submit">
+                            Accept
+                        </button>
+                        <button class="btn-deny col-lg-4 btn-danger" data-toggle="modal" data-target=".denyEbook<%= formattedEbookData._id %>">
+                            Deny
+                        </button>
+                    </div>
+                <% } %>
                 <div class="ebook-describe">
                     <h3>Description</h3>
                     <span class="text-white">
+                        <%= formattedEbookData.description %>
                     </span>
                 </div>
             </div>
         </div>
-    </div>   
+    </div>
 
     <!-- ACCEPT EBOOK MODAL -->
-    <div class="modal fade acceptEbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade acceptEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            
+
                 <!-- Modal Header -->
                 <div class="modal-header">
-                <h4 class="modal-title">Accept Ebook</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Accept Ebook</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                
+
                 <!-- Modal body -->
-                <form action="" method="post">
+                <form action="/ebookManagement_accept" method="post">
                     <div class="modal-body">
-                        <input type="hidden" id="id" name="id" placeholder="" value="">
-                        <h5>Are you sure you want to accept this ebook? <strong> </strong></h5>
+                        <input type="hidden" id="id" name="id" value="<%= formattedEbookData._id %>">
+                        <h5>Are you sure you want to accept this ebook: <strong><%= formattedEbookData.title %></strong>?</h5>
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">OK</button>
+                        <button type="submit" class="btn btn-success">Accept</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                     </div>
                 </form>
@@ -104,27 +118,27 @@
     </div>
 
     <!-- DENY EBOOK MODAL -->
-    <div class="modal fade denyEbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade denyEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            
+
                 <!-- Modal Header -->
                 <div class="modal-header">
-                <h4 class="modal-title">Deny Ebook</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Deny Ebook</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                
+
                 <!-- Modal body -->
-                <form action="" method="post">
+                <form action="/ebookManagement_deny" method="post">
                     <div class="modal-body p-4">
-                        <input type="hidden" id="id" name="id" placeholder="" value="">
-                        <h5>Why did you refuse this book? <strong> </strong></h5>
-                        <input type="text" placeholder="Write here..." name="text" class="reason-text mt-4 w-75">
+                        <input type="hidden" id="id" name="id" value="<%= formattedEbookData._id %>">
+                        <h5>Why did you refuse this book: <strong><%= formattedEbookData.title %></strong>?</h5>
+                        <input type="text" placeholder="Write here..." name="reason" class="reason-text mt-4 w-75">
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">OK</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Deny</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </form>
             </div>

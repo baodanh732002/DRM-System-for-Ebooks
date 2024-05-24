@@ -55,7 +55,8 @@ class RegisterController {
                 username: username,
                 email: email,
                 phone: phone,
-                password: hashedPassword
+                password: hashedPassword,
+                date: new Date()
             })
 
             await newUser.save()

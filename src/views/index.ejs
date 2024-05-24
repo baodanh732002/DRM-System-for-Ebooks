@@ -39,26 +39,45 @@
                         </div>
                         <div class="row mb-3">
                             <% if (formattedEbookDataNewest && formattedEbookDataNewest.length > 0) { %>
+                                <% let hasAcceptedNewestEbooks = false; %>
                                 <% formattedEbookDataNewest.forEach(ebook => { %>
-                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                        <a href="/newestDetail?id=<%= ebook._id %>">
-                                            <div class="card">
-                                                <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                                <div class="card-body">
-                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
-                                                    <div class="category">
-                                                        <span class="text-white">Category - </span>
-                                                        <a href="" class="category-name"><%= ebook.type %></a>
-                                                    </div>
-                                                    <div class="author">
-                                                        By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    <% if (ebook.state === 'Accepted') { %>
+                                        <% hasAcceptedNewestEbooks = true; %>
+                                    <% } %>
                                 <% }) %>
-                            <% } %>
+                            
+                                <% if (hasAcceptedNewestEbooks) { %>
+                                    <% formattedEbookDataNewest.forEach(ebook => { %>
+                                        <% if (ebook.state === 'Accepted') { %>
+                                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                                <a href="/ebookDetail?id=<%= ebook._id %>">
+                                                    <div class="card">
+                                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                            <div class="category">
+                                                                <span class="text-white">Category - </span>
+                                                                <a href="" class="category-name"><%= ebook.type %></a>
+                                                            </div>
+                                                            <div class="author">
+                                                                By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        <% } %>
+                                    <% }) %>
+                                <% } else { %>
+                                    <div class="heading d-flex align-items-center mt-5 ml-5">
+                                        <h5 class="text-white">There are no newest Ebooks...</h5>
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <div class="heading d-flex align-items-center mt-5 ml-5">
+                                    <h5 class="text-white">There are no newest Ebooks...</h5>
+                                </div>
+                            <% } %>                                                          
                         </div>
                     </div>
 
@@ -70,26 +89,45 @@
                         </div>
                         <div class="row mb-3">
                             <% if (formattedEbookDataPopular && formattedEbookDataPopular.length > 0) { %>
+                                <% let hasAcceptedEbooks = false; %>
                                 <% formattedEbookDataPopular.forEach(ebook => { %>
-                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                        <a href="/popularDetail?id=<%= ebook._id %>">
-                                            <div class="card">
-                                                <img src="/images/background_1.jpg" class="card-img-top" alt="">
-                                                <div class="card-body">
-                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
-                                                    <div class="category">
-                                                        <span class="text-white">Category - </span>
-                                                        <a href="" class="category-name"><%= ebook.type %></a>
-                                                    </div>
-                                                    <div class="author">
-                                                        By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div> 
+                                    <% if (ebook.state === 'Accepted') { %>
+                                        <% hasAcceptedEbooks = true; %>
+                                    <% } %>
                                 <% }) %>
-                            <% } %>
+                                
+                                <% if (hasAcceptedEbooks) { %>
+                                    <% formattedEbookDataPopular.forEach(ebook => { %>
+                                        <% if (ebook.state === 'Accepted') { %>
+                                            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                                                <a href="/ebookDetail?id=<%= ebook._id %>">
+                                                    <div class="card">
+                                                        <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                            <div class="category">
+                                                                <span class="text-white">Category - </span>
+                                                                <a href="" class="category-name"><%= ebook.type %></a>
+                                                            </div>
+                                                            <div class="author">
+                                                                By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div> 
+                                        <% } %>
+                                    <% }) %>
+                                <% } else { %>
+                                    <div class="heading d-flex align-items-center mt-5 ml-5">
+                                        <h5 class="text-white">There are no popular Ebooks...</h5>
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <div class="heading d-flex align-items-center mt-5 ml-5">
+                                    <h5 class="text-white">There are no popular Ebooks...</h5>
+                                </div>
+                            <% } %>                                                        
                         </div>
                     </div>
 
@@ -103,7 +141,7 @@
                             <% if (formattedEbookDataUser && formattedEbookDataUser.length > 0) { %>
                                 <% formattedEbookDataUser.forEach(ebook => { %>
                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                        <a href="/ebookDetail?id=<%= ebook._id %>">
+                                        <a href="/myEbookDetail?id=<%= ebook._id%>">
                                             <div class="card">
                                                 <img src="/images/background_1.jpg" class="card-img-top" alt="">
                                                 <div class="card-body">
@@ -111,6 +149,10 @@
                                                     <div class="category">
                                                         <span class="text-white">Category - </span>
                                                         <a href="" class="category-name"><%= ebook.type %></a>
+                                                    </div>
+                                                    <div class="state text-white">
+                                                        <span class="text-white">State - </span>
+                                                        <a href="" class="post-date"><%= ebook.state %></a>
                                                     </div>
                                                     <div class="author">
                                                         By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
@@ -120,6 +162,10 @@
                                         </a>
                                     </div> 
                                 <% }) %>
+                            <% }else{ %>
+                                <div class="heading d-flex align-items-center mt-5 ml-5">
+                                    <h5 class="text-white">You don't have any ebooks...</h5>
+                                </div>
                             <% } %>
                         </div>
                     </div>

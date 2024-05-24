@@ -21,7 +21,7 @@
 
 <body>
     <!-- ======= HEADER ======= -->
-    <%- include('./partials/header'); -%>
+    <%- include('./partials/header'); %>
 
     <!-- ======= BODY ======= -->
     <div class="container mt-5 mb-5">
@@ -31,24 +31,24 @@
             </div>
 
             <div class="ebook-detail col-lg-9">
-                <h1 class="ebook-title">DRM for Ebooks</h1>
+                <h1 class="ebook-title"><%= formattedEbookData.title %></h1>
                 <hr>
                 <table>
                     <tr>
                         <th>Type: </th>
-                        <td><a href="">Science</a></td>
+                        <td><a href=""><%= formattedEbookData.type %></a></td>
                     </tr>
                     <tr>
                         <th>Author: </th>
-                        <td><a href="">Nguyễn Quốc Bình</a></td>
+                        <td><a href=""><%= formattedEbookData.author %></a></td>
                     </tr>
                     <tr>
                         <th>Language: </th>
-                        <td><a href="">English</a></td>
+                        <td><a href=""><%= formattedEbookData.language %></a></td>
                     </tr>
                     <tr>
                         <th>Date Posted: </th>
-                        <td>5/19/2024</td>
+                        <td><%= formattedEbookData.formattedDate %></td>
                     </tr>
                 </table>
                 <hr>
@@ -84,7 +84,7 @@
     </div>
 
     <!-- ======= FOOTER ======= -->
-    <%- include('./partials/footer'); -%>
+    <%- include('./partials/footer'); %>
 </body>
 
 <script>
@@ -104,7 +104,7 @@
 
     window.onclick = function(event) {
         if (event.target == task_confirm) {
-            modal.style.display = "none";
+            task_confirm.style.display = "none";
         }
     }
 

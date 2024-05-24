@@ -53,11 +53,6 @@ body, html {
 /*--------------------------------------------------------------
 # Body
 --------------------------------------------------------------*/
-
-.container {
-    height: 100%;
-}
-
 /* EBOOK DETAIL CONTENT */
 .row {
     display: flex;
@@ -327,15 +322,68 @@ button {
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
-footer {
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.footer {
     background-color: rgb(33, 33, 33);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
 }
 
-.footer p {
-    margin: revert;
+.footer .container {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    padding: 10px;
+}
+
+.footer-section h5 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+}
+
+.footer-section p, .footer-section ul {
+    margin-bottom: 5px;
+    display: flex;
+}
+
+.contact-us a,
+.quick-links a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.footer-section a:hover {
+    color: #04AA6D;
+}
+
+.footer-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 5px;
+}
+
+.follow-us .social {
+    display: flex;
+}
+
+.social-icon {
+    width: 24px;
+    height: 24px;
+    margin: 0 5px;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
 }

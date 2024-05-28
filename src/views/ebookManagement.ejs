@@ -28,6 +28,12 @@
         <div class="container">
             <!-- PAGINATION -->
             <h1 class="mt-5 mb-3">E-BOOK MANAGEMENT</h1>
+            <div class="admin-new d-flex justify-content-end mb-2">
+                <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
+                    <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
+                    New
+            </button>
+            </div>
             <table id="items-table">
                 <thead class="table-dark">
                     <tr>
@@ -36,6 +42,7 @@
                         <th scope="col">Type</th>
                         <th scope="col">Language</th>
                         <th scope="col">Author</th>
+                        <th scope="col">Action By</th>
                         <th scope="col">State</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -49,6 +56,7 @@
                                 <td><%= ebook.type %></td>
                                 <td><%= ebook.language %></td>
                                 <td><%= ebook.author %></td>
+                                <td>Admin</td>
                                 <td>
                                     <span id="wait"><%= ebook.state %></span>
                                 </td>
@@ -70,10 +78,158 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL CREATE -->
+    <div id="modal-container">
+        <div id="modal" class="dialog-modal">
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="form-box">
+                    <ion-icon id="close" name="close-circle-outline" class="close text-success mt-3 me-4"></ion-icon>
+                    <div>
+                        <h2 class="d-flex justify-content-center mb-4">ADD NEW EBOOK</h2>
+                    </div>
+                    <% if(typeof message !== 'undefined') { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= message %>
+                        </div>
+                    <% }%>
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="book-outline"></ion-icon>
+                            <input type="text" class="input" id="title" name="title" required/>
+                            <label for="Tilte">Title</label>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="inputbox col-4 ms-0">
+                            <ion-icon name="keypad-outline"></ion-icon>
+                            <input type="text" class="input" id="type" name="type" required/>
+                            <label for="type">Type</label>
+                        </div>
+
+                        <div class="inputbox col-4 me-0">
+                            <ion-icon name="language-outline"></ion-icon>
+                            <input type="text" class="input" id="Language" name="language" required/>
+                            <label for="language">Language</label>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="inputbox col-4 ms-0">
+                            <ion-icon name="calendar-number-outline"></ion-icon>
+                            <input type="text" class="input" id="pub-year" name="pub-year" required/>
+                            <label for="pub-year">Publishing Year</label>
+                        </div>
+
+                        <div class="inputbox col-4 me-0">
+                            <ion-icon name="business-outline" class="ms-2"></ion-icon>
+                            <input type="text" class="input" id="publisher" name="publisher" required/>
+                            <label for="publisher">Publisher</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="code-working-outline"></ion-icon>
+                            <input type="text" class="input" id="doi" name="doi" required/>
+                            <label for="doi">DOI</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="qr-code-outline"></ion-icon>
+                            <input type="text" class="input" id="isbn" name="title" required/>
+                            <label for="isbn">ISBN Code</label>
+                        </div>
+                    </div>
+        
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                            <input type="text" class="input" id="describe" name="description" required/>
+                            <label for="description">Description</label>
+                        </div>
+                    </div>
     
+                    <div class="row">
+                        <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
+                            <label for="picture" class="col-2 p-0">Picture</label>
+                            <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="imageFile">
+                        </div>
+                    </div>
+                    <strong class="text-danger ml-5 ps-1">File format: png, jpg</strong>
+
+                    <div class="row">
+                        <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
+                            <label for="ebook-file" class="col-2 p-0">Ebook</label>
+                            <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="ebookFile">
+                        </div>
+                    </div>
+                    <strong class="text-danger ml-5 ps-1">File format: pdf, epub, mobi, azw</strong>
+
+                    
+                    <div class="row">
+                        <div class="author text-white d-flex justify-content-center mt-4 mb-4">
+                            <strong>Author: <span>Username</span></strong>
+                        </div>
+                        <div class="inputbox" style="display: none;">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <input type="text" class="input" id="author" name="author" value="" required/>
+                            <label for="author">Author</label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="create d-flex justify-content-center">
+                        <button type="submit" class="full-rounded" data-target=".addNewEbook">
+                            <span>Submit</span>
+                            <div class="border full-rounded"></div>
+                        </button>
+                    </div>
+                </div>
+            </form>     
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal fade addNewEbook" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    New eBook has been added successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
-    // Pagination
+    // OPEN MODAL
+    const btn_new = document.getElementById('open');
+    const btn_close = document.getElementById('close');
+    const modal_container = document.getElementById('modal-container');
+    btn_new.addEventListener('click', function() {
+        modal_container.classList.add('show');
+    })
+    btn_close.addEventListener('click', function() {
+        modal_container.classList.remove('show');
+    })
+    
+    modal_container.addEventListener('click', (event) => {
+        if (event.target === modal_container) {
+            modal_container.classList.remove('show');
+        }
+    });
+
+    // PAGINATION
     const itemsPerPage = 10;
     let currentPage = 1;
 

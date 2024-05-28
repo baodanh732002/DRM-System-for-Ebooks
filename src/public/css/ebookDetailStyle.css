@@ -160,7 +160,7 @@ table a:hover {
 }
 
 .dialog-modal .form-box h2 {
-    margin: 45px 0 0 40px;
+    margin: 45px 40px 0 40px;
     color: #04AA6D;
 }
 
@@ -182,6 +182,7 @@ table a:hover {
 }
 
 .inputbox {
+    flex-shrink: 1;
     width: -webkit-fill-available;
     position: relative;
     margin: 30px 50px 30px 50px;

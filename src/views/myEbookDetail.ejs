@@ -25,6 +25,10 @@
 
     <!-- ======= BODY ======= -->
     <div class="container mt-5 mb-5">
+        <div class="row ps-2">
+            <a href="/myEbooks" class="text-success"><strong>My Ebooks > <span class="text-success"><%= formattedEbookData.title %></span></strong></a>
+        </div>
+        <br>
         <div class="row">
             <div class="col-lg-3">
                 <img src="/images/background_1.jpg" class="ebook-image" alt="">
@@ -45,6 +49,31 @@
                     <tr>
                         <th>Language: </th>
                         <td><%= formattedEbookData.language %></td>
+                    </tr>
+                    <!-- NĂM XUẤT BẢN -->
+                    <tr>
+                        <th>Publishing Year: </th>
+                        <td></td>
+                    </tr>
+                    <!-- NHÀ XUẤT BẢN -->
+                    <tr>
+                        <th>Publisher: </th>
+                        <td></td>
+                    </tr>
+                    <!-- Digital Object Identifier (DOI) -->
+                    <tr>
+                        <th>DOI: </th>
+                        <td></td>
+                    </tr>
+                    <!-- MÃ SÁCH CHUẨN QUỐC TẾ -->
+                    <tr>
+                        <th>ISBN Code: </th>
+                        <td></td>
+                    </tr>
+                    <!-- SỐ LẦN TÁI BẢN -->
+                    <tr>
+                        <th>Reprint: </th>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Date Posted: </th>
@@ -126,6 +155,7 @@
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">EDIT EBOOK</h2>
                     </div>
+
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="book-outline"></ion-icon>
@@ -134,16 +164,47 @@
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="inputbox col-lg-4">
+                    <div class="row d-flex justify-content-center">
+                        <div class="inputbox col-4 ms-0">
                             <ion-icon name="keypad-outline"></ion-icon>
-                            <input type="text" class="input" id="type" name="type" value="<%= formattedEbookData.type %>" required/>
+                            <input type="text" class="input" id="type" name="type" required/>
                             <label for="type">Type</label>
                         </div>
-                        <div class="inputbox col-lg-4">
+
+                        <div class="inputbox col-4 me-0">
                             <ion-icon name="language-outline"></ion-icon>
-                            <input type="text" class="input" id="Language" name="language" value="<%= formattedEbookData.language %>" required/>
+                            <input type="text" class="input" id="Language" name="language" required/>
                             <label for="language">Language</label>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="inputbox col-4 ms-0">
+                            <ion-icon name="calendar-number-outline"></ion-icon>
+                            <input type="text" class="input" id="pub-year" name="pub-year" required/>
+                            <label for="pub-year">Publishing Year</label>
+                        </div>
+
+                        <div class="inputbox col-4 me-0">
+                            <ion-icon name="business-outline" class="ms-2"></ion-icon>
+                            <input type="text" class="input" id="publisher" name="publisher" required/>
+                            <label for="publisher">Publisher</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="code-working-outline"></ion-icon>
+                            <input type="text" class="input" id="doi" name="doi" required/>
+                            <label for="doi">DOI</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="inputbox">
+                            <ion-icon name="qr-code-outline"></ion-icon>
+                            <input type="text" class="input" id="isbn" name="title" required/>
+                            <label for="isbn">ISBN Code</label>
                         </div>
                     </div>
     
@@ -154,9 +215,25 @@
                             <label for="description">Description</label>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
+                            <label for="picture" class="col-2 p-0">Picture</label>
+                            <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="imageFile">
+                        </div>
+                    </div>
+                    <strong class="text-success ml-5 ps-1">Current file: <span></span></strong>
+
+                    <div class="row">
+                        <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
+                            <label for="ebook-file" class="col-2 p-0">Ebook</label>
+                            <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="ebookFile">
+                        </div>
+                    </div>
+                    <strong class="text-success ml-5 ps-1">Current file: <span></span></strong>
     
                     <div class="row">
-                        <div class="author text-white d-flex justify-content-center mb-4">
+                        <div class="author text-white d-flex justify-content-center mt-3 mb-4">
                             <strong>Author: <span>Username</span></strong>
                         </div>
                         <div class="inputbox" style="display: none;">

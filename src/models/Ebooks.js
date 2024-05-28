@@ -4,6 +4,10 @@ const { Schema } = mongoose;
 const ebookSchema = new Schema({
   title: { type: String, required: true, unique: true},
   type: { type: String, required: true},
+  pub_year: {type: Number, require: true},
+  publisher: {type: String, require: true},
+  doi: {type: String, require: true},
+  isbn: {type: String, require: true},
   language: { type: String, required: true},
   description: { type: String, required: true},
   ebookFile: { type: String, require: true},

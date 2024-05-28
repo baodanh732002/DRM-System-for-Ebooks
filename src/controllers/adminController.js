@@ -172,6 +172,58 @@ class AdminController{
             res.status(401).send("Unauthorized");
         }
     }
+
+    async handleAddNewEbook(req, res){
+        if(req.session.admin){
+            try{
+                let { title, type, language, pub_year, publisher, doi, isbn, description, author } = req.body
+
+                const state = 'Accepted'
+                const date = new Date()
+
+                const files = req.files
+
+                if (!files || !files.imageFile || !files.ebookFile) {
+                    return res.render("ebookManagement.ejs", {message: 'Both image and ebook file must be uploaded.'})
+                }
+
+                const existDOI = await Ebook.findOne({doi: doi})
+                const existISBN = await Ebook.findOne({isbn: isbn})
+                if(existDOI || existISBN){
+                    return res.render("ebookManagement.ejs", {message: "Ebook already existed. Please use another one!" });
+                }
+
+                const imageFile = files.imageFile[0];
+                const ebookFile = files.ebookFile[0];
+
+                const newEbook = new Ebook({
+                    title: title,
+                    type: type,
+                    pub_year: pub_year,
+                    publisher: publisher,
+                    doi: doi,
+                    isbn: isbn,
+                    language: language,
+                    description: description,
+                    ebookFile: ebookFile.path,
+                    imageFile: imageFile.path,
+                    state: state,
+                    author: author,
+                    date: date,
+                    note: ''
+                })
+
+
+                await newEbook.save();
+
+                res.render("ebookManagement",{ message: 'success', formattedEbookData});
+            }catch(error){
+
+            }
+        }else{
+            res.status(401).send("Unauthorized");
+        }
+    }
 }
 
 module.exports = new AdminController()

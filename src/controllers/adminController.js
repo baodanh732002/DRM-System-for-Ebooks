@@ -14,7 +14,6 @@ class AdminController{
             res.status(401).send("Unauthorized");
         }
     }
-    
 
     async getEbookManagement(req, res) {
         if (req.session.admin) {

@@ -19,7 +19,6 @@ const uploadFields = [
 ]
 
 
-
 route.get('/', indexController.getIndex)
 
 route.get('/login', loginController.getLoginForm)

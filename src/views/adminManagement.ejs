@@ -41,51 +41,56 @@
                         <th scope="col">Admin Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Phone Number</th>
-                        <th scope="col">Password</th>
                         <th scope="col">Date Create</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody id="items-body">
-                    <tr id="item-1">
-                        <th scope="row"></th>
-                        <td>Admin123</td>
-                        <td>admin123@gmail.com</td>
-                        <td>0123456789</td>
-                        <td>123456</td>
-                        <td>29/5/2024</td>
-                        <td>
-                            <button class="btn btn-danger" data-toggle="modal" data-target=".deleteAdmin">
-                                <ion-icon name="trash-outline"></ion-icon> Delete
-                            </button>
-                        </td>
-                    </tr>
+                    <%if(formattedAdminData && formattedAdminData.length > 0){
+                        formattedAdminData.forEach(admin => {%>
+                            <tr id="item-1">
+                                <th scope="row"></th>
+                                <td><%= admin.adname%></td>
+                                <td><%= admin.email%></td>
+                                <td><%= admin.phone%></td>
+                                <td><%= admin.formattedDate%></td>
+                                <td>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target=".deleteAdmin<%= admin._id%>">
+                                        <ion-icon name="trash-outline"></ion-icon> Delete
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade deleteAdmin<%= admin._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Delete Admin</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        
+                                        <!-- Modal body -->
+                                        <form action="/adminManagement_delete" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" id="id" name="id" placeholder="" value="<%= admin._id%>">
+                                                <h5>Are you sure you want to delete this admin: <strong><%= admin.adname%></strong>?</h5>
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Yes</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <%})%>
+                    <%}%>
+                    
 
                     <!-- DELETE ADMIN MODAL -->
-                    <div class="modal fade deleteAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Delete Admin</h4>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                </div>
-                                
-                                <!-- Modal body -->
-                                <form action="" method="post">
-                                    <div class="modal-body">
-                                        <input type="hidden" id="id" name="id" placeholder="" value="">
-                                        <h5>Are you sure you want to delete this admin: <strong></strong>?</h5>
-                                    </div>
-                                    <!-- Modal footer -->
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-success">Yes</button>
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+
                 </tbody>
             </table>
             <div class="pagination">
@@ -99,16 +104,21 @@
     <!-- MODAL CREATE -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="/adminManagement_add" method="post">
                 <div class="form-box">
                     <ion-icon id="close" name="close-circle-outline" class="close text-success mt-3 me-4"></ion-icon>
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">ADD NEW ADMIN</h2>
                     </div>
+                    <% if(typeof message !== 'undefined') { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= message %>
+                        </div>
+                    <% }%>
                     
                     <div class="inputbox">
                         <ion-icon name="person-add-outline"></ion-icon>
-                        <input type="text" class="input" id="adminname" name="adminname" required/>
+                        <input type="text" class="input" id="adminname" name="adname" required/>
                         <label for="adminname">Admin Name</label>
                     </div>
                     <div class="inputbox">

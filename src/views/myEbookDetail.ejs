@@ -53,28 +53,24 @@
                     <!-- NĂM XUẤT BẢN -->
                     <tr>
                         <th>Publishing Year: </th>
-                        <td></td>
+                        <td><%= formattedEbookData.pub_year %></td>
                     </tr>
                     <!-- NHÀ XUẤT BẢN -->
                     <tr>
                         <th>Publisher: </th>
-                        <td></td>
+                        <td><%= formattedEbookData.publisher %></td>
                     </tr>
                     <!-- Digital Object Identifier (DOI) -->
                     <tr>
                         <th>DOI: </th>
-                        <td></td>
+                        <td><%= formattedEbookData.doi %></td>
                     </tr>
                     <!-- MÃ SÁCH CHUẨN QUỐC TẾ -->
                     <tr>
                         <th>ISBN Code: </th>
-                        <td></td>
+                        <td><%= formattedEbookData.isbn %></td>
                     </tr>
                     <!-- SỐ LẦN TÁI BẢN -->
-                    <tr>
-                        <th>Reprint: </th>
-                        <td></td>
-                    </tr>
                     <tr>
                         <th>Date Posted: </th>
                         <td><%= formattedEbookData.formattedDate %></td>
@@ -167,13 +163,13 @@
                     <div class="row d-flex justify-content-center">
                         <div class="inputbox col-4 ms-0">
                             <ion-icon name="keypad-outline"></ion-icon>
-                            <input type="text" class="input" id="type" name="type" required/>
+                            <input type="text" class="input" id="type" name="type" value="<%= formattedEbookData.type %>" required/>
                             <label for="type">Type</label>
                         </div>
 
                         <div class="inputbox col-4 me-0">
                             <ion-icon name="language-outline"></ion-icon>
-                            <input type="text" class="input" id="Language" name="language" required/>
+                            <input type="text" class="input" id="Language" name="language" value="<%= formattedEbookData.language %>" required/>
                             <label for="language">Language</label>
                         </div>
                     </div>
@@ -181,13 +177,13 @@
                     <div class="row d-flex justify-content-center">
                         <div class="inputbox col-4 ms-0">
                             <ion-icon name="calendar-number-outline"></ion-icon>
-                            <input type="text" class="input" id="pub-year" name="pub-year" required/>
+                            <input type="text" class="input" id="pub-year" name="pub-year" value="<%= formattedEbookData.pub_year %>" required/>
                             <label for="pub-year">Publishing Year</label>
                         </div>
 
                         <div class="inputbox col-4 me-0">
                             <ion-icon name="business-outline" class="ms-2"></ion-icon>
-                            <input type="text" class="input" id="publisher" name="publisher" required/>
+                            <input type="text" class="input" id="publisher" name="publisher" value="<%= formattedEbookData.publisher %>" required/>
                             <label for="publisher">Publisher</label>
                         </div>
                     </div>
@@ -195,7 +191,7 @@
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="code-working-outline"></ion-icon>
-                            <input type="text" class="input" id="doi" name="doi" required/>
+                            <input type="text" class="input" id="doi" name="doi" value="<%= formattedEbookData.doi %>" required/>
                             <label for="doi">DOI</label>
                         </div>
                     </div>
@@ -203,7 +199,7 @@
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="qr-code-outline"></ion-icon>
-                            <input type="text" class="input" id="isbn" name="title" required/>
+                            <input type="text" class="input" id="isbn" name="isbn" value="<%= formattedEbookData.isbn %>" required/>
                             <label for="isbn">ISBN Code</label>
                         </div>
                     </div>

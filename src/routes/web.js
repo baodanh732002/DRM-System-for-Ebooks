@@ -50,4 +50,8 @@ route.post('/ebookManagement_deny', adminController.handleEbookDenied)
 route.get('/userManagement', adminController.getUserManagement)
 route.post('/userManagement_delete', adminController.handleUserDelete)
 
+route.get('/adminManagement', adminController.getAdminManagement)
+route.post('/adminManagement_add', adminController.handleAddNewAdmin)
+route.post('/adminManagement_delete', adminController.handleAdminDelete)
+
 module.exports = route

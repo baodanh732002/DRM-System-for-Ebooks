@@ -1,5 +1,6 @@
 require('dotenv').config()
 const User = require('../models/Users')
+const Admin = require("../models/Admins")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -13,6 +14,7 @@ class LoginController {
     async checkAccount(req, res){
         try{
             let {username, password} = req.body
+            console.log(req.body)
             const createToken =  async(id) =>{
                 console.log({username, password})
                 try{
@@ -29,15 +31,23 @@ class LoginController {
                 });
             }else{
 
-                if(username === 'admin123' && password === '123456'){
-                    const adminData = {
-                        username: 'admin123',
-                        password: '123456'
-                    }
+                const admin = await Admin.findOne({adname: username });
+                if (admin) {
+                    const checkPassword = await bcrypt.compare(password, admin.password);
+                    if (checkPassword) {
+                        const tokenAdmin = await createToken(admin._id);
+                        const adminData = {
+                            _id: admin._id,
+                            adname: admin.adname,
+                            email: admin.email,
+                            token: tokenAdmin,
+                        };
 
-                    req.session.admin = adminData
-                    res.status(200).redirect("/indexManagement");
-                    return;
+                        req.session.admin = adminData;
+                        return res.status(200).redirect("/indexManagement");
+                    } else {
+                        return res.render("login", { message: "Login details are incorrect" });
+                    }
                 }
 
                 const existUSer = await User.findOne({username: username})

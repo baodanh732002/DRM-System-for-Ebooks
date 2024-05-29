@@ -1,5 +1,8 @@
 const Ebook = require('../models/Ebooks')
 const User = require('../models/Users')
+const Admin = require('../models/Admins')
+const bcrypt = require('bcrypt')
+
 
 class AdminController{
     async getIndexManagement(req, res) {
@@ -220,6 +223,128 @@ class AdminController{
 
             }
         }else{
+            res.status(401).send("Unauthorized");
+        }
+    }
+
+    async getAdminManagement(req, res){
+        if (req.session.admin) {
+            try {
+                const adminData = await Admin.find()
+
+                const formattedAdminData = adminData.map((admin) => {
+                    const date = new Date(admin.date);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    return {
+                        ...admin.toObject(),
+                        formattedDate
+                    };
+                });
+                res.render("adminManagement", {formattedAdminData});
+            } catch (error) {
+                console.error("Error rendering userManagement:", error);
+                res.status(500).send("An error occurred while rendering the page.");
+            }
+        } else {
+            res.status(401).send("Unauthorized");
+        }
+    }
+
+    async handleUserDelete(req, res){
+        if (req.session.admin) {
+            try {
+                const {id} = req.body
+                await User.deleteOne({_id: id})
+                res.redirect("/userManagement")
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            res.status(401).send("Unauthorized");
+        }
+    }
+
+    async handleAddNewAdmin(req, res){
+        if (req.session.admin) {
+            try {
+                const {adname, email, phone, password, confirm} = req.body;
+                console.log(req.body);
+                let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                let regPhone = /^[0-9]*$/;
+
+                if(
+                    !adname ||
+                    !email ||
+                    !phone ||
+                    !password ||
+                    !confirm
+                ){
+                    return res.render("adminManagement", {
+                        message: "Please fill in all required fields.",
+                    });
+                }
+                if(regEmail.test(email) == false){
+                    return res.render("adminManagement", {
+                        message: "Please fill the correct email.",
+                    }); 
+                }
+
+                if (regPhone.test(phone) == false) {
+                    return res.render("adminManagement", {
+                        message: "Invalid Phone.",
+                    });
+                }
+
+                if (password !== confirm) {
+                    return res.render("adminManagement", {
+                        message: "Password and Confirm Password do not match.",
+                    });
+                }
+
+                const existAdmin = await Admin.findOne({email: email})
+                if(existAdmin){
+                    return res.render("adminManagement", { message: "Email already registered." });
+                }
+
+                const salt = await bcrypt.genSalt(10)
+                const hashedPassword = await bcrypt.hash(password, salt)
+
+                const newAdmin = new Admin({
+                    adname: adname,
+                    email: email,
+                    phone: phone,
+                    password: hashedPassword,
+                    date: new Date()
+                })
+
+                await newAdmin.save()
+                res.redirect("/adminManagement")
+
+            } catch (error) {
+                console.log(error)
+                res
+                .status(500)
+                .render("adminManagement", { message: "Failed to create account." });
+            }
+        } else {
+            res.status(401).send("Unauthorized");
+        }
+    }
+
+    async handleAdminDelete(req, res){
+        if (req.session.admin) {
+            try {
+                const {id} = req.body
+                await Admin.deleteOne({_id: id})
+                res.redirect("/adminManagement")
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
             res.status(401).send("Unauthorized");
         }
     }

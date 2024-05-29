@@ -133,13 +133,31 @@
                     </div>
 
                     <div class="create d-flex justify-content-center">
-                        <button type="submit" class="full-rounded" data-target=".addNewEbook">
+                        <button type="submit" class="full-rounded" data-target=".addNewAdmin">
                             <span>Submit</span>
                             <div class="border full-rounded"></div>
                         </button>
                     </div>
                 </div>
             </form>     
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade addNewAdmin" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    New Admin has been added successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

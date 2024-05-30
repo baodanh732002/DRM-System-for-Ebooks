@@ -12,6 +12,12 @@ body, html {
     min-height: 100vh;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure body takes full height */
+}
+
 a {
     text-decoration: none;
 }
@@ -98,7 +104,10 @@ label {
 /* sidebar */
 .sidebar {
     background-color: #131c23;
-    max-height: 100%;
+    flex-shrink: 0;
+    min-height: 100vh; /* Ensure sidebar takes full height */
+    position: sticky;
+    top: 0;
 }
 
 .sidebar a {

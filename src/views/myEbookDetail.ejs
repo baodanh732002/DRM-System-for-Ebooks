@@ -100,7 +100,7 @@
                     </button>
                     <button class="btn btn-review col-lg-3 btn-primary" id="btn-review" type="submit">
                         <ion-icon name="eye-outline" class="mr-2"></ion-icon>
-                        Review
+                        View
                     </button>
                     <button class="btn-delete col-lg-3 btn-danger" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>">
                         <ion-icon name="trash-outline" class="mr-2"></ion-icon>
@@ -148,14 +148,14 @@
     <!-- EDIT MODAL -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
-            <form id="ebookForm" action="/myEbookDetail_update" method="post">
+            <form id="ebookForm" action="/myEbookDetail_update" method="post" enctype="multipart/form-data">
                 <div class="form-box">
-                    <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>" required>
+                    <input type="hidden" id="id" name="id" value="<%= formattedEbookData._id%>" required>
                     <ion-icon id="close" name="close-circle-outline" class="close text-success mt-3 me-4"></ion-icon>
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">EDIT EBOOK</h2>
                     </div>
-
+            
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="book-outline"></ion-icon>
@@ -170,28 +170,28 @@
                             <input type="text" class="input" id="type" name="type" value="<%= formattedEbookData.type %>" required/>
                             <label for="type">Type</label>
                         </div>
-
+            
                         <div class="inputbox col-4 me-0">
                             <ion-icon name="language-outline"></ion-icon>
                             <input type="text" class="input" id="Language" name="language" value="<%= formattedEbookData.language %>" required/>
                             <label for="language">Language</label>
                         </div>
                     </div>
-
+            
                     <div class="row d-flex justify-content-center">
                         <div class="inputbox col-4 ms-0">
                             <ion-icon name="calendar-number-outline"></ion-icon>
-                            <input type="text" class="input" id="pub-year" name="pub-year" value="<%= formattedEbookData.pub_year %>" required/>
+                            <input type="text" class="input" id="pub-year" name="pub_year" value="<%= formattedEbookData.pub_year %>" required/>
                             <label for="pub-year">Publishing Year</label>
                         </div>
-
+            
                         <div class="inputbox col-4 me-0">
                             <ion-icon name="business-outline" class="ms-2"></ion-icon>
                             <input type="text" class="input" id="publisher" name="publisher" value="<%= formattedEbookData.publisher %>" required/>
                             <label for="publisher">Publisher</label>
                         </div>
                     </div>
-
+            
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="code-working-outline"></ion-icon>
@@ -199,7 +199,7 @@
                             <label for="doi">DOI</label>
                         </div>
                     </div>
-
+            
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="qr-code-outline"></ion-icon>
@@ -207,7 +207,7 @@
                             <label for="isbn">ISBN Code</label>
                         </div>
                     </div>
-    
+            
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="pencil-outline"></ion-icon>
@@ -215,26 +215,26 @@
                             <label for="description">Description</label>
                         </div>
                     </div>
-
+            
                     <div class="row">
                         <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
                             <label for="picture" class="col-2 p-0">Picture</label>
-                            <input id="picture" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="imageFile">
+                            <input id="picture" type="file" accept=".png,.jpg" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="imageFile">
                         </div>
                     </div>
-                    <strong class="text-success ml-5 ps-1">Current file: <span></span></strong>
-
+                    <strong class="text-success ml-5 ps-1">Current file: <span><%= formattedEbookData.imageFileOriginalName %></span></strong>
+            
                     <div class="row">
                         <div class="inputbox d-flex justify-content-end w-full max-w-xs items-center gap-1.5" style="border-bottom: 0;">
                             <label for="ebook-file" class="col-2 p-0">Ebook</label>
-                            <input id="ebook-file" type="file" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="ebookFile">
+                            <input id="ebook-file" type="file" accept=".pdf,.epub,.mobi,.azw" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm text-gray-400 file:border-0 file:bg-transparent file:text-gray-600 file:text-sm file:font-medium col-10" name="ebookFile">
                         </div>
                     </div>
-                    <strong class="text-success ml-5 ps-1">Current file: <span></span></strong>
-    
+                    <strong class="text-success ml-5 ps-1">Current file: <span><%= formattedEbookData.ebookFileOriginalName %></span></strong>
+            
                     <div class="row">
                         <div class="author text-white d-flex justify-content-center mt-3 mb-4">
-                            <strong>Author: <span>Username</span></strong>
+                            <strong>Author: <span><%= user.username%></span></strong>
                         </div>
                         <div class="inputbox" style="display: none;">
                             <ion-icon name="person-circle-outline"></ion-icon>
@@ -242,12 +242,12 @@
                             <label for="author">Author</label>
                         </div>
                     </div>
-    
+            
                     <div class="create d-flex justify-content-center">
                         <button type="submit" class="btn btn-success w-50" id="update-ebook">Update</button>
                     </div>
                 </div>
-            </form>
+            </form>            
         </div>
     </div>
 

@@ -35,7 +35,7 @@ route.get('/myEbooks', ebookController.getMyEbooks)
 route.post('/myEbooks', upload.fields(uploadFields), ebookController.createNewEbook)
 
 route.get('/myEbookDetail', ebookController.getMyEbooksDetail)
-route.post('/myEbookDetail_update', ebookController.updateMyEbookDetail)
+route.post('/myEbookDetail_update', upload.fields(uploadFields), ebookController.updateMyEbookDetail)
 route.post('/myEbookDetail_delete', ebookController.deleteMyEbookDetail)
 
 route.get('/ebookDetail', ebookController.getEbookDetail)

@@ -45,7 +45,12 @@
                 <div class="header-user d-flex pe-5 w-auto">
                     <a href="#" class="d-flex align-items-center me-1">
                         <img src="/images/background_1.jpg" alt="User Image" class="rounded-circle" width="40" height="40">
-                        <span class="username ml-3"><%= user.username %></span>
+                        <%if(user){%>
+                            <span class="username ml-3"><%= user.username %></span>
+                        <%}else{%>
+                            <span class="username ml-3"></span>
+                        <%}%>
+                        
                     </a>
                     <label class="text-white" style="font-size: xx-large;"> | </label>
                     <a href="/logout" class="nav__logout d-flex align-items-center ms-1">

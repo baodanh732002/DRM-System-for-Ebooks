@@ -60,7 +60,8 @@ class EbookController {
                 state: state,
                 author: author,
                 date: date,
-                note: ''
+                note: '',
+                action_by: ''
             });
     
             await newEbook.save();

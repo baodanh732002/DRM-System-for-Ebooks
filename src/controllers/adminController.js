@@ -8,7 +8,8 @@ class AdminController{
     async getIndexManagement(req, res) {
         if (req.session.admin) {
             try {
-                res.render("indexManagement");
+                const admin = req.session.admin || null
+                res.render("indexManagement", {admin});
             } catch (error) {
                 console.error("Error rendering indexManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -22,6 +23,7 @@ class AdminController{
         if (req.session.admin) {
             try {
                 // Custom sorting order: Pending first, then Denied, and Accepted last
+                const admin = req.session.admin || null
                 const sortOrder = { 'Pending': 1, 'Denied': 2, 'Accepted': 3 };
     
                 const ebookData = await Ebook.aggregate([
@@ -43,7 +45,7 @@ class AdminController{
                     { $project: { sortOrder: 0 } } // Remove the sortOrder field from the final output
                 ]);
     
-                res.render("ebookManagement", { ebookData });
+                res.render("ebookManagement", { ebookData, admin});
             } catch (error) {
                 console.error("Error rendering ebookManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -53,12 +55,13 @@ class AdminController{
         }
     }    
     
-    async getEbookDetailManagement(req, res){
+    async getEbookDetailManagement(req, res) {
         if (req.session.admin) {
             try {
-                const id = req.query.id
-                const ebookData = await Ebook.findById(id)
-
+                const admin = req.session.admin || null;
+                const id = req.query.id;
+                const ebookData = await Ebook.findById(id);
+    
                 if (ebookData) {
                     const date = new Date(ebookData.date);
                     const formattedDate = date.toLocaleDateString('en-GB', {
@@ -66,16 +69,19 @@ class AdminController{
                         month: '2-digit',
                         year: 'numeric'
                     });
+    
+                    const isAuthorAdmin = ebookData.author === admin.adname
+    
                     const formattedEbookData = {
                         ...ebookData.toObject(),
-                        formattedDate
+                        formattedDate,
+                        isAuthorAdmin
                     };
-        
-                    res.render('ebookDetailManagement', {formattedEbookData });
+    
+                    res.render('ebookDetailManagement', { formattedEbookData, admin });
                 } else {
                     res.status(404).send('Ebook not found');
                 }
-                
             } catch (error) {
                 console.error("Error rendering ebookDetailManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -84,14 +90,17 @@ class AdminController{
             res.status(401).send("Unauthorized");
         }
     }
+    
 
     async handleEbookAccepted(req, res){
         if (req.session.admin) {
             try {
+                const admin = req.session.admin
                 const {id} = req.body
                 const updateState = {
                     state: 'Accepted',
-                    note: ''
+                    note: '',
+                    action_by: admin.adname
                 }
 
                 const ebook = await Ebook.findByIdAndUpdate(id, updateState, { new: true });
@@ -112,10 +121,12 @@ class AdminController{
         if (req.session.admin) {
             try {
                 const {id, reason} = req.body
+                const admin = req.session.admin
 
                 const deniedEbook = {
                     state: 'Denied',
-                    note: reason
+                    note: reason,
+                    action_by: admin.adname
                 }
 
                 const ebook = await Ebook.findByIdAndUpdate(id, deniedEbook, {new: true})
@@ -137,6 +148,7 @@ class AdminController{
     async getUserManagement(req, res){
         if (req.session.admin) {
             try {
+                const admin = req.session.admin || null
                 const userData = await User.find()
 
                 const formattedUserData = userData.map((user) => {
@@ -151,7 +163,7 @@ class AdminController{
                         formattedDate
                     };
                 });
-                res.render("userManagement", {formattedUserData});
+                res.render("userManagement", {formattedUserData, admin});
             } catch (error) {
                 console.error("Error rendering userManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -178,26 +190,48 @@ class AdminController{
     async handleAddNewEbook(req, res){
         if(req.session.admin){
             try{
+                const admin = req.session.admin || null
                 let { title, type, language, pub_year, publisher, doi, isbn, description, author } = req.body
-
+    
                 const state = 'Accepted'
                 const date = new Date()
-
+    
                 const files = req.files
 
+                const sortOrder = { 'Pending': 1, 'Denied': 2, 'Accepted': 3 };
+                const ebookData = await Ebook.aggregate([
+                    {
+                        $addFields: {
+                            sortOrder: {
+                                $switch: {
+                                    branches: [
+                                        { case: { $eq: ["$state", "Pending"] }, then: sortOrder['Pending'] },
+                                        { case: { $eq: ["$state", "Denied"] }, then: sortOrder['Denied'] },
+                                        { case: { $eq: ["$state", "Accepted"] }, then: sortOrder['Accepted'] }
+                                    ],
+                                    default: 4 // In case there's an unexpected state
+                                }
+                            }
+                        },
+                    },
+                    { $sort: { sortOrder: 1 } },
+                    { $project: { sortOrder: 0 } } // Remove the sortOrder field from the final output
+                ]);
+    
                 if (!files || !files.imageFile || !files.ebookFile) {
-                    return res.render("ebookManagement.ejs", {message: 'Both image and ebook file must be uploaded.'})
+                    return res.render("ebookManagement", {message: 'Both image and ebook file must be uploaded.', admin, ebookData})
                 }
 
+    
                 const existDOI = await Ebook.findOne({doi: doi})
                 const existISBN = await Ebook.findOne({isbn: isbn})
                 if(existDOI || existISBN){
-                    return res.render("ebookManagement.ejs", {message: "Ebook already existed. Please use another one!" });
+                    return res.render("ebookManagement", {message: "Ebook already existed. Please use another one!", admin, ebookData});
                 }
-
+    
                 const imageFile = files.imageFile[0];
                 const ebookFile = files.ebookFile[0];
-
+    
                 const newEbook = new Ebook({
                     title: title,
                     type: type,
@@ -208,28 +242,96 @@ class AdminController{
                     language: language,
                     description: description,
                     ebookFile: ebookFile.path,
+                    ebookFileOriginalName: ebookFile.originalname,
                     imageFile: imageFile.path,
+                    imageFileOriginalName: imageFile.originalname,
                     state: state,
                     author: author,
                     date: date,
-                    note: ''
+                    note: '',
+                    action_by: admin.adname
                 })
-
-
+    
                 await newEbook.save();
-
-                res.render("ebookManagement",{ message: 'success', formattedEbookData});
+    
+                res.redirect("/ebookManagement")
             }catch(error){
-
+                console.error(error);
+                res.status(500).send("An error occurred while processing the request.");
             }
         }else{
             res.status(401).send("Unauthorized");
         }
     }
 
+    async handleUpdateEbook(req, res){
+        if(req.session.admin){
+            try {
+                const { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
+                const admin = req.session.admin
+                // Check if files are uploaded
+                const files = req.files;
+                const updateData = {
+                    title,
+                    type,
+                    language,
+                    pub_year,
+                    publisher,
+                    doi,
+                    isbn,
+                    description,
+                    action_by: admin.adname
+                };
+        
+                // Handle image file upload
+                if (files && files.imageFile && files.imageFile.length > 0) {
+                    updateData.imageFile = files.imageFile[0].path;
+                    updateData.imageFileOriginalName = files.imageFile[0].originalname;
+                }
+        
+                // Handle ebook file upload
+                if (files && files.ebookFile && files.ebookFile.length > 0) {
+                    updateData.ebookFile = files.ebookFile[0].path;
+                    updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
+                }
+        
+                const ebook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
+                if (ebook) {
+                    res.redirect(`ebookDetailManagement?id=${id}`);
+                } else {
+                    res.status(404).send('Ebook not found');
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).render("myEbookDetail", {
+                    message: "Failed to update ebook.",
+                });
+            }
+        }else{
+            res.status(401).send("Unauthorized");
+        }
+    }
+
+    async handleDeleteEbook(req, res){
+        if(req.session.admin){
+            try{
+                const admin = req.session.admin || null;
+                const {id} = req.body
+                await Ebook.deleteOne({_id: id})
+                res.redirect("/ebookManagement")
+            }catch(error){
+                console.error(error);
+                res.status(500).render("ebookManagement", {
+                  message: "Failed to delete ebook.",
+                });
+            }
+        }
+    }
+
     async getAdminManagement(req, res){
         if (req.session.admin) {
             try {
+                const admin = req.session.admin || null
                 const adminData = await Admin.find()
 
                 const formattedAdminData = adminData.map((admin) => {
@@ -244,7 +346,7 @@ class AdminController{
                         formattedDate
                     };
                 });
-                res.render("adminManagement", {formattedAdminData});
+                res.render("adminManagement", {formattedAdminData, admin});
             } catch (error) {
                 console.error("Error rendering userManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -271,6 +373,7 @@ class AdminController{
     async handleAddNewAdmin(req, res){
         if (req.session.admin) {
             try {
+                const admin = req.session.admin || null
                 const {adname, email, phone, password, confirm} = req.body;
                 console.log(req.body);
                 let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -284,30 +387,30 @@ class AdminController{
                     !confirm
                 ){
                     return res.render("adminManagement", {
-                        message: "Please fill in all required fields.",
+                        message: "Please fill in all required fields.", admin
                     });
                 }
                 if(regEmail.test(email) == false){
                     return res.render("adminManagement", {
-                        message: "Please fill the correct email.",
+                        message: "Please fill the correct email.", admin
                     }); 
                 }
 
                 if (regPhone.test(phone) == false) {
                     return res.render("adminManagement", {
-                        message: "Invalid Phone.",
+                        message: "Invalid Phone.", admin
                     });
                 }
 
                 if (password !== confirm) {
                     return res.render("adminManagement", {
-                        message: "Password and Confirm Password do not match.",
+                        message: "Password and Confirm Password do not match.", admin
                     });
                 }
 
                 const existAdmin = await Admin.findOne({email: email})
                 if(existAdmin){
-                    return res.render("adminManagement", { message: "Email already registered." });
+                    return res.render("adminManagement", { message: "Email already registered.", admin});
                 }
 
                 const salt = await bcrypt.genSalt(10)

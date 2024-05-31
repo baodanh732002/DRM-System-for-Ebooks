@@ -43,9 +43,13 @@ route.get('/ebookDetail', ebookController.getEbookDetail)
 route.get('/indexManagement', adminController.getIndexManagement)
 
 route.get('/ebookManagement', adminController.getEbookManagement)
-route.get('/ebookDetailManagement', adminController.getEbookDetailManagement)
 route.post('/ebookManagement_accept', adminController.handleEbookAccepted)
 route.post('/ebookManagement_deny', adminController.handleEbookDenied)
+route.post('/ebookManagement_add', upload.fields(uploadFields), adminController.handleAddNewEbook)
+route.post('/ebookManagement_delete', adminController.handleDeleteEbook)
+route.post('/ebookManagement_update', upload.fields(uploadFields), adminController.handleUpdateEbook)
+
+route.get('/ebookDetailManagement', adminController.getEbookDetailManagement) 
 
 route.get('/userManagement', adminController.getUserManagement)
 route.post('/userManagement_delete', adminController.handleUserDelete)

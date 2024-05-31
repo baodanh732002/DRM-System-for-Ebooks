@@ -17,7 +17,8 @@ const ebookSchema = new Schema({
   state: { type: String, require: true},
   author: { type: String, require: true},
   date: { type: Date, require: true},
-  note: { type: String, require: true}
+  note: { type: String, require: true},
+  action_by: { type: String, require: true}
 });
 
 const Ebook = mongoose.model("Ebook", ebookSchema);

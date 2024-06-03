@@ -76,7 +76,7 @@
                 </table>
                 <hr>
                 <div class="row">
-                    <button class="btn btn-download col-lg-4 btn-success" id="btn-download" type="submit">
+                    <button class="btn btn-download col-lg-4 btn-success" id="btn-download" type="submit" data-toggle="modal" data-target=".acceptDownload">
                         <ion-icon name="cloud-download-outline" class="mr-2"></ion-icon>
                         Download
                     </button>
@@ -95,6 +95,33 @@
             </div>
         </div>
     </div>   
+
+    <!-- DOWNLOAD ACCEPT MODAL -->
+    <div class="modal fade acceptDownload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            
+                <!-- Modal Header -->
+                <div class="modal-header">
+                <h4 class="modal-title">Download Ebook</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                
+                <!-- Modal body -->
+                <form action="" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id" placeholder="" value="">
+                        <h5>Are you sure you want to download this ebook: <strong>?</strong></h5>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Ok</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- ======= FOOTER ======= -->
     <%- include('./partials/footer'); %>

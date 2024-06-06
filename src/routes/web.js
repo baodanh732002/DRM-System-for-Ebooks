@@ -1,6 +1,7 @@
 const express = require('express')
 const route = express.Router()
 const multer  = require('multer')
+const path = require('path');
 
 const loginController = require('../controllers/loginController') 
 const registerController = require('../controllers/registerController')
@@ -11,12 +12,22 @@ const adminController = require('../controllers/adminController')
 
 
 
-const upload = multer({ dest: 'contents/' })
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Save files in the 'public/contents' directory
+        cb(null, path.join(__dirname, '..', 'public', 'contents'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 const uploadFields = [
-    { name: 'imageFile', maxCount: 1},
-    { name: 'ebookFile', maxCount: 1}
-]
+    { name: 'imageFile', maxCount: 1 },
+    { name: 'ebookFile', maxCount: 1 }
+];
 
 
 route.get('/', indexController.getIndex)
@@ -57,5 +68,8 @@ route.post('/userManagement_delete', adminController.handleUserDelete)
 route.get('/adminManagement', adminController.getAdminManagement)
 route.post('/adminManagement_add', adminController.handleAddNewAdmin)
 route.post('/adminManagement_delete', adminController.handleAdminDelete)
+
+route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
+
 
 module.exports = route

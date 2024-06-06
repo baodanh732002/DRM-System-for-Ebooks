@@ -28,6 +28,8 @@
         </div>
         <span id="page-info"></span>
     </div>
+    <!-- Use an empty hidden input to store the file path -->
+    <input type="hidden" id="pdfFilePath" value="../contents/<%= pdfFilePath %>">
 </body>
 
 <script>
@@ -78,11 +80,13 @@
     }
 
     // Load PDF
-    pdfjsLib.getDocument('/path/CD.45_TruongDinhTu_52000193_52000621.pdf').promise.then(pdfDoc_ => {
+    const pdfFilePath = document.getElementById('pdfFilePath').value;
+    
+    console.log(pdfFilePath);
+    const completePdfPath = '/contents/' + pdfFilePath;
+    pdfjsLib.getDocument(completePdfPath).promise.then(pdfDoc_ => {
         pdfDoc = pdfDoc_;
         totalPages = pdfDoc.numPages;
-
-        // Initial page rendering
         renderPage(currentPage);
     });
 </script>

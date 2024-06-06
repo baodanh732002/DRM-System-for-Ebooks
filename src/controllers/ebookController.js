@@ -1,5 +1,6 @@
 const User = require('../models/Users')
 const Ebook = require('../models/Ebooks')
+const path = require('path');
 
 class EbookController {
     async createNewEbook(req, res) {
@@ -269,6 +270,35 @@ class EbookController {
         }
     }
 
+    async getEbookReading(req, res) {
+        try {
+            const user = req.session.user || null;
+            const ebookId = req.params.ebookId;
+            if (user && ebookId) {
+                const ebook = await Ebook.findById(ebookId);
+                if (ebook) {
+                    // Get only the filename from the path
+                    const pdfFilePath  = path.basename(ebook.ebookFile);
+                    console.log(pdfFilePath );
+                    res.render("ebookReading", { user, pdfFilePath  });
+                } else {
+                    res.status(404).render("ebookReading", {
+                        message: "Ebook not found.",
+                    });
+                }
+            } else {
+                res.status(400).render("ebookReading", {
+                    message: "Ebook ID is missing.",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).render("ebookReading", {
+                message: "Failed to render ebook Reading.",
+            });
+        }
+    }
+    
 }
 
 module.exports = new EbookController()

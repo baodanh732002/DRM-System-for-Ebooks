@@ -1,6 +1,7 @@
 const User = require('../models/Users')
 const Ebook = require('../models/Ebooks')
 const path = require('path');
+const Download = require('../models/Download')
 
 class EbookController {
     async createNewEbook(req, res) {
@@ -182,6 +183,7 @@ class EbookController {
         const user = req.session.user || null;
         if (user) {
             const ebookId = req.query.id;
+            const notify = req.query.message;
             const ebookData = await Ebook.findById(ebookId);
     
             if (ebookData) {
@@ -195,8 +197,13 @@ class EbookController {
                     ...ebookData.toObject(),
                     formattedDate
                 };
+
+                let message = '';
+                if (notify) {
+                    message = notify;
+                }
     
-                res.render('ebookDetail', { user, formattedEbookData });
+                res.render('ebookDetail', { user, formattedEbookData, message});
             } else {
                 res.status(404).send('Ebook not found');
             }
@@ -298,6 +305,97 @@ class EbookController {
             });
         }
     }
+
+    async getDownloadEbook(req, res) {
+        try {
+            const user = req.session.user || null;
+            if (user) {
+                // Fetch download data for the user
+                const downloads = await Download.find({ username: user.username });
+    
+                // Fetch ebook details for each download
+                const ebookDataPromises = downloads.map(async (download) => {
+                    const ebook = await Ebook.findOne({ doi: download.doi, isbn: download.isbn });
+                    if (ebook) {
+                        const date = new Date(ebook.date);
+                        const formattedDate = date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        });
+                        return {
+                            ...ebook.toObject(),
+                            formattedDate
+                        };
+                    }
+                    return null;
+                });
+    
+                const formattedEbookData = (await Promise.all(ebookDataPromises)).filter(Boolean);
+    
+                res.render("downloadEbook", { formattedEbookData, user });
+            } else {
+                res.redirect("/login");
+            }
+        } catch (error) {
+            console.error('Error fetching downloaded ebooks:', error);
+            res.status(500).render("downloadEbook", {
+                message: "Failed to render downloaded ebooks.",
+            });
+        }
+    }
+
+    async handleDownloadEbook(req, res) {
+        try {
+            const user = req.session.user;
+            const { username, doi, isbn } = req.body;
+    
+            if (!username || !doi || !isbn) {
+                throw new Error("Missing ebook details.");
+            }
+    
+            // Check if the ebook has already been downloaded by this user
+            const existingDownload = await Download.findOne({ username: user.username, doi: doi, isbn: isbn });
+            
+            // Retrieve the ebook data for rendering the detail view
+            const ebookData = await Ebook.findOne({ doi });
+            if (!ebookData) {
+                return res.status(404).send('Ebook not found');
+            }
+    
+            const date = new Date(ebookData.date);
+            const formattedDate = date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const formattedEbookData = {
+                ...ebookData.toObject(),
+                formattedDate
+            };
+    
+            if (existingDownload) {
+                // If the download already exists, redirect with a message
+                const message = "You already downloaded this ebook!";
+                return res.redirect(`/ebookDetail?id=${ebookData._id}&message=${encodeURIComponent(message)}`);
+            } else {
+                // Proceed with the download process
+                const download = new Download({
+                    username: user.username,
+                    doi,
+                    isbn
+                });
+    
+                await download.save();
+    
+                const message = "Download successful";
+                return res.redirect(`/ebookDetail?id=${ebookData._id}&message=${encodeURIComponent(message)}`);
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Failed to download ebook." });
+        }
+    }    
     
 }
 

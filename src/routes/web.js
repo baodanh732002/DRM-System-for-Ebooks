@@ -71,5 +71,9 @@ route.post('/adminManagement_delete', adminController.handleAdminDelete)
 
 route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
 
+route.get('/downloadEbook', ebookController.getDownloadEbook);
+route.post('/downloadEbook', ebookController.handleDownloadEbook);
+
+
 
 module.exports = route

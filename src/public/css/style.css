@@ -417,15 +417,15 @@ input {
     transition: all 0.3s 0.08s linear;
     top: 50%;
     left: 50%;
-    width: 18em;
-    height: 4em;
+    width: 20.5em;
+    height: 4.2em;
     transform: translate(-50%, -50%);
 }
 
 .dialog-modal button:hover .border {
     display: block;
-    width: 18.5em;
-    height: 4.3em;
+    width: 20.7em;
+    height: 4.5em;
 }
 
 .dialog-modal .full-rounded {

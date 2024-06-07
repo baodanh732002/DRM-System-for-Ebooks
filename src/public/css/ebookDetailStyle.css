@@ -319,6 +319,18 @@ button {
     background-color: #f44336; /* Màu nút Cancel */
     color: white;
 }
+
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: none;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+}
   
 /*--------------------------------------------------------------
 # Footer

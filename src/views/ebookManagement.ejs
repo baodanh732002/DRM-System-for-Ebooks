@@ -28,12 +28,34 @@
         <div class="container">
             <!-- PAGINATION -->
             <h1 class="mt-5 mb-3">E-BOOK MANAGEMENT</h1>
-            <div class="admin-new d-flex justify-content-end mb-2">
-                <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
-                    <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
-                    New
-            </button>
-            </div>
+
+            <!-- Filter Dropdown -->
+             <div class="row">
+                <p class="col-lg-3">Filter: </p>
+                <div class="col-lg-3 filter-section mb-3">'
+                    <select id="state-filter" class="form-select w-auto">
+                        <option value="all">State</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="denied">Denied</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 filter-section mb-3">'
+                    <select id="state-filter" class="form-select w-auto">
+                        <option value="all">Language</option>
+                        <option value="accepted">Vietnamese</option>
+                        <option value="denied">English</option>
+                    </select>
+                </div>
+    
+                <div class="col-lg-3 admin-new d-flex justify-content-end mb-2">
+                    <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
+                        <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
+                        New
+                    </button>
+                </div>
+             </div>
+
             <table id="items-table">
                 <thead class="table-dark">
                     <tr>

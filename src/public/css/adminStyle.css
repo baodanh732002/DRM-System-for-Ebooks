@@ -468,3 +468,13 @@ table a:hover {
     outline-offset: 5px;
     background-color: #fff
 }
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.form-select {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+}

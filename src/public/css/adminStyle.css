@@ -132,6 +132,22 @@ label {
     margin-top: 30px;
 }
 
+.filter {
+    display: flex;
+}
+
+.filter p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter .filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #items-table {
     width: 100%;
     border-collapse: collapse;

@@ -27,34 +27,50 @@
     <div class="content">
         <div class="container">
             <!-- PAGINATION -->
-            <h1 class="mt-5 mb-3">E-BOOK MANAGEMENT</h1>
+            <strong><h1 class="mt-5 mb-3">E-BOOK MANAGEMENT</h1></strong>
 
             <!-- Filter Dropdown -->
-             <div class="row">
-                <p class="col-lg-3">Filter: </p>
-                <div class="col-lg-3 filter-section mb-3">'
-                    <select id="state-filter" class="form-select w-auto">
-                        <option value="all">State</option>
-                        <option value="accepted">Accepted</option>
-                        <option value="denied">Denied</option>
-                        <option value="pending">Pending</option>
-                    </select>
-                </div>
-                <div class="col-lg-3 filter-section mb-3">'
-                    <select id="state-filter" class="form-select w-auto">
-                        <option value="all">Language</option>
-                        <option value="accepted">Vietnamese</option>
-                        <option value="denied">English</option>
-                    </select>
+            <div class="row mt-5">
+                <div class="filter col-lg-10">
+                    <p class="col-lg-2">Filter: </p>
+                    <div class="col-lg-2 filter-section">
+                        <select id="state-filter" class="form-select w-auto">
+                            <option value="">Type</option>
+                            <option value="">Science</option>
+                            <option value="">Violet</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 filter-section">
+                        <select id="state-filter" class="form-select w-auto">
+                            <option value="">Language</option>
+                            <option value="">Vietnamese</option>
+                            <option value="">English</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 filter-section">
+                        <select id="state-filter" class="form-select w-auto">
+                            <option value="all">State</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="denied">Denied</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 filter-section">
+                        <select id="sort-title" class="form-select w-auto">
+                            <option value="all">Sort Title</option>
+                            <option value="asc">A - Z</option>
+                            <option value="desc">Z - A</option>
+                        </select>
+                    </div>
                 </div>
     
-                <div class="col-lg-3 admin-new d-flex justify-content-end mb-2">
+                <div class="col-lg-2 admin-new d-flex justify-content-end mb-2">
                     <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
                         <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
                         New
                     </button>
                 </div>
-             </div>
+            </div>
 
             <table id="items-table">
                 <thead class="table-dark">
@@ -297,5 +313,53 @@
         }
     }
     document.addEventListener('DOMContentLoaded', renderItems);
+
+    //SORT TITLE
+    document.addEventListener("DOMContentLoaded", function() {
+    const sortTitle = document.getElementById('sort-title');
+    const stateFilter = document.getElementById('state-filter');
+    const itemsBody = document.getElementById('items-body');
+    let items = Array.from(document.querySelectorAll('#items-body tr'));
+
+    sortTitle.addEventListener('change', function() {
+        sortItems(this.value);
+    });
+
+    stateFilter.addEventListener('change', function() {
+        filterItems(this.value);
+    });
+
+    function sortItems(order) {
+        const sortedItems = items.sort((a, b) => {
+            const titleA = a.querySelector('td:nth-child(2)').textContent.toUpperCase();
+            const titleB = b.querySelector('td:nth-child(2)').textContent.toUpperCase();
+
+            if (order === 'asc') {
+                return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
+            } else if (order === 'desc') {
+                return titleA > titleB ? -1 : titleA < titleB ? 1 : 0;
+            } else {
+                return 0;
+            }
+        });
+
+        // Remove all existing items
+        itemsBody.innerHTML = '';
+
+        // Append sorted items
+        sortedItems.forEach(item => itemsBody.appendChild(item));
+    }
+
+    function filterItems(filter) {
+        items.forEach(item => {
+            if (filter === 'all' || item.getAttribute('data-state') === filter) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+});
+
 </script>
 </html>

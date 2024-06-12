@@ -417,7 +417,8 @@ table a:hover {
     line-height: 2.0;
 }
 
-.ebook-detail .btn-accept {
+.ebook-detail .btn-accept,
+.ebook-detail .btn-edit {
     padding: 15px 25px;
     border: unset;
     border-radius: 15px;
@@ -436,11 +437,35 @@ table a:hover {
     justify-content: center;
 }
 
-.ebook-detail .btn-accept:hover {
+.ebook-detail .btn-accept:hover,
+.ebook-detail .btn-edit:hover {
     background: rgb(46, 179, 46);
 }
 
-.ebook-detail .btn-deny {
+.ebook-detail .btn-review {
+    padding: 15px 25px;
+    border: unset;
+    border-radius: 15px;
+    color: white;
+    z-index: 1;
+    position: relative;
+    font-weight: 1000;
+    font-size: 17px;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ebook-detail .btn-review:hover {
+    background: rgb(32, 107, 192);
+}
+
+.ebook-detail .btn-deny, 
+.ebook-detail .btn-delete {
     padding: 15px 25px;
     border: unset;
     border-radius: 15px;
@@ -459,7 +484,8 @@ table a:hover {
     justify-content: center;
 }
 
-.ebook-detail .btn-deny:hover {
+.ebook-detail .btn-deny:hover,
+.ebook-detail .btn-delete:hover {
     background: rgb(205, 27, 27);
 }
 

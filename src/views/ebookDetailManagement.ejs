@@ -26,7 +26,7 @@
     <!-- ======= BODY ======= -->
     <div class="container mt-5 mb-5">
         <div class="row ps-2 mb-3">
-            <a href="/ebookManagement" class="text-success"><strong>Ebooks Management > <span class="text-success"><%= formattedEbookData.title %></span></strong></a>
+            <a href="/ebookManagement" class="text-dark"><strong>Ebooks Management > <span class="text-dark" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></strong></a>
         </div>
         <div class="row">
             <div class="col-lg-3">
@@ -34,7 +34,7 @@
             </div>
 
             <div class="ebook-detail col-lg-9">
-                <h1 class="ebook-title"><%= formattedEbookData.title %></h1>
+                <h1 class="ebook-title text-dark"><%= formattedEbookData.title %></h1>
                 <hr>
                 <table style="color: #333;">
                     <tr>
@@ -118,7 +118,7 @@
                     </div>
                 <% } %>
                 <div class="ebook-describe">
-                    <h3>Description</h3>
+                    <h3 class="text-dark">Description</h3>
                     <span>
                         <%= formattedEbookData.description %>
                     </span>

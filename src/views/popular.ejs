@@ -46,9 +46,9 @@
                                 <% formattedEbookData.forEach(ebook => { %>
                                     <% if (ebook.state === 'Accepted') { %>
                                         <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                            <a href="/ebookDetail?id=<%= ebook._id %>">
+                                            <a href="<%= ebook.author === user.username ? '/myEbookDetail?id=' + ebook._id : '/ebookDetail?id=' + ebook._id %>">
                                                 <div class="card">
-                                                    <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                                    <img src="/<%= ebook.formattedImageFile %>" class="card-img-top" alt="">
                                                     <div class="card-body">
                                                         <h5 class="card-title text-white"><%= ebook.title %></h5>
                                                         <div class="category">

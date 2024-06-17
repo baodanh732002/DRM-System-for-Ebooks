@@ -31,16 +31,11 @@
                 </div>  
         
                 <div class="collapse navbar-collapse">
-                    <form class="d-flex align-items-center w-50" role="search">
-                        <input
-                            class="form-control me-2 w-100"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                            id="charSearch"/>
+                    <form action="/searchEbook" method="GET" class="d-flex align-items-center w-50">
+                        <input type="text" name="searchQuery" class="form-control me-2 w-100" placeholder="Search by Title, Author, DOI, ISBN, or Type">
                         <button class="btn w-auto" type="submit"><ion-icon name="search-circle-outline"></ion-icon></button>
                     </form>
-                </div>
+                </div>                
 
                 <div class="header-user d-flex pe-5 w-auto">
                     <a href="#" class="d-flex align-items-center me-1">

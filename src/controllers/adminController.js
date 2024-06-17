@@ -71,11 +71,15 @@ class AdminController{
                     });
     
                     const isAuthorAdmin = ebookData.author === admin.adname
+
+                    const originalFileName = ebookData.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
     
                     const formattedEbookData = {
                         ...ebookData.toObject(),
                         formattedDate,
-                        isAuthorAdmin
+                        isAuthorAdmin,
+                        formattedImageFile
                     };
     
                     res.render('ebookDetailManagement', { formattedEbookData, admin });

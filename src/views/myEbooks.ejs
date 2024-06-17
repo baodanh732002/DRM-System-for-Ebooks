@@ -37,9 +37,9 @@
                         <% if (formattedEbookData && formattedEbookData.length > 0) { %>
                             <% formattedEbookData.forEach(ebook => { %>
                                 <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                    <a href="/myEbookDetail?id=<%= ebook._id%>">
+                                    <a href="<%= ebook.author === user.username ? '/myEbookDetail?id=' + ebook._id : '/ebookDetail?id=' + ebook._id %>">
                                         <div class="card">
-                                            <img src="/images/background_1.jpg" class="card-img-top" alt="">
+                                            <img src="/<%= ebook.formattedImageFile %>" class="card-img-top" alt="">
                                             <div class="card-body">
                                                 <h5 class="card-title text-white"><%= ebook.title %></h5>
                                                 <div class="category mb-2">
@@ -77,11 +77,6 @@
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">ADD NEW EBOOK</h2>
                     </div>
-                    <% if(typeof message !== 'undefined') { %>
-                        <div class="alert alert-danger" role="alert">
-                            <%= message %>
-                        </div>
-                    <% }%>
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="book-outline"></ion-icon>
@@ -200,6 +195,9 @@
             </div>
         </div>
     </div>
+    <% if (message) { %>
+        <input type="hidden" id="messageCreate" value="<%= message %>">
+    <% } %>
 
 
     <!-- ======= FOOTER ======= -->
@@ -229,6 +227,16 @@
         const specialButton = document.getElementById('open');
             if (window.location.pathname === '/myEbooks') {
                 specialButton.classList.remove('hidden');
+        }
+    });
+
+    $(document).ready(function() {
+        const messageCreate = document.getElementById('messageCreate');
+        if (messageCreate) {
+            const message = messageCreate.value;
+            if (message) {
+                alert(message);
+            }
         }
     });
 </script>

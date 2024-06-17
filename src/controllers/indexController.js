@@ -17,9 +17,14 @@ class IndexController {
                         month: '2-digit',
                         year: 'numeric'
                     });
+
+                    const originalFileName = ebook.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
+
                     return {
                         ...ebook.toObject(),
-                        formattedDate
+                        formattedDate,
+                        formattedImageFile
                     };
                 });
 
@@ -33,9 +38,14 @@ class IndexController {
                         month: '2-digit',
                         year: 'numeric'
                     });
+
+                    const originalFileName = ebook.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
+
                     return {
                         ...ebook,
-                        formattedDate
+                        formattedDate,
+                        formattedImageFile
                     };
                 });
 
@@ -56,9 +66,14 @@ class IndexController {
                         month: '2-digit',
                         year: 'numeric'
                     });
+
+                    const originalFileName = ebook.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
+
                     return {
                         ...ebook,
-                        formattedDate
+                        formattedDate,
+                        formattedImageFile
                     };
                 });
 

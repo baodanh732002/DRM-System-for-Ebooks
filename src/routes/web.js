@@ -74,6 +74,8 @@ route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
 route.get('/downloadEbook', ebookController.getDownloadEbook);
 route.post('/downloadEbook', ebookController.handleDownloadEbook);
 
+route.get('/searchEbook', ebookController.getSearchEbook)
+
 
 
 module.exports = route

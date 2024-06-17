@@ -18,7 +18,6 @@ class EbookController {
             const date = new Date();
             const files = req.files;
     
-            // Fetch user's ebooks to ensure formattedEbookData is always populated
             const ebooksData = await Ebook.find({ author: author });
             const formattedEbookData = ebooksData.map((ebook) => {
                 const date = new Date(ebook.date);
@@ -27,20 +26,25 @@ class EbookController {
                     month: '2-digit',
                     year: 'numeric'
                 });
+    
+                const originalFileName = ebook.imageFile.split('\\').pop();
+                const formattedImageFile = `contents/${originalFileName}`;
+    
                 return {
                     ...ebook.toObject(),
-                    formattedDate
+                    formattedDate,
+                    formattedImageFile
                 };
             });
     
             if (!files || !files.imageFile || !files.ebookFile) {
-                return res.render("myEbooks.ejs", { message: 'Both image and ebook file must be uploaded.', user, formattedEbookData });
+                return res.render("myEbooks", { message: 'Both image and ebook file must be uploaded.', user, formattedEbookData });
             }
     
             const existDOI = await Ebook.findOne({ doi: doi });
             const existISBN = await Ebook.findOne({ isbn: isbn });
             if (existDOI || existISBN) {
-                return res.render("myEbooks.ejs", { message: "Ebook already existed. Please use another one!", user, formattedEbookData });
+                return res.render("myEbooks", { message: "Ebook already existed. Please use another one!", user, formattedEbookData });
             }
     
             const imageFile = files.imageFile[0];
@@ -68,7 +72,6 @@ class EbookController {
     
             await newEbook.save();
     
-            // Fetch the updated ebooks data after saving the new ebook
             const updatedEbooksData = await Ebook.find({ author: author });
             const updatedFormattedEbookData = updatedEbooksData.map((ebook) => {
                 const date = new Date(ebook.date);
@@ -77,18 +80,26 @@ class EbookController {
                     month: '2-digit',
                     year: 'numeric'
                 });
+    
+                const originalFileName = ebook.imageFile.split('\\').pop();
+                const formattedImageFile = `contents/${originalFileName}`;
+    
                 return {
                     ...ebook.toObject(),
-                    formattedDate
+                    formattedDate,
+                    formattedImageFile
                 };
             });
     
-            res.render("myEbooks", { message: 'success', formattedEbookData: updatedFormattedEbookData, user });
+            res.render("myEbooks", { message: 'Add new Ebook successfully!', formattedEbookData: updatedFormattedEbookData, user });
         } catch (error) {
+            const user = req.session.user || null;
             console.error(error);
             res.status(500).render("myEbooks", { error: 'Fail to upload new Ebook, please try again later!', user, formattedEbookData });
         }
     }
+    
+    
     
 
     async getMyEbooks(req, res) {
@@ -105,13 +116,18 @@ class EbookController {
                         month: '2-digit',
                         year: 'numeric'
                     });
+
+                    const originalFileName = ebook.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
+
                     return {
                         ...ebook.toObject(),
-                        formattedDate
+                        formattedDate,
+                        formattedImageFile
                     };
                 });
 
-                res.render("myEbooks", { formattedEbookData, user });
+                res.render("myEbooks", { formattedEbookData, user, message: ''});
             } catch (error) {
                 console.error('Error fetching ebooks:', error);
                 res.status(500).send('Internal Server Error');
@@ -134,9 +150,14 @@ class EbookController {
                         month: '2-digit',
                         year: 'numeric'
                     });
+
+                    const originalFileName = ebook.imageFile.split('\\').pop();
+                    const formattedImageFile = `contents/${originalFileName}`;
+
                     return {
                         ...ebook.toObject(),
-                        formattedDate
+                        formattedDate,
+                        formattedImageFile
                     };
                 });
 
@@ -163,11 +184,16 @@ class EbookController {
                     month: '2-digit',
                     year: 'numeric'
                 });
+
+                const originalFileName = ebookData.imageFile.split('\\').pop();
+                const formattedImageFile = `contents/${originalFileName}`;
+
                 const formattedEbookData = {
                     ...ebookData.toObject(),
                     formattedDate,
                     imageFileName: ebookData.imageFileOriginalName, 
-                    ebookFileName: ebookData.ebookFileOriginalName 
+                    ebookFileName: ebookData.ebookFileOriginalName,
+                    formattedImageFile
                 };
     
                 res.render('myEbookDetail', { user, formattedEbookData });
@@ -193,9 +219,14 @@ class EbookController {
                     month: '2-digit',
                     year: 'numeric'
                 });
+                
+                const originalFileName = ebookData.imageFile.split('\\').pop();
+                const formattedImageFile = `contents/${originalFileName}`;
+
                 const formattedEbookData = {
                     ...ebookData.toObject(),
-                    formattedDate
+                    formattedDate,
+                    formattedImageFile
                 };
 
                 let message = '';
@@ -323,9 +354,15 @@ class EbookController {
                             month: '2-digit',
                             year: 'numeric'
                         });
+
+                        const originalFileName = ebook.imageFile.split('\\').pop();
+                        const formattedImageFile = `contents/${originalFileName}`;
+
+                        
                         return {
                             ...ebook.toObject(),
-                            formattedDate
+                            formattedDate,
+                            formattedImageFile
                         };
                     }
                     return null;
@@ -394,6 +431,52 @@ class EbookController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Failed to download ebook." });
+        }
+    }    
+
+    async getSearchEbook(req, res) {
+        try {
+            const user = req.session.user;
+            const { searchQuery } = req.query; // Get the search query from query parameters
+    
+            // Build the query to search by title, author, DOI, ISBN, or type
+            const query = {
+                $or: [
+                    { title: { $regex: new RegExp(searchQuery, 'i') } },
+                    { author: { $regex: new RegExp(searchQuery, 'i') } },
+                    { doi: searchQuery },
+                    { isbn: searchQuery },
+                    { type: { $regex: new RegExp(searchQuery, 'i') } }
+                ]
+            };
+    
+            // Perform the search using the Ebook model
+            const ebooksData = await Ebook.find(query);
+    
+            // Format the ebooksData
+            const formattedEbookData = ebooksData.map((ebook) => {
+                const date = new Date(ebook.date);
+                const formattedDate = date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+
+                const originalFileName = ebook.imageFile.split('\\').pop();
+                const formattedImageFile = `contents/${originalFileName}`;
+
+                return {
+                    ...ebook.toObject(),
+                    formattedDate,
+                    formattedImageFile
+                };
+            });
+    
+            // Render the search results in search.ejs
+            res.render('search', { user, formattedEbookData });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Failed to search ebooks.');
         }
     }    
     

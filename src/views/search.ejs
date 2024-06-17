@@ -41,13 +41,15 @@
                                         <div class="card">
                                             <img src="/<%= ebook.formattedImageFile %>" class="card-img-top" alt="">
                                             <div class="card-body">
-                                                <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                <div>
+                                                    <h5 class="card-title text-white"><%= ebook.title %></h5>
+                                                </div>
                                                 <div class="category">
                                                     <span class="text-white">Category - </span>
-                                                    <a href="" class="category-name"><%= ebook.type %></a>
+                                                    <strong class="category-name"><%= ebook.type %></strong>
                                                 </div>
                                                 <div class="author">
-                                                    By <a href="" class="author-name"><%= ebook.author %></a> - <span class="post-date"><%= ebook.formattedDate %></span>
+                                                    By <strong class="author-name"><%= ebook.author %></strong> - <span class="post-date"><%= ebook.formattedDate %></span>
                                                 </div>
                                             </div>
                                         </div>

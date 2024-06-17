@@ -182,14 +182,17 @@ label {
     background: var(--background);
     position: relative;
     z-index: 1;
-    height: 360px;
+    height: auto;
 }
 
 .display .card img {
     width: 100%;
+    height: 220px;
     object-fit: cover;
-    height: auto;
     border-radius: 3%;
+    border: 1px solid #333; /* Tùy chọn: thêm đường viền cho ảnh */
+    display: block; /* Tùy chọn: đảm bảo ảnh hiển thị dưới dạng block */
+    overflow: hidden; /* Đảm bảo phần dư của ảnh không hiển thị */
 }
 
 .display .card::after {
@@ -225,20 +228,10 @@ label {
     transition: opacity 2s ease;
 }
 
-.display .card .card-body .category-name:hover {
-    font-weight: 400;
-    color: black;
-}
-
 .display .card .card-body .post-date {
     color: white;
     font-weight: 300;
     transition: opacity 2s ease;
-}
-
-.display .card .card-body .post-date:hover {
-    font-weight: 400;
-    color: black;
 }
 
 .display .card .author {
@@ -254,8 +247,20 @@ label {
     transition: opacity 2s ease;
 }
 
-.display .card .author .author-name:hover {
-    color: black;
+.display .card button {
+    font-size: 16px;
+    font-weight: 200;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 50px;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    background-color: #2F4858;
+}
+
+.display .card button:hover {
+    font-size: 18px;
 }
 
 /* dialog */

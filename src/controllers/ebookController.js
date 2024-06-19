@@ -362,15 +362,17 @@ class EbookController {
                         return {
                             ...ebook.toObject(),
                             formattedDate,
+                            downloadID: download._id,
                             formattedImageFile
                         };
                     }
                     return null;
                 });
+
     
                 const formattedEbookData = (await Promise.all(ebookDataPromises)).filter(Boolean);
     
-                res.render("downloadEbook", { formattedEbookData, user });
+                res.render("downloadEbook", { formattedEbookData, user, downloads});
             } else {
                 res.redirect("/login");
             }
@@ -432,7 +434,25 @@ class EbookController {
             console.error(error);
             res.status(500).json({ message: "Failed to download ebook." });
         }
-    }    
+    }
+        
+
+    async handleDeleteDownloadEbook(req, res){
+        try{
+            const user = req.session.user || null;
+            if(user){
+                const {id} = req.body
+                console.log(id)
+                await Download.deleteOne({_id: id})
+                res.redirect("/downloadEbook")
+            }
+        }catch(error){
+            console.error(error);
+            res.status(500).render("downloadEbook", {
+              message: "Failed to delete ebook.",
+            });
+        }
+    }
 
     async getSearchEbook(req, res) {
         try {

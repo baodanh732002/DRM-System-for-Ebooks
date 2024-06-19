@@ -39,14 +39,14 @@
                         </div>
                         <div class="row mb-3">
                             <% if (formattedEbookDataNewest && formattedEbookDataNewest.length > 0) { %>
-                                <% let hasAcceptedNewestEbooks = false; %>
+                                <% let hasAcceptedEbooks = false; %>
                                 <% formattedEbookDataNewest.forEach(ebook => { %>
                                     <% if (ebook.state === 'Accepted') { %>
-                                        <% hasAcceptedNewestEbooks = true; %>
+                                        <% hasAcceptedEbooks = true; %>
                                     <% } %>
                                 <% }) %>
-                            
-                                <% if (hasAcceptedNewestEbooks) { %>
+                                
+                                <% if (hasAcceptedEbooks) { %>
                                     <% formattedEbookDataNewest.forEach(ebook => { %>
                                         <% if (ebook.state === 'Accepted') { %>
                                             <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
@@ -67,10 +67,7 @@
                                                         </div>
                                                     </div>
                                                 </a>
-                                                <script>
-                                                    console.log("Image file path: /<%= ebook.formattedImageFile %>");
-                                                </script>
-                                            </div>
+                                            </div> 
                                         <% } %>
                                     <% }) %>
                                 <% } else { %>
@@ -82,9 +79,9 @@
                                 <div class="heading d-flex align-items-center mt-5 ml-5">
                                     <h5 class="text-white">There are no newest Ebooks...</h5>
                                 </div>
-                            <% } %>                                                          
+                            <% } %>                                                                                     
                         </div>
-                    </div>
+                    </div>                    
 
                     <!-- POPULAR -->
                     <div class="popular">
@@ -105,7 +102,7 @@
                                     <% formattedEbookDataPopular.forEach(ebook => { %>
                                         <% if (ebook.state === 'Accepted') { %>
                                             <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                                <a href="/ebookDetail?id=<%= ebook._id %>">
+                                                <a href="<%= ebook.author === user.username ? '/myEbookDetail?id=' + ebook._id : '/ebookDetail?id=' + ebook._id %>">
                                                     <div class="card">
                                                         <img src="/<%= ebook.formattedImageFile %>" class="card-img-top" alt="">
                                                         <div class="card-body">
@@ -148,7 +145,7 @@
                             <% if (formattedEbookDataUser && formattedEbookDataUser.length > 0) { %>
                                 <% formattedEbookDataUser.forEach(ebook => { %>
                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
-                                        <a href="/myEbookDetail?id=<%= ebook._id%>">
+                                        <a href="<%= ebook.author === user.username ? '/myEbookDetail?id=' + ebook._id : '/ebookDetail?id=' + ebook._id %>">
                                             <div class="card">
                                                 <img src="/<%= ebook.formattedImageFile %>" class="card-img-top" alt="">
                                                 <div class="card-body">

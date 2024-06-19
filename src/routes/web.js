@@ -73,6 +73,7 @@ route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
 
 route.get('/downloadEbook', ebookController.getDownloadEbook);
 route.post('/downloadEbook', ebookController.handleDownloadEbook);
+route.post('/downloadEbook_delete', ebookController.handleDeleteDownloadEbook)
 
 route.get('/searchEbook', ebookController.getSearchEbook)
 

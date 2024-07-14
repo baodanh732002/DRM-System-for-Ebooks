@@ -311,7 +311,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         const sortTitle = document.getElementById('sort-title');
         const stateFilter = document.getElementById('state-filter');
-        const languageFilter = document.getElementById('language-filter');
+        // const languageFilter = document.getElementById('language-filter');
         const itemsBody = document.getElementById('items-body');
         const initialItems = Array.from(itemsBody.querySelectorAll('tr')); // Lưu trữ các hàng ban đầu
 
@@ -323,13 +323,13 @@
             applyFilters();
         });
 
-        languageFilter.addEventListener('change', function() {
-            applyFilters();
-        });
+        // languageFilter.addEventListener('change', function() {
+        //     applyFilters();
+        // });
 
         function applyFilters() {
             let filteredItems = filterByState(initialItems, stateFilter.value);
-            filteredItems = filterByLanguage(filteredItems, languageFilter.value);
+            // filteredItems = filterByLanguage(filteredItems, languageFilter.value);
             sortItems(filteredItems, sortTitle.value);
         }
 
@@ -361,16 +361,16 @@
             }
         }
 
-        function filterByLanguage(items, language) {
-            if (language === 'all' || language === '') {
-                return items;
-            } else {
-                return items.filter(item => {
-                    const itemLanguage = item.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                    return itemLanguage === language;
-                });
-            }
-        }
+        // function filterByLanguage(items, language) {
+        //     if (language === 'all' || language === '') {
+        //         return items;
+        //     } else {
+        //         return items.filter(item => {
+        //             const itemLanguage = item.querySelector('td:nth-child(4)').textContent.toLowerCase();
+        //             return itemLanguage === language;
+        //         });
+        //     }
+        // }
 
         function renderItems(items) {
             // Remove all existing items
@@ -384,7 +384,5 @@
             });
         }
     });
-
-
 </script>
 </html>

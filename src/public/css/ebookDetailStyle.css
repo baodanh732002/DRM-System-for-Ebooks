@@ -58,6 +58,18 @@ body, html {
     display: flex;
     justify-content: space-around;
 }
+
+.back-button {
+    left: 20px;
+    background: none;
+    border: none;
+    color: #04AA6D;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    padding-left: 10px;
+}
+
 .ebook-image {
     width: 100%;
     object-fit: cover;

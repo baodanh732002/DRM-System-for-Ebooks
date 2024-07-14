@@ -22,7 +22,8 @@
     <div class="container mt-5 mb-5">
         <div class="row">
             <div class="row ps-2 mb-3">
-                <a href="/popular" class="text-success"><strong>Popular > <span class="text-success" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></strong></a>
+                <!-- <a href="/popular" class="text-success"><strong>Popular > <span class="text-success" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></strong></a> -->
+                <button class="back-button" onclick="goBack()">&#8592; | <span class="text-success ml-2" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></button>
             </div>
             <div class="col-lg-3">
                 <img src="/<%= formattedEbookData.formattedImageFile %>" class="ebook-image" alt="">
@@ -34,15 +35,15 @@
                 <table>
                     <tr>
                         <th>Type: </th>
-                        <td><a href=""><%= formattedEbookData.type %></a></td>
+                        <td><%= formattedEbookData.type %></td>
                     </tr>
                     <tr>
                         <th>Author: </th>
-                        <td><a href=""><%= formattedEbookData.author %></a></td>
+                        <td><%= formattedEbookData.author %></td>
                     </tr>
                     <tr>
                         <th>Language: </th>
-                        <td><a href=""><%= formattedEbookData.language %></a></td>
+                        <td><%= formattedEbookData.language %></td>
                     </tr>
                     <!-- NĂM XUẤT BẢN -->
                     <tr>
@@ -131,6 +132,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>
+        function goBack() {
+            window.history.back();
+        }
+
         document.getElementById('confirmDownload').addEventListener('click', () => {
             document.getElementById('downloadForm').submit();
         });

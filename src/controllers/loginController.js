@@ -19,7 +19,12 @@ class LoginController {
                 try {
                     const existingToken = await Token.findOne({ userId: id});
                     if (existingToken) {
-                        return existingToken.token;
+                        const now = new Date();
+                        if (existingToken.expiryDate > now) {
+                            return existingToken.token;
+                        } else {
+                            await Token.deleteOne({ _id: existingToken._id });
+                        }
                     }
         
                     const token = jwt.sign({ _id: id, type: type }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -28,7 +33,6 @@ class LoginController {
         
                     const newToken = new Token({
                         userId: id,
-                        ebookId: null,
                         token: token,
                         expiryDate: expiryDate
                     });

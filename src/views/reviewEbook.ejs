@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= ebookName %> - Book Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <link rel="stylesheet" href="/css/ebookReadingStyle.css">
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="goBack()">&#8592;</button>
+        <h1 class="book-title"><%= ebookName %></h1>
+    </div>
+    
+    <div class="book-content">
+        <button class="nav-button left" onclick="prevPage()">&#8592;</button>
+        <div class="page-content">
+            <canvas id="pdf-canvas"></canvas>
+        </div>
+        <button class="nav-button right" onclick="nextPage()">&#8594;</button>
+    </div>
+    
+    <div class="footer">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <span id="page-info"></span>
+    </div>
+    <input type="hidden" id="pdfFilePath" value="<%= pdfFilePath %>">
+    <input type="hidden" id="isEncrypted" value="<%= isEncrypted %>">
+    <input type="hidden" id="message" value="<%= message %>">
+    <input type="hidden" id="expiresAt" value="<%= expiresAt %>">
+    <input type="hidden" id="detailPageUrl" value="<%= `/ebookDetailManagement?id=${ebookId}`%>">
+</body>
+
+<script>
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    const scale = 1.5;
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function goBack() {
+        const detailPageUrl = document.getElementById('detailPageUrl').value;
+        window.location.href = detailPageUrl;
+    }
+
+    function renderPage(pageNum) {
+        pdfDoc.getPage(pageNum).then(page => {
+            const viewport = page.getViewport({ scale: scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            page.render(renderContext).promise.then(() => {
+                const progress = document.getElementById('progress');
+                const pageInfo = document.getElementById('page-info');
+
+                progress.style.width = `${(currentPage / totalPages) * 100}%`;
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            });
+        });
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderPage(currentPage);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderPage(currentPage);
+        }
+    }
+
+    const pdfFilePath = document.getElementById('pdfFilePath').value;
+    const isEncrypted = document.getElementById('isEncrypted').value === 'true';
+    const message = document.getElementById('message').value;
+    const expiresAt = parseInt(document.getElementById('expiresAt').value);
+    const completePdfPath = isEncrypted ? '/temp/' + pdfFilePath : '/contents/' + pdfFilePath;
+
+    const now = Date.now();
+
+    if (message) {
+        alert(message);
+    } else if (now >= expiresAt) {
+        alert('File has expired. Please reload from the main view page.');
+        goBack();
+    } else {
+        fetch(completePdfPath, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    pdfjsLib.getDocument(completePdfPath).promise.then(pdfDoc_ => {
+                        pdfDoc = pdfDoc_;
+                        totalPages = pdfDoc.numPages;
+                        renderPage(currentPage);
+
+                        setInterval(() => {
+                            const now = Date.now();
+                            if (now >= expiresAt) {
+                                alert('File has expired. Please reload from the main view page.');
+                                goBack();
+                            } else {
+                                fetch(completePdfPath, { method: 'HEAD' })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            alert('File has expired. Please reload from the main view page.');
+                                            goBack();
+                                        }
+                                    })
+                                    .catch(() => {
+                                        alert('File has expired. Please reload from the main view page.');
+                                        goBack();
+                                    });
+                            }
+                        }, 5000);
+                    });
+                } else {
+                    alert('File has expired or been deleted.');
+                    goBack();
+                }
+            }) 
+            .catch(() => {
+                alert('File has expired or been deleted.');
+                goBack();
+            });
+    }
+</script>
+</html>

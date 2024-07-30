@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Viewer</title>
+    <title><%= ebookName %> - Book Viewer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
-
     <link rel="stylesheet" href="/css/ebookReadingStyle.css">
-    <script src="/DRM/BlockClient.js"></script>
 </head>
 <body>
     <div class="header">
         <button class="back-button" onclick="goBack()">&#8592;</button>
-        <h1 class="book-title">Book Title</h1>
+        <h1 class="book-title"><%= ebookName %></h1>
     </div>
     
     <div class="book-content">
@@ -29,8 +27,11 @@
         </div>
         <span id="page-info"></span>
     </div>
-    <!-- Use an empty hidden input to store the file path -->
-    <input type="hidden" id="pdfFilePath" value="../contents/<%= pdfFilePath %>">
+    <input type="hidden" id="pdfFilePath" value="<%= pdfFilePath %>">
+    <input type="hidden" id="isEncrypted" value="<%= isEncrypted %>">
+    <input type="hidden" id="message" value="<%= message %>">
+    <input type="hidden" id="expiresAt" value="<%= expiresAt %>">
+    <input type="hidden" id="detailPageUrl" value="<%= isOwner ? `/myEbookDetail?id=${ebookId}` : `/ebookDetail?id=${ebookId}` %>">
 </body>
 
 <script>
@@ -42,7 +43,8 @@
     const ctx = canvas.getContext('2d');
 
     function goBack() {
-        window.history.back();
+        const detailPageUrl = document.getElementById('detailPageUrl').value;
+        window.location.href = detailPageUrl;
     }
 
     function renderPage(pageNum) {
@@ -80,15 +82,57 @@
         }
     }
 
-    // Load PDF
     const pdfFilePath = document.getElementById('pdfFilePath').value;
-    
-    console.log(pdfFilePath);
-    const completePdfPath = '/contents/' + pdfFilePath;
-    pdfjsLib.getDocument(completePdfPath).promise.then(pdfDoc_ => {
-        pdfDoc = pdfDoc_;
-        totalPages = pdfDoc.numPages;
-        renderPage(currentPage);
-    });
+    const isEncrypted = document.getElementById('isEncrypted').value === 'true';
+    const message = document.getElementById('message').value;
+    const expiresAt = parseInt(document.getElementById('expiresAt').value);
+    const completePdfPath = isEncrypted ? '/temp/' + pdfFilePath : '/contents/' + pdfFilePath;
+
+    const now = Date.now();
+
+    if (message) {
+        alert(message);
+    } else if (now >= expiresAt) {
+        alert('File has expired. Please reload from the main view page.');
+        goBack();
+    } else {
+        fetch(completePdfPath, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    pdfjsLib.getDocument(completePdfPath).promise.then(pdfDoc_ => {
+                        pdfDoc = pdfDoc_;
+                        totalPages = pdfDoc.numPages;
+                        renderPage(currentPage);
+
+                        setInterval(() => {
+                            const now = Date.now();
+                            if (now >= expiresAt) {
+                                alert('File has expired. Please reload from the main view page.');
+                                goBack();
+                            } else {
+                                fetch(completePdfPath, { method: 'HEAD' })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            alert('File has expired. Please reload from the main view page.');
+                                            goBack();
+                                        }
+                                    })
+                                    .catch(() => {
+                                        alert('File has expired. Please reload from the main view page.');
+                                        goBack();
+                                    });
+                            }
+                        }, 5000);
+                    });
+                } else {
+                    alert('File has expired or been deleted.');
+                    goBack();
+                }
+            }) 
+            .catch(() => {
+                alert('File has expired or been deleted.');
+                goBack();
+            });
+    }
 </script>
 </html>

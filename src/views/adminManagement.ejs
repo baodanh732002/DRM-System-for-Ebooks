@@ -26,7 +26,6 @@
     <!-- ======= BODY ======= -->
     <div class="content">
         <div class="container">
-            <!-- PAGINATION -->
             <h1 class="mt-5 mb-3">ADMIN MANAGEMENT</h1>
             <div class="admin-new d-flex justify-content-end mb-2">
                 <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
@@ -89,8 +88,6 @@
                     <%}%>
                     
 
-                    <!-- DELETE ADMIN MODAL -->
-
                 </tbody>
             </table>
             <div class="pagination">
@@ -101,7 +98,6 @@
         </div>
     </div>
 
-    <!-- MODAL CREATE -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
             <form action="/adminManagement_add" method="post">
@@ -153,7 +149,6 @@
         </div>
     </div>
 
-    <!-- Success Modal -->
     <div class="modal fade addNewAdmin" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -172,7 +167,6 @@
     </div>
 </body>
 <script>
-    // OPEN MODAL
     const btn_new = document.getElementById('open');
     const btn_close = document.getElementById('close');
     const modal_container = document.getElementById('modal-container');
@@ -189,7 +183,6 @@
         }
     });
 
-    // PAGINATION
     const itemsPerPage = 10;
     let currentPage = 1;
 
@@ -207,10 +200,10 @@
 
         items.forEach((item, index) => {
             if (index >= start && index < end) {
-                item.style.display = 'table-row'; // Hiển thị mỗi hàng
-                item.querySelector('th[scope="row"]').textContent = index + 1; // Cập nhật số thứ tự
+                item.style.display = 'table-row'; 
+                item.querySelector('th[scope="row"]').textContent = index + 1; 
             } else {
-                item.style.display = 'none'; // Ẩn các hàng không thuộc trang hiện tại
+                item.style.display = 'none'; 
             }
         });
 

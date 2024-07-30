@@ -18,28 +18,32 @@
 
     <link rel="stylesheet" href="/css/adminStyle.css">
 </head>
+<style>
+    #error-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: auto;
+        max-width: 300px;
+        text-align: center;
+        display: none; 
+    }
+</style>
 
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/headerAdmin'); -%>
 
+    <div id="error-message" class="alert alert-danger text-center" style="display: none;"></div>
+
     <!-- ======= BODY ======= -->
     <div class="content">
         <div class="container">
-            <!-- PAGINATION -->
             <strong><h1 class="mt-5 mb-3">E-BOOK MANAGEMENT</h1></strong>
-
-            <!-- Filter Dropdown -->
             <div class="row mt-5">
                 <div class="filter col-lg-10">
                     <p class="col-lg-2">Filter: </p>
-                    <!-- <div class="col-lg-2 filter-section">
-                        <select id="language-filter" class="form-select w-auto">
-                            <option value="all">Language</option>
-                            <option value="vietnamese">Vietnamese</option>
-                            <option value="english">English</option>
-                        </select>
-                    </div> -->
                     <div class="col-lg-2 filter-section">
                         <select id="state-filter" class="form-select w-auto">
                             <option value="all">State</option>
@@ -110,7 +114,6 @@
         </div>
     </div>
 
-    <!-- MODAL CREATE -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
             <form action="/ebookManagement_add" method="post" enctype="multipart/form-data">
@@ -119,11 +122,6 @@
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">ADD NEW EBOOK</h2>
                     </div>
-                    <% if(typeof message !== 'undefined') { %>
-                        <div class="alert alert-danger" role="alert">
-                            <%= message %>
-                        </div>
-                    <% }%>
                     <div class="row">
                         <div class="inputbox">
                             <ion-icon name="book-outline"></ion-icon>
@@ -224,7 +222,6 @@
         </div>
     </div>
     
-    <!-- Success Modal -->
     <div class="modal fade addNewEbook" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -241,9 +238,12 @@
             </div>
         </div>
     </div>
+
+    <% if (message) { %>
+        <input type="hidden" id="hiddenMessage" value="<%= message %>">
+    <% } %>
 </body>
 <script>
-    // OPEN MODAL
     const btn_new = document.getElementById('open');
     const btn_close = document.getElementById('close');
     const modal_container = document.getElementById('modal-container');
@@ -260,7 +260,6 @@
         }
     });
 
-    // PAGINATION
     const itemsPerPage = 10;
     let currentPage = 1;
 
@@ -278,10 +277,10 @@
 
         items.forEach((item, index) => {
             if (index >= start && index < end) {
-                item.style.display = 'table-row'; // Hiển thị mỗi hàng
-                item.querySelector('th[scope="row"]').textContent = index + 1; // Cập nhật số thứ tự
+                item.style.display = 'table-row'; 
+                item.querySelector('th[scope="row"]').textContent = index + 1; 
             } else {
-                item.style.display = 'none'; // Ẩn các hàng không thuộc trang hiện tại
+                item.style.display = 'none'; 
             }
         });
 
@@ -307,13 +306,11 @@
     }
     document.addEventListener('DOMContentLoaded', renderItems);
 
-    //SORT TITLE
     document.addEventListener("DOMContentLoaded", function() {
         const sortTitle = document.getElementById('sort-title');
         const stateFilter = document.getElementById('state-filter');
-        // const languageFilter = document.getElementById('language-filter');
         const itemsBody = document.getElementById('items-body');
-        const initialItems = Array.from(itemsBody.querySelectorAll('tr')); // Lưu trữ các hàng ban đầu
+        const initialItems = Array.from(itemsBody.querySelectorAll('tr')); 
 
         sortTitle.addEventListener('change', function() {
             applyFilters();
@@ -323,13 +320,10 @@
             applyFilters();
         });
 
-        // languageFilter.addEventListener('change', function() {
-        //     applyFilters();
-        // });
+
 
         function applyFilters() {
             let filteredItems = filterByState(initialItems, stateFilter.value);
-            // filteredItems = filterByLanguage(filteredItems, languageFilter.value);
             sortItems(filteredItems, sortTitle.value);
         }
 
@@ -361,27 +355,29 @@
             }
         }
 
-        // function filterByLanguage(items, language) {
-        //     if (language === 'all' || language === '') {
-        //         return items;
-        //     } else {
-        //         return items.filter(item => {
-        //             const itemLanguage = item.querySelector('td:nth-child(4)').textContent.toLowerCase();
-        //             return itemLanguage === language;
-        //         });
-        //     }
-        // }
-
         function renderItems(items) {
-            // Remove all existing items
             itemsBody.innerHTML = '';
 
-            // Append items without changing original indices
             items.forEach((item, index) => {
-                const clone = item.cloneNode(true); // Clone the item to avoid modifying the original
-                clone.querySelector('th').textContent = index + 1; // Keep the original index
+                const clone = item.cloneNode(true); 
+                clone.querySelector('th').textContent = index + 1; 
                 itemsBody.appendChild(clone);
             });
+        }
+    });
+
+    $(document).ready(function() {
+        const hiddenMessage = document.getElementById('hiddenMessage');
+        if (hiddenMessage) {
+            const message = hiddenMessage.value;
+            const errorMessageDiv = document.getElementById('error-message');
+            if (message) {
+                errorMessageDiv.textContent = message;
+                errorMessageDiv.style.display = 'block';
+                setTimeout(function() {
+                    $('#error-message').fadeOut('slow');
+                }, 3000);
+            }
         }
     });
 </script>

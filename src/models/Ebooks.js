@@ -18,7 +18,10 @@ const ebookSchema = new Schema({
   author: { type: String, require: true},
   date: { type: Date, require: true},
   note: { type: String, require: true},
-  action_by: { type: String, require: true}
+  action_by: { type: String},
+  encryptedKey: { type: String},
+  iv: { type: String},
+  encrypted: { type: Boolean, default: false }
 });
 
 const Ebook = mongoose.model("Ebook", ebookSchema);

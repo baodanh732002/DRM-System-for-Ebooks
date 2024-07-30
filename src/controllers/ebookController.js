@@ -1,7 +1,9 @@
 const User = require('../models/Users')
 const Ebook = require('../models/Ebooks')
 const path = require('path');
-const Download = require('../models/Download')
+const fs = require('fs');
+const EncryptionService = require('../services/EncryptionService')
+const AccessRequest = require('../models/AccessRequest')
 
 class EbookController {
     async createNewEbook(req, res) {
@@ -38,13 +40,13 @@ class EbookController {
             });
     
             if (!files || !files.imageFile || !files.ebookFile) {
-                return res.render("myEbooks", { message: 'Both image and ebook file must be uploaded.', user, formattedEbookData });
+                return res.render("myEbooks", { message: 'Both image and ebook file must be uploaded.', messageType: 'error', user, formattedEbookData});
             }
     
             const existDOI = await Ebook.findOne({ doi: doi });
             const existISBN = await Ebook.findOne({ isbn: isbn });
             if (existDOI || existISBN) {
-                return res.render("myEbooks", { message: "Ebook already existed. Please use another one!", user, formattedEbookData });
+                return res.render("myEbooks", { message: "Ebook already existed. Please use another one!", messageType: 'error', user, formattedEbookData});
             }
     
             const imageFile = files.imageFile[0];
@@ -72,36 +74,17 @@ class EbookController {
     
             await newEbook.save();
     
-            const updatedEbooksData = await Ebook.find({ author: author });
-            const updatedFormattedEbookData = updatedEbooksData.map((ebook) => {
-                const date = new Date(ebook.date);
-                const formattedDate = date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                });
-    
-                const originalFileName = ebook.imageFile.split('\\').pop();
-                const formattedImageFile = `contents/${originalFileName}`;
-    
-                return {
-                    ...ebook.toObject(),
-                    formattedDate,
-                    formattedImageFile
-                };
-            });
-    
-            res.render("myEbooks", { message: 'Add new Ebook successfully!', formattedEbookData: updatedFormattedEbookData, user });
+            req.session.message = 'New eBook has been added successfully.';
+            req.session.messageType = 'success';
+
+            return res.redirect('/myEbooks');
         } catch (error) {
             const user = req.session.user || null;
             console.error(error);
-            res.status(500).render("myEbooks", { error: 'Fail to upload new Ebook, please try again later!', user, formattedEbookData });
+            res.status(500).render("myEbooks", { message: 'Fail to upload new Ebook, please try again later!', messageType: 'error', user, formattedEbookData});
         }
-    }
+    }    
     
-    
-    
-
     async getMyEbooks(req, res) {
         const user = req.session.user || null;
         if (user) {
@@ -127,7 +110,14 @@ class EbookController {
                     };
                 });
 
-                res.render("myEbooks", { formattedEbookData, user, message: ''});
+                const message = req.session.message;
+                const messageType = req.session.messageType;
+
+                req.session.message = null;
+                req.session.messageType = null;
+
+
+                res.render("myEbooks", { formattedEbookData, user, message, messageType});
             } catch (error) {
                 console.error('Error fetching ebooks:', error);
                 res.status(500).send('Internal Server Error');
@@ -201,11 +191,11 @@ class EbookController {
                 res.status(404).send('Ebook not found');
             }
         } else {
-            res.status(401).send('Unauthorized');
+            return res.redirect("/login");
         }
     }
 
-    async getEbookDetail(req, res){
+    async getEbookDetail(req, res) {
         const user = req.session.user || null;
         if (user) {
             const ebookId = req.query.id;
@@ -219,40 +209,40 @@ class EbookController {
                     month: '2-digit',
                     year: 'numeric'
                 });
-                
+    
                 const originalFileName = ebookData.imageFile.split('\\').pop();
                 const formattedImageFile = `contents/${originalFileName}`;
-
+    
                 const formattedEbookData = {
                     ...ebookData.toObject(),
                     formattedDate,
                     formattedImageFile
                 };
-
+    
                 let message = '';
                 if (notify) {
                     message = notify;
                 }
     
-                res.render('ebookDetail', { user, formattedEbookData, message});
+                res.render('ebookDetail', { user, formattedEbookData, message });
             } else {
                 res.status(404).send('Ebook not found');
             }
         } else {
-            res.status(401).send('Unauthorized');
+            return res.redirect("/login");
         }
     }
+    
 
     async updateMyEbookDetail(req, res) {
         try {
             const user = req.session.user || null;
             if (!user) {
-                return res.status(401).send("Unauthorized");
+                return res.redirect("/login");
             }
     
             const { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
     
-            // Check if files are uploaded
             const files = req.files;
             const updateData = {
                 title,
@@ -262,19 +252,31 @@ class EbookController {
                 publisher,
                 doi,
                 isbn,
-                description
+                description,
+                state: 'Pending',
+                action_by: ""
             };
     
-            // Handle image file upload
+            const currentEbook = await Ebook.findById(id);
+            if (!currentEbook) {
+                return res.status(404).send('Ebook not found');
+            }
+    
             if (files && files.imageFile && files.imageFile.length > 0) {
+                if (currentEbook.imageFile) {
+                    fs.unlinkSync(path.join(currentEbook.imageFile));
+                }
                 updateData.imageFile = files.imageFile[0].path;
                 updateData.imageFileOriginalName = files.imageFile[0].originalname;
             }
     
-            // Handle ebook file upload
             if (files && files.ebookFile && files.ebookFile.length > 0) {
+                if (currentEbook.ebookFile) {
+                    fs.unlinkSync(path.join(currentEbook.ebookFile));
+                }
                 updateData.ebookFile = files.ebookFile[0].path;
                 updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
+                updateData.encrypted = false;
             }
     
             const ebook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
@@ -289,21 +291,37 @@ class EbookController {
                 message: "Failed to update ebook.",
             });
         }
-    }    
+    }
+        
 
 
     async deleteMyEbookDetail(req, res){
-        try{
+        try {
             const user = req.session.user || null;
-            if(user){
-                const {id} = req.body
-                await Ebook.deleteOne({_id: id})
-                res.redirect("/myEbooks")
+            if (!user) {
+                return res.redirect("/login");
             }
-        }catch(error){
+    
+            const { id } = req.body;
+    
+            const currentEbook = await Ebook.findById(id);
+    
+            if (currentEbook.imageFile) {
+                fs.unlinkSync(path.join(currentEbook.imageFile));
+            }
+            if (currentEbook.ebookFile) {
+                fs.unlinkSync(path.join(currentEbook.ebookFile));
+            }
+    
+            await AccessRequest.deleteMany({ ebookId: id });
+    
+            await Ebook.deleteOne({ _id: id });
+    
+            res.redirect("/myEbooks");
+        } catch (error) {
             console.error(error);
             res.status(500).render("myEbookDetail", {
-              message: "Failed to delete ebook.",
+                message: "Failed to delete ebook.",
             });
         }
     }
@@ -311,155 +329,248 @@ class EbookController {
     async getEbookReading(req, res) {
         try {
             const user = req.session.user || null;
+            if (!user) {
+                return res.redirect('/login');
+            }
+    
             const ebookId = req.params.ebookId;
-            if (user && ebookId) {
+            if (ebookId) {
                 const ebook = await Ebook.findById(ebookId);
-                if (ebook) {
-                    // Get only the filename from the path
-                    const pdfFilePath  = path.basename(ebook.ebookFile);
-                    console.log(pdfFilePath );
-                    res.render("ebookReading", { user, pdfFilePath  });
+                if (ebook) { 
+                    const inputPath = path.join(ebook.ebookFile);
+                    const tempOutputPath = path.join(__dirname, '..', 'public', 'temp', `${ebook._id}_decrypted.pdf`);
+    
+                    const isOwner = ebook.author === user.username;
+    
+                    if (isOwner) {
+                        if (ebook.encrypted) {
+                            const now = new Date().getTime();
+                            const expiresAt = req.session.expiresAt || 0;
+    
+                            if (fs.existsSync(tempOutputPath) && now < expiresAt) {
+                                res.render('ebookReading', {
+                                    pdfFilePath: path.basename(tempOutputPath),
+                                    isEncrypted: true,
+                                    message: null,
+                                    expiresAt,
+                                    ebookId: ebook._id,
+                                    ebookName: ebook.title,
+                                    isOwner: isOwner
+                                });
+                            } else {
+                                console.log('Decrypting file key...');
+                                const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
+                                console.log('File key decrypted.');
+    
+                                console.log('Decrypting file...');
+                                await EncryptionService.decryptFile(inputPath, tempOutputPath, { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
+                                console.log('File decrypted.');
+    
+                                const limitTime = 60000; // 1 minute
+                                const newExpiresAt = now + limitTime;
+                                req.session.expiresAt = newExpiresAt;
+    
+                                setTimeout(() => {
+                                    fs.unlink(tempOutputPath, (err) => {
+                                        if (err) console.error(`Error deleting temp file: ${err.message}`);
+                                    });
+                                }, limitTime);
+    
+                                res.render('ebookReading', {
+                                    pdfFilePath: path.basename(tempOutputPath),
+                                    isEncrypted: true,
+                                    message: null,
+                                    expiresAt: newExpiresAt,
+                                    ebookId: ebook._id,
+                                    ebookName: ebook.title,
+                                    isOwner: isOwner
+                                });
+                            }
+                        } else {
+                            res.render('ebookReading', {
+                                pdfFilePath: path.basename(ebook.ebookFile),
+                                isEncrypted: false,
+                                message: null,
+                                expiresAt: null,
+                                ebookId: ebook._id,
+                                ebookName: ebook.title,
+                                isOwner: isOwner
+                            });
+                        }
+                    } else {
+                        res.status(403).render('ebookReading', {
+                            message: 'You do not have permission to view this ebook.',
+                            pdfFilePath: null,
+                            isEncrypted: false,
+                            expiresAt: null,
+                            ebookId: ebook._id,
+                            ebookName: ebook.title,
+                            isOwner: isOwner
+                        });
+                    }
                 } else {
                     res.status(404).render("ebookReading", {
                         message: "Ebook not found.",
+                        pdfFilePath: null,
+                        isEncrypted: false,
+                        expiresAt: null,
+                        ebookId: null,
+                        ebookName: null,
+                        isOwner: null
                     });
                 }
             } else {
                 res.status(400).render("ebookReading", {
                     message: "Ebook ID is missing.",
+                    pdfFilePath: null,
+                    isEncrypted: false,
+                    expiresAt: null,
+                    ebookId: null,
+                    ebookName: null,
+                    isOwner: null
                 });
             }
         } catch (error) {
             console.error(error);
             res.status(500).render("ebookReading", {
                 message: "Failed to render ebook Reading.",
+                pdfFilePath: null,
+                isEncrypted: false,
+                expiresAt: null,
+                ebookId: null,
+                ebookName: null,
+                isOwner: null
             });
         }
     }
-
-    async getDownloadEbook(req, res) {
-        try {
-            const user = req.session.user || null;
-            if (user) {
-                // Fetch download data for the user
-                const downloads = await Download.find({ username: user.username });
     
-                // Fetch ebook details for each download
-                const ebookDataPromises = downloads.map(async (download) => {
-                    const ebook = await Ebook.findOne({ doi: download.doi, isbn: download.isbn });
-                    if (ebook) {
-                        const date = new Date(ebook.date);
-                        const formattedDate = date.toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
+ 
+    async accessEbookReading(req, res) {
+        try {
+            const { ebookId, accessKey } = req.body;
+            const user = req.session.user || null;
+    
+            if (!user) {
+                return res.redirect("/login");
+            }
+    
+            const accessRequest = await AccessRequest.findOne({ ebookId, key: accessKey, state: 'Approved' });
+    
+            if (!accessRequest || accessRequest.requestBy !== user.username) {
+                const ebook = await Ebook.findById(ebookId);
+                const formattedEbookData = {
+                    ...ebook.toObject(),
+                    formattedDate: new Date(ebook.date).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }),
+                    formattedImageFile: `contents/${ebook.imageFile.split('\\').pop()}`
+                };
+    
+                return res.status(400).render('ebookDetail', {
+                    ebook,
+                    message: "Invalid access key.",
+                    messageType: "error",
+                    user,
+                    formattedEbookData
+                });
+            }
+    
+            const ebook = await Ebook.findById(ebookId);
+            if (!ebook) {
+                return res.status(404).render('ebookReading', {
+                    message: 'Ebook not found.',
+                    messageType: "error",
+                    pdfFilePath: null,
+                    isEncrypted: false,
+                    expiresAt: null,
+                    ebookId: null,
+                    ebookName: null,
+                    isOwner: null
+                });
+            }
+    
+            const inputPath = path.join(ebook.ebookFile);
+            const tempOutputPath = path.join(__dirname, '..', 'public', 'temp', `${ebook._id}_decrypted.pdf`);
+    
+            const tempExpiryTime = Date.now() + 60 * 1000;
+    
+            if (ebook.encrypted) {
+                if (fs.existsSync(tempOutputPath)) {
+                    res.render('ebookReading', {
+                        pdfFilePath: path.basename(tempOutputPath),
+                        isEncrypted: true,
+                        message: null,
+                        messageType: null,
+                        expiresAt: tempExpiryTime,
+                        ebookId: ebook._id,
+                        ebookName: ebook.title,
+                        isOwner: false
+                    });
+                } else {
+                    console.log('Decrypting file...');
+                    await EncryptionService.decryptFile(inputPath, tempOutputPath, { encryptedKey: accessKey, iv: ebook.iv });
+                    console.log('File decrypted.');
+    
+                    await AccessRequest.deleteOne({ _id: accessRequest._id });
+    
+                    setTimeout(() => {
+                        fs.unlink(tempOutputPath, (err) => {
+                            if (err) console.error(`Error deleting temp file: ${err.message}`);
                         });
-
-                        const originalFileName = ebook.imageFile.split('\\').pop();
-                        const formattedImageFile = `contents/${originalFileName}`;
-
-                        
-                        return {
-                            ...ebook.toObject(),
-                            formattedDate,
-                            downloadID: download._id,
-                            formattedImageFile
-                        };
-                    }
-                    return null;
-                });
-
+                    }, 60 * 1000);
     
-                const formattedEbookData = (await Promise.all(ebookDataPromises)).filter(Boolean);
-    
-                res.render("downloadEbook", { formattedEbookData, user, downloads});
+                    res.render('ebookReading', {
+                        pdfFilePath: path.basename(tempOutputPath),
+                        isEncrypted: true,
+                        message: null,
+                        messageType: null,
+                        expiresAt: tempExpiryTime,
+                        ebookId: ebook._id,
+                        ebookName: ebook.title,
+                        isOwner: false
+                    });
+                }
             } else {
-                res.redirect("/login");
-            }
-        } catch (error) {
-            console.error('Error fetching downloaded ebooks:', error);
-            res.status(500).render("downloadEbook", {
-                message: "Failed to render downloaded ebooks.",
-            });
-        }
-    }
-
-    async handleDownloadEbook(req, res) {
-        try {
-            const user = req.session.user;
-            const { username, doi, isbn } = req.body;
-    
-            if (!username || !doi || !isbn) {
-                throw new Error("Missing ebook details.");
-            }
-    
-            // Check if the ebook has already been downloaded by this user
-            const existingDownload = await Download.findOne({ username: user.username, doi: doi, isbn: isbn });
-            
-            // Retrieve the ebook data for rendering the detail view
-            const ebookData = await Ebook.findOne({ doi });
-            if (!ebookData) {
-                return res.status(404).send('Ebook not found');
-            }
-    
-            const date = new Date(ebookData.date);
-            const formattedDate = date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-            const formattedEbookData = {
-                ...ebookData.toObject(),
-                formattedDate
-            };
-    
-            if (existingDownload) {
-                // If the download already exists, redirect with a message
-                const message = "You already downloaded this ebook!";
-                return res.redirect(`/ebookDetail?id=${ebookData._id}&message=${encodeURIComponent(message)}`);
-            } else {
-                // Proceed with the download process
-                const download = new Download({
-                    username: user.username,
-                    doi,
-                    isbn
+                res.render('ebookReading', {
+                    pdfFilePath: path.basename(ebook.ebookFile),
+                    isEncrypted: false,
+                    message: null,
+                    messageType: null,
+                    expiresAt: null,
+                    ebookId: ebook._id,
+                    ebookName: ebook.title,
+                    isOwner: false
                 });
-    
-                await download.save();
-    
-                const message = "Download successful";
-                return res.redirect(`/ebookDetail?id=${ebookData._id}&message=${encodeURIComponent(message)}`);
             }
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Failed to download ebook." });
-        }
-    }
-        
-
-    async handleDeleteDownloadEbook(req, res){
-        try{
-            const user = req.session.user || null;
-            if(user){
-                const {id} = req.body
-                console.log(id)
-                await Download.deleteOne({_id: id})
-                res.redirect("/downloadEbook")
-            }
-        }catch(error){
-            console.error(error);
-            res.status(500).render("downloadEbook", {
-              message: "Failed to delete ebook.",
+            res.status(500).render('ebookReading', {
+                message: 'Failed to access the ebook.',
+                messageType: "error",
+                pdfFilePath: null,
+                isEncrypted: false,
+                expiresAt: null,
+                ebookId: null,
+                ebookName: null,
+                isOwner: null
             });
         }
     }
-
+    
+    
+    
+    
     async getSearchEbook(req, res) {
         try {
             const user = req.session.user;
-            const { searchQuery } = req.query; // Get the search query from query parameters
+            const { searchQuery } = req.query;
+
+            if(!user){
+                return res.redirect('/login');
+            }
     
-            // Build the query to search by title, author, DOI, ISBN, or type
             const query = {
                 $or: [
                     { title: { $regex: new RegExp(searchQuery, 'i') } },
@@ -470,10 +581,8 @@ class EbookController {
                 ]
             };
     
-            // Perform the search using the Ebook model
             const ebooksData = await Ebook.find(query);
     
-            // Format the ebooksData
             const formattedEbookData = ebooksData.map((ebook) => {
                 const date = new Date(ebook.date);
                 const formattedDate = date.toLocaleDateString('en-GB', {
@@ -492,7 +601,6 @@ class EbookController {
                 };
             });
     
-            // Render the search results in search.ejs
             res.render('search', { user, formattedEbookData });
         } catch (error) {
             console.error(error);

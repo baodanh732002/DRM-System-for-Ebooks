@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Code Verification</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="/css/loginStyle.css">
+    <style>
+        .countdown-timer {
+            color: white;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <section class="login-box">
+        <div class="form-box" id="authForm">
+            <div class="form-value">
+                <form action="/verify-change" method="post">
+                    <h2 style="color: white;">Verify Change Information Code</h2>
+                    <p style="color: white;">Authentication code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
+                    <% if (typeof message !== 'undefined') { %>
+                        <div class="alert alert-danger" role="alert" id="error-message">
+                          <%= message %>
+                        </div>
+                    <% } %>
+                    <div class="inputbox">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="text" class="input" id="authCode" name="authCode" required/>
+                        <label for="authCode">Authentication Code</label>
+                    </div>
+                    <input type="submit" class="submit" value="Verify">
+                </form>
+                <button onclick="resendAuthCode()" class="btn btn-primary mt-3">Resend Authentication Code</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let countdown = "<%= countdown %>";
+        countdown = parseInt(countdown); 
+
+        const countdownElement = document.getElementById('countdown');
+        const errorMessageElement = document.getElementById('error-message');
+        let interval = setInterval(updateCountdown, 1000);
+
+        function updateCountdown() {
+            countdown--;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                countdownElement.textContent = "0 seconds";
+            } else {
+                countdownElement.textContent = countdown + ' seconds';
+            }
+        }
+
+        function resendAuthCode() {
+            fetch('/resend-auth-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    clearInterval(interval);
+                    countdown = 60;
+                    countdownElement.textContent = countdown + ' seconds';
+                    interval = setInterval(updateCountdown, 1000);
+                    if (errorMessageElement) {
+                        errorMessageElement.remove();
+                    }
+                } else {
+                    alert("Failed to resend authentication code. Please try again.");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert("Failed to resend authentication code. Please try again.");
+            });
+        } 
+    </script>
+</body>
+</html>

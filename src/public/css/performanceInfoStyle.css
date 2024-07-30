@@ -80,9 +80,7 @@ button:hover {
 /* EDIT MODAL */
 #modal-container {
     position: fixed;
-    /* vị trí cố định */
     z-index: 1;
-    /* Ưu tiên hiển thị trên cùng */
     padding-top: 150px;
     left: 0;
     top: 0;

@@ -139,9 +139,7 @@ table a:hover {
 /* EDIT MODAL */
 #modal-container {
     position: fixed;
-    /* vị trí cố định */
     z-index: 1;
-    /* Ưu tiên hiển thị trên cùng */
     padding-top: 150px;
     left: 0;
     top: 0;
@@ -282,11 +280,11 @@ input {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen semi-transparent */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Đảm bảo modal nằm trên tất cả các phần khác */
+    z-index: 9999;
 }
 
 .confirm-content {
@@ -323,12 +321,12 @@ button {
 }
 
 #btn-yes {
-    background-color: #4CAF50; /* Màu nút OK */
+    background-color: #4CAF50; 
     color: white;
 }
 
 #btn-no {
-    background-color: #f44336; /* Màu nút Cancel */
+    background-color: #f44336; 
     color: white;
 }
 

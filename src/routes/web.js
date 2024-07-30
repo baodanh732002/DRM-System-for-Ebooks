@@ -9,12 +9,13 @@ const indexController = require('../controllers/indexController')
 const logoutController = require('../controllers/logoutController')
 const ebookController = require('../controllers/ebookController')
 const adminController = require('../controllers/adminController')
+const accessController = require('../controllers/accessController')
+const userController = require('../controllers/userController')
 
 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Save files in the 'public/contents' directory
         cb(null, path.join(__dirname, '..', 'public', 'contents'));
     },
     filename: (req, file, cb) => {
@@ -69,14 +70,56 @@ route.get('/adminManagement', adminController.getAdminManagement)
 route.post('/adminManagement_add', adminController.handleAddNewAdmin)
 route.post('/adminManagement_delete', adminController.handleAdminDelete)
 
-route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
+route.get('/requestManagement', adminController.getRequestManagement)
+route.post('/approveRequestAdmin', adminController.approveRequestAdmin)
+route.post('/rejectRequestAdmin', adminController.rejectRequestAdmin)
 
-route.get('/downloadEbook', ebookController.getDownloadEbook);
-route.post('/downloadEbook', ebookController.handleDownloadEbook);
-route.post('/downloadEbook_delete', ebookController.handleDeleteDownloadEbook)
+route.get('/ebookReading/:ebookId', ebookController.getEbookReading);
+route.get('/reviewEbook/:ebookId', adminController.reviewEbook);
+
+route.get('/notification', accessController.getRequests);
 
 route.get('/searchEbook', ebookController.getSearchEbook)
 
+route.post('/requestAccess', accessController.requestAccess)
+route.post('/approveRequest', accessController.approveRequest)
 
+route.post('/clearSuccessMessageInNotification', (req, res) => {
+    req.session.successMessage = null;
+    res.sendStatus(200);
+});
+
+route.post('/clearSuccessMessage', (req, res) => {
+    delete req.session.successMessage;
+    res.sendStatus(200);
+});
+
+route.post('/accessEbook', ebookController.accessEbookReading)
+
+route.post('/deleteRequest', accessController.deleteRequest)
+route.post('/rejectRequest', accessController.rejectRequest)
+
+route.get('/verify-email', registerController.getAuthenticationEmail);
+route.post('/verify-email', registerController.verifyEmail);
+route.post('/resend-auth-code', registerController.resendAuthCode);
+
+route.get('/otp-login', loginController.getOtpLogin);
+route.post('/verify-otp', loginController.verifyOtp);
+route.post('/resend-otp', loginController.resendOtp);
+
+route.get('/forgot-password', loginController.getForgotPasswordForm);
+route.post('/send-reset-code', loginController.sendResetCode);
+route.get('/verify-reset-code', loginController.getVerifyResetCodeForm);
+route.post('/verify-reset-code', loginController.verifyResetCode);
+route.post('/resend-reset-code', loginController.resendResetCode);
+route.get('/reset-password', loginController.getResetPasswordForm);
+route.post('/reset-password', loginController.resetPassword);
+
+route.get('/userProfile/:username', userController.getUserProfile)
+route.post('/update-user', userController.updateUser);
+route.post('/change-password', userController.changePassword);
+route.get('/verify-change', userController.getVerifyChange);
+route.post('/verify-change', userController.verifyChange);
+route.post('/resend-auth-code', userController.resendAuthCode);
 
 module.exports = route

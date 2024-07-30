@@ -27,7 +27,6 @@
     <!-- ======= BODY ======= -->
     <div class="container mt-5 mb-5">
         <div class="row ps-2">
-            <!-- <a href="/myEbooks" class="text-success"><strong>My Ebooks > <span class="text-success" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></strong></a> -->
             <button class="back-button" onclick="goBack()">&#8592; | <span class="text-success ml-2" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></button>
         </div>
         <br>
@@ -52,27 +51,22 @@
                         <th>Language: </th>
                         <td><%= formattedEbookData.language %></td>
                     </tr>
-                    <!-- NĂM XUẤT BẢN -->
                     <tr>
                         <th>Publishing Year: </th>
                         <td><%= formattedEbookData.pub_year %></td>
                     </tr>
-                    <!-- NHÀ XUẤT BẢN -->
                     <tr>
                         <th>Publisher: </th>
                         <td><%= formattedEbookData.publisher %></td>
                     </tr>
-                    <!-- Digital Object Identifier (DOI) -->
                     <tr>
                         <th>DOI: </th>
                         <td><%= formattedEbookData.doi %></td>
                     </tr>
-                    <!-- MÃ SÁCH CHUẨN QUỐC TẾ -->
                     <tr>
                         <th>ISBN Code: </th>
                         <td><%= formattedEbookData.isbn %></td>
                     </tr>
-                    <!-- SỐ LẦN TÁI BẢN -->
                     <tr>
                         <th>Date Posted: </th>
                         <td><%= formattedEbookData.formattedDate %></td>
@@ -122,24 +116,18 @@
         </div>
     </div>   
 
-    <!-- DELETE MODAL -->
     <div class="modal fade deleteEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            
-                <!-- Modal Header -->
                 <div class="modal-header">
-                <h4 class="modal-title">Delete Ebook</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Ebook</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                
-                <!-- Modal body -->
                 <form action="/myEbookDetail_delete" method="post">
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
                         <h5>Are you sure you want to delete ebook: <strong><%= formattedEbookData.title%>?</strong></h5>
                     </div>
-                    <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Ok</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -149,7 +137,6 @@
         </div>
     </div>
 
-    <!-- EDIT MODAL -->
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
             <form id="ebookForm" action="/myEbookDetail_update" method="post" enctype="multipart/form-data">
@@ -261,7 +248,6 @@
 </body>
 
 <script>
-    // OPEN & CLOSE EDIT MODAL
     const btn_edit = document.getElementById('btn-edit');
     const btn_close = document.getElementById('close');
     const modal_container = document.getElementById('modal-container');

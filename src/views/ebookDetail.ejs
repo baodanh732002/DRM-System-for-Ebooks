@@ -13,6 +13,28 @@
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="/css/ebookDetailStyle.css">
     <script src="/DRM/BlockClient.js"></script>
+    <style>
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+    
+        #notification.success {
+            background-color: #28a745; 
+            color: white;
+        }
+    
+        #notification.error {
+            background-color: #dc3545; 
+            color: white;
+        }
+    </style>
+    
 </head>
 <body>
     <!-- ======= HEADER ======= -->
@@ -22,7 +44,6 @@
     <div class="container mt-5 mb-5">
         <div class="row">
             <div class="row ps-2 mb-3">
-                <!-- <a href="/popular" class="text-success"><strong>Popular > <span class="text-success" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></strong></a> -->
                 <button class="back-button" onclick="goBack()">&#8592; | <span class="text-success ml-2" style="text-transform: uppercase;"><%= formattedEbookData.title %></span></button>
             </div>
             <div class="col-lg-3">
@@ -45,22 +66,18 @@
                         <th>Language: </th>
                         <td><%= formattedEbookData.language %></td>
                     </tr>
-                    <!-- NĂM XUẤT BẢN -->
                     <tr>
                         <th>Publishing Year: </th>
                         <td><%= formattedEbookData.pub_year %></td>
                     </tr>
-                    <!-- NHÀ XUẤT BẢN -->
                     <tr>
                         <th>Publisher: </th>
                         <td><%= formattedEbookData.publisher %></td>
                     </tr>
-                    <!-- Digital Object Identifier (DOI) -->
                     <tr>
                         <th>DOI: </th>
                         <td><%= formattedEbookData.doi %></td>
                     </tr>
-                    <!-- MÃ SÁCH CHUẨN QUỐC TẾ -->
                     <tr>
                         <th>ISBN Code: </th>
                         <td><%= formattedEbookData.isbn %></td>
@@ -72,19 +89,17 @@
                 </table>
                 <hr>
                 <div class="row">
-                    <button class="btn btn-download col-lg-4 btn-success" id="btn-download" type="button" data-toggle="modal" data-target="#acceptDownloadModal">
-                        <ion-icon name="cloud-download-outline" class="mr-2"></ion-icon>
-                        Download
+                    <button class="btn btn-download col-lg-4 btn-success" id="btn-access" type="button" data-toggle="modal" data-target="#accessEbookModal">
+                        <ion-icon name="eye-outline" class="mr-2"></ion-icon>
+                        Access Ebook
                     </button>
-                    <<a href="/ebookReading/<%= formattedEbookData._id%>" class="col-lg-4 p-0">
-                        <button class="btn btn-review btn-primary w-100" id="btn-review" type="submit">
-                            <ion-icon name="eye-outline" class="mr-2"></ion-icon>
-                            Review
-                        </button>
-                    </a>
+                    <button class="btn btn-review col-lg-4 btn-primary" id="btn-request" type="button" data-toggle="modal" data-target="#requestAccessModal">
+                        <ion-icon name="cloud-download-outline" class="mr-2"></ion-icon>
+                        Request for Access
+                    </button>
                 </div>
 
-                <div class="ebook-describe">
+                <div class="ebook-describe mt-4">
                     <h3>Description</h3>
                     <span class="text-white">
                         <%= formattedEbookData.description %>
@@ -94,61 +109,80 @@
         </div>
     </div>   
 
-    <!-- DOWNLOAD ACCEPT MODAL -->
-    <div class="modal fade" id="acceptDownloadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="accessEbookModal" tabindex="-1" role="dialog" aria-labelledby="accessEbookModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Download Ebook</h4>
+                    <h4 class="modal-title">Access Ebook</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <h5>Are you sure you want to download this ebook: <strong><%= formattedEbookData.title %></strong>?</h5>
-                    <form id="downloadForm" method="post" action="/downloadEbook">
-                        <input type="hidden" name="username" value="<%= user.username %>">
-                        <input type="hidden" name="doi" value="<%= formattedEbookData.doi %>">
-                        <input type="hidden" name="isbn" value="<%= formattedEbookData.isbn %>">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" id="confirmDownload">Ok</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                </div>
+                <form id="accessForm" method="post" action="/accessEbook">
+                    <div class="modal-body">
+                        <h5>Please enter the key to access this ebook: <strong><%= formattedEbookData.title %></strong></h5>
+                        <input type="hidden" name="ebookId" value="<%= formattedEbookData._id %>">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="accessKey" name="accessKey" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="confirmAccess">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- SUCCESS NOTIFICATION -->
+    <div class="modal fade" id="requestAccessModal" tabindex="-1" role="dialog" aria-labelledby="requestAccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Request Access</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="requestForm" method="post" action="/requestAccess">
+                    <div class="modal-body">
+                        <h5>Are you sure you want to request access to this ebook: <strong><%= formattedEbookData.title %></strong>?</h5>
+                        <input type="hidden" name="ebookId" value="<%= formattedEbookData._id %>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="confirmRequest">Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="notification"></div>
 
     <% if (message) { %>
-        <input type="hidden" id="messageDownload" value="<%= message %>">
+        <script>
+            $(document).ready(function() {
+                const messageType = "<%= messageType %>";
+                const notification = $('#notification');
+                notification.addClass(messageType);
+                notification.text("<%= message %>").fadeIn().delay(3000).fadeOut(function() {
+                    notification.removeClass(messageType);
+                });
+            });
+        </script>
     <% } %>
+    
 
     <%- include('./partials/footer'); %>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>
         function goBack() {
             window.history.back();
         }
 
-        document.getElementById('confirmDownload').addEventListener('click', () => {
-            document.getElementById('downloadForm').submit();
+        document.getElementById('confirmAccess').addEventListener('click', () => {
+            document.getElementById('accessForm').submit();
         });
 
-        $(document).ready(function() {
-            const messageDownload = document.getElementById('messageDownload');
-            if (messageDownload) {
-                const message = messageDownload.value;
-                console.log(message); // Check if message is logged
-                if (message) {
-                    $('#notification').text(message).fadeIn().delay(3000).fadeOut();
-                }
-            }
+        document.getElementById('confirmRequest').addEventListener('click', () => {
+            document.getElementById('requestForm').submit();
         });
     </script>
 </body>

@@ -20,9 +20,26 @@
     <script src="/DRM/BlockClient.js"></script>
 </head>
 
+<style>
+    #error-message, #success-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: auto;
+        max-width: 300px;
+        text-align: center;
+        display: none;
+    }
+</style>
+
+
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/header'); -%>
+
+    <div id="error-message" class="alert alert-danger text-center"></div>
+    <div id="success-message" class="alert alert-success text-center"></div>
 
     <!-- ======= BODY ======= -->
     <div class="body">
@@ -69,7 +86,7 @@
             </div>
         </div>
     </div>
-    <!-- MODAL CREATE -->
+
     <div id="modal-container">
         <div id="modal" class="dialog-modal">
             <form action="/myEbooks" method="post" enctype="multipart/form-data">
@@ -179,26 +196,6 @@
             </form>     
         </div>
     </div>
-    <!-- Success Modal -->
-    <div class="modal fade addNewEbook" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    New eBook has been added successfully.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <% if (message) { %>
-        <input type="hidden" id="messageCreate" value="<%= message %>">
-    <% } %>
 
 
     <!-- ======= FOOTER ======= -->
@@ -210,33 +207,39 @@
     const btn_new = document.getElementById('open');
     const btn_close = document.getElementById('close');
     const modal_container = document.getElementById('modal-container');
+
     btn_new.addEventListener('click', function() {
         modal_container.classList.add('show');
-    })
+    });
+
     btn_close.addEventListener('click', function() {
         modal_container.classList.remove('show');
-    })
-    
+    });
+
     modal_container.addEventListener('click', (event) => {
         if (event.target === modal_container) {
             modal_container.classList.remove('show');
         }
     });
 
-    //Hidden btn new 
+
     window.addEventListener('DOMContentLoaded', (event) => {
         const specialButton = document.getElementById('open');
-            if (window.location.pathname === '/myEbooks') {
-                specialButton.classList.remove('hidden');
+        if (window.location.pathname === '/myEbooks') {
+            specialButton.classList.remove('hidden');
         }
     });
 
+
     $(document).ready(function() {
-        const messageCreate = document.getElementById('messageCreate');
-        if (messageCreate) {
-            const message = messageCreate.value;
-            if (message) {
-                alert(message);
+        var message = "<%= message %>";
+        var messageType = "<%= messageType %>";
+
+        if (message && messageType) {
+            if (messageType === 'success') {
+                $('#success-message').text(message).fadeIn().delay(3000).fadeOut();
+            } else if (messageType === 'error') {
+                $('#error-message').text(message).fadeIn().delay(3000).fadeOut();
             }
         }
     });

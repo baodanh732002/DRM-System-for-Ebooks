@@ -49,22 +49,18 @@
                         <th>Language: </th>
                         <td><%= formattedEbookData.language %></td>
                     </tr>
-                    <!-- NĂM XUẤT BẢN -->
                     <tr>
                         <th>Publishing Year: </th>
                         <td><%= formattedEbookData.pub_year %></td>
                     </tr>
-                    <!-- NHÀ XUẤT BẢN -->
                     <tr>
                         <th>Publisher: </th>
                         <td><%= formattedEbookData.publisher %></td>
                     </tr>
-                     <!-- Digital Object Identifier (DOI) -->
                      <tr>
                         <th>DOI: </th>
                         <td><%= formattedEbookData.doi %></td>
                     </tr>
-                    <!-- MÃ SÁCH CHUẨN QUỐC TẾ -->
                     <tr>
                         <th>ISBN Code: </th>
                         <td><%= formattedEbookData.isbn %></td>
@@ -98,10 +94,12 @@
                             <ion-icon name="create-outline" class="mr-2"></ion-icon>
                             Edit
                         </button>
-                        <button class="btn-review col-lg-3 btn-primary" id="btn-review" type="submit">
-                            <ion-icon name="eye-outline" class="mr-2"></ion-icon>
-                            View
-                        </button>
+                        <a href="/reviewEbook/<%= formattedEbookData._id%>" class="col-lg-3">
+                            <button class="btn-review col-lg-3 btn-primary" id="btn-review" type="submit">
+                                <ion-icon name="eye-outline" class="mr-2"></ion-icon>
+                                View
+                            </button>
+                        </a>
                         <button class="btn-delete col-lg-3 btn-danger" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>">
                             <ion-icon name="trash-outline" class="mr-2"></ion-icon>
                             Delete
@@ -115,6 +113,12 @@
                         <button class="btn-deny col-lg-4 btn-danger" data-toggle="modal" data-target=".denyEbook<%= formattedEbookData._id %>">
                             Deny
                         </button>
+                        <a href="/reviewEbook/<%= formattedEbookData._id%>" class="col-lg-3">
+                            <button class="btn-review col-lg-3 btn-primary" id="btn-review" type="submit">
+                                <ion-icon name="eye-outline" class="mr-2"></ion-icon>
+                                View
+                            </button>
+                        </a>
                     </div>
                 <% } %>
                 <div class="ebook-describe">
@@ -127,24 +131,18 @@
         </div>
     </div>
 
-    <!-- ACCEPT EBOOK MODAL -->
     <div class="modal fade acceptEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-
-                <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Accept Ebook</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-
-                <!-- Modal body -->
                 <form action="/ebookManagement_accept" method="post">
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id" value="<%= formattedEbookData._id %>">
                         <h5>Are you sure you want to accept this ebook: <strong><%= formattedEbookData.title %></strong>?</h5>
                     </div>
-                    <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Accept</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -154,25 +152,20 @@
         </div>
     </div>
 
-    <!-- DENY EBOOK MODAL -->
+
     <div class="modal fade denyEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-
-                <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Deny Ebook</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-
-                <!-- Modal body -->
                 <form action="/ebookManagement_deny" method="post">
                     <div class="modal-body p-4">
                         <input type="hidden" id="id" name="id" value="<%= formattedEbookData._id %>">
                         <h5>Why did you refuse this book: <strong><%= formattedEbookData.title %></strong>?</h5>
                         <input type="text" placeholder="Write here..." name="reason" class="reason-text mt-4 w-75">
                     </div>
-                    <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-danger">Deny</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -290,20 +283,15 @@
     <div class="modal fade deleteEbook<%= formattedEbookData._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            
-                <!-- Modal Header -->
                 <div class="modal-header">
                 <h4 class="modal-title">Delete Ebook</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                
-                <!-- Modal body -->
                 <form action="/ebookManagement_delete" method="post">
                     <div class="modal-body">
                         <input type="hidden" id="id" name="id" placeholder="" value="<%= formattedEbookData._id%>">
                         <h5>Are you sure you want to delete ebook: <strong><%= formattedEbookData.title%>?</strong></h5>
                     </div>
-                    <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Ok</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -319,9 +307,10 @@
     const modal_container = document.getElementById('modal-container');
     btn_edit.addEventListener('click', function() {
         modal_container.classList.add('show');
-    })
+    }) 
     btn_close.addEventListener('click', function() {
         modal_container.classList.remove('show');
     })
+
 </script>
 </html>

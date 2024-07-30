@@ -8,14 +8,14 @@ body, html {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     min-height: 100vh;
 }
 
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure body takes full height */
+    min-height: 100vh;
 }
 
 a {
@@ -61,24 +61,24 @@ a:hover {
 }
 
 .header-user img {
-    width: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
-    height: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
-    border-radius: 50%; /* Nếu bạn muốn hình ảnh có dạng tròn */
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
 }
 
 .username {
-    margin-left: 10px; /* Khoảng cách giữa hình ảnh và tên người dùng */
-    color: white; /* Màu chữ */
-    font-size: 16px; /* Điều chỉnh kích thước chữ nếu cần */
+    margin-left: 10px; 
+    color: white; 
+    font-size: 16px; 
 }
 
 .nav__logout ion-icon {
-    font-size: 24px; /* Điều chỉnh kích thước biểu tượng */
-    color: white; /* Màu biểu tượng */
+    font-size: 24px; 
+    color: white; 
 }
 
 label {
-    margin: 0 10px; /* Khoảng cách giữa các phần tử */
+    margin: 0 10px; 
 }
 
 .d-flex {
@@ -101,11 +101,11 @@ label {
 .body {
     flex: 1;
 }
-/* sidebar */
+
 .sidebar {
     background-color: #131c23;
     flex-shrink: 0;
-    min-height: 100vh; /* Ensure sidebar takes full height */
+    min-height: 100vh; 
     position: sticky;
     top: 0;
 }
@@ -190,9 +190,9 @@ label {
     height: 220px;
     object-fit: cover;
     border-radius: 3%;
-    border: 1px solid #333; /* Tùy chọn: thêm đường viền cho ảnh */
-    display: block; /* Tùy chọn: đảm bảo ảnh hiển thị dưới dạng block */
-    overflow: hidden; /* Đảm bảo phần dư của ảnh không hiển thị */
+    border: 1px solid #333; 
+    display: block; 
+    overflow: hidden; 
 }
 
 .display .card::after {
@@ -266,9 +266,7 @@ label {
 /* dialog */
 #modal-container {
     position: fixed;
-    /* vị trí cố định */
     z-index: 1;
-    /* Ưu tiên hiển thị trên cùng */
     padding-top: 150px;
     left: 0;
     top: 0;

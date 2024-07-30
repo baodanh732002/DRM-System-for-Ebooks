@@ -40,24 +40,24 @@ a:hover {
 }
 
 .header-user img {
-    width: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
-    height: 40px; /* Điều chỉnh kích thước hình ảnh nếu cần */
-    border-radius: 50%; /* Nếu bạn muốn hình ảnh có dạng tròn */
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
 }
 
 .admin {
-    margin-left: 10px; /* Khoảng cách giữa hình ảnh và tên người dùng */
-    color: white; /* Màu chữ */
-    font-size: 16px; /* Điều chỉnh kích thước chữ nếu cần */
+    margin-left: 10px; 
+    color: white; 
+    font-size: 16px; 
 }
 
 .nav__logout ion-icon {
-    font-size: 24px; /* Điều chỉnh kích thước biểu tượng */
-    color: white; /* Màu biểu tượng */
+    font-size: 24px; 
+    color: white; 
 }
 
 label {
-    margin: 0 10px; /* Khoảng cách giữa các phần tử */
+    margin: 0 10px; 
 }
 
 .d-flex {
@@ -200,12 +200,9 @@ label {
     margin: 0 10px;
 }
 
-/* dialog */
 #modal-container {
     position: fixed;
-    /* vị trí cố định */
     z-index: 1;
-    /* Ưu tiên hiển thị trên cùng */
     padding-top: 150px;
     left: 0;
     top: 0;

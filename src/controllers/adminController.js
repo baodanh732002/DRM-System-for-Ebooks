@@ -447,73 +447,81 @@ class AdminController{
         }
     }
 
-    async handleAddNewAdmin(req, res){
+    async handleAddNewAdmin(req, res) {
         if (req.session.admin) {
             try {
-                const admin = req.session.admin || null
-                const {adname, email, phone, password, confirm} = req.body;
+                const admin = req.session.admin || null;
+                const { adname, email, phone, password, confirm } = req.body;
                 console.log(req.body);
+    
                 let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
                 let regPhone = /^0\d{9,10}$/;
-
-                if(
-                    !adname ||
-                    !email ||
-                    !phone ||
-                    !password ||
-                    !confirm
-                ){
+                let regPassword = /^[a-zA-Z0-9!?@]{6,}$/;
+    
+                if (!adname || !email || !phone || !password || !confirm) {
                     return res.render("adminManagement", {
-                        message: "Please fill in all required fields.", admin
+                        message: "Please fill in all required fields.",
+                        admin
                     });
                 }
-                if(regEmail.test(email) == false){
+                if (regEmail.test(email) == false) {
                     return res.render("adminManagement", {
-                        message: "Please fill the correct email.", admin
-                    }); 
+                        message: "Please fill the correct email.",
+                        admin
+                    });
                 }
-
                 if (regPhone.test(phone) == false) {
                     return res.render("adminManagement", {
-                        message: "Invalid Phone.", admin
+                        message: "Invalid Phone.",
+                        admin
                     });
                 }
-
+                if (!regPassword.test(password)) {
+                    return res.render("adminManagement", {
+                        message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.",
+                        admin
+                    });
+                }
                 if (password !== confirm) {
                     return res.render("adminManagement", {
-                        message: "Password and Confirm Password do not match.", admin
+                        message: "Password and Confirm Password do not match.",
+                        admin
                     });
                 }
-
-                const existAdmin = await Admin.findOne({email: email})
-                if(existAdmin){
-                    return res.render("adminManagement", { message: "Email already registered.", admin});
+    
+                const existAdmin = await Admin.findOne({ email: email });
+                if (existAdmin) {
+                    return res.render("adminManagement", {
+                        message: "Email already registered.",
+                        admin
+                    });
                 }
-
-                const salt = await bcrypt.genSalt(10)
-                const hashedPassword = await bcrypt.hash(password, salt)
-
+    
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
+    
                 const newAdmin = new Admin({
                     adname: adname,
                     email: email,
                     phone: phone,
                     password: hashedPassword,
                     date: new Date()
-                })
-
-                await newAdmin.save()
-                res.redirect("/adminManagement")
-
+                });
+    
+                await newAdmin.save();
+                res.redirect("/adminManagement");
             } catch (error) {
-                console.log(error)
-                res
-                .status(500)
-                .render("adminManagement", { message: "Failed to create account." });
+                console.log(error);
+                res.status(500).render("adminManagement", {
+                    message: "Failed to create account.",
+                    admin
+                });
             }
         } else {
             return res.redirect('/login');
         }
     }
+    
 
     async handleAdminDelete(req, res){
         if (req.session.admin) {

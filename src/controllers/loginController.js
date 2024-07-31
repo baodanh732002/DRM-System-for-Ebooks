@@ -8,6 +8,8 @@ const nodemailer = require('nodemailer');
 
 class LoginController {
     getLoginForm(req, res) {
+        req.session.user = null;
+        req.session.admin = null;
         const success = req.query.success;
         res.render('login.ejs', { success: success });
     }

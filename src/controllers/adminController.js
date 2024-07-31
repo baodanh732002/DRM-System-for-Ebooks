@@ -454,7 +454,7 @@ class AdminController{
                 const {adname, email, phone, password, confirm} = req.body;
                 console.log(req.body);
                 let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-                let regPhone = /^[0-9]*$/;
+                let regPhone = /^0\d{9,10}$/;
 
                 if(
                     !adname ||

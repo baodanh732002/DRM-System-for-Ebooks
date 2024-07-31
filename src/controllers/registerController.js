@@ -13,9 +13,10 @@ class RegisterController {
         try {
             let { username, email, phone, password, confirm, birthdate } = req.body;
     
-            let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-            let regPhone = /^0\d{9,10}$/; 
-            let regDate = /^\d{4}-\d{2}-\d{2}$/; 
+            const regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            const regPhone = /^0\d{9,10}$/; 
+            const regDate = /^\d{4}-\d{2}-\d{2}$/; 
+            const regPassword = /^[a-zA-Z0-9!?@]{6,}$/;
     
             if (!username || !email || !phone || !password || !confirm || !birthdate) {
                 return res.render("register", {
@@ -50,6 +51,13 @@ class RegisterController {
             if (isNaN(birthdateObj.getTime())) {
                 return res.render("register", {
                     message: "Invalid birthdate.",
+                });
+            }
+
+
+            if (!regPassword.test(password)) {
+                return res.render("register", {
+                    message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.",
                 });
             }
     

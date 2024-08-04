@@ -12,26 +12,20 @@
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     <link rel="stylesheet" href="/css/loginStyle.css">
-    <style>
-        .countdown-timer {
-            color: white;
-            font-size: 1.2em;
-        }
-    </style>
 </head>
 <body>
     <section class="login-box">
         <div class="form-box" id="loginForm">
             <div class="form-value">
                 <form action="/verify-email" method="post">
-                    <h2 style="color: white;">Email Authentication</h2>
-                    <p style="color: white;">Authentication code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span> seconds.</p>
+                    <h2 class="text-white">Email Authentication</h2>
+                    <p class="text-white">Authentication code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
                     <% if (typeof message !== 'undefined') { %>
                         <div class="alert alert-danger" role="alert" id="error-message">
                           <%= message %>
                         </div>
                     <% } %>
-                    <div class="inputbox">
+                    <div class="inputbox mt-4 mb-4">
                         <ion-icon name="mail-outline"></ion-icon>
                         <input type="text" class="input" id="authCode" name="authCode" required/>
                         <label for="authCode">Authentication Code</label>
@@ -43,7 +37,7 @@
                     <% } %>
                     <input type="submit" class="submit" value="Verify">
                 </form>
-                <button onclick="resendCode()" class="btn btn-primary mt-3">Resend Code</button>
+                <button onclick="resendCode()" class="btn btn-primary btn-resend mt-3">Resend Code</button>
             </div>
         </div>
     </section>

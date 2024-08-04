@@ -1,0 +1,40 @@
+.table-container .key-request,
+.table-container .your-request {
+    padding: 20px 40px 20px 40px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: solid 1px white;
+    border-radius: 20px;
+    margin: 40px 50px 30px 50px;
+}
+
+.key-request h2,
+.your-request h2 {
+    color: white;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+table {
+    font-size: 12px;
+}
+
+.your-request .key-column {
+    word-wrap: break-word; /* Đảm bảo từ dài được chia nhỏ và xuống dòng */
+    word-break: break-all; /* Chia từ dài khi cần thiết */
+    max-width: 150px; /* Chiều rộng tối đa cho cột key, bạn có thể thay đổi giá trị này */
+    white-space: normal; /* Cho phép xuống dòng */
+}
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.fade-out {
+    transition: opacity 3s ease-in-out;
+    opacity: 0;
+}

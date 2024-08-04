@@ -342,6 +342,16 @@ input:valid ~ label {
     padding: 0 35px 0 5px;
     color: #fff; }
 
+.inputbox input:-webkit-autofill,
+.inputbox input:-webkit-autofill:hover,
+.inputbox input:-webkit-autofill:focus,
+.inputbox input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff; /* Màu chữ */
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
+    box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .dialog .form-box .create {
     margin-top: 20px;
 }

@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notification</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-        }
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
-        .fade-out {
-            transition: opacity 3s ease-in-out;
-            opacity: 0;
-        }
-    </style>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/notificationStyle.css">
 </head>
 <body>
     <!-- HEADER -->
@@ -39,136 +38,141 @@
             <!-- SIDEBAR -->
             <%- include('./partials/sidebar'); %>
 
-            <div class="col-lg-9 table-container">
-                <h2 style="color: aliceblue;">Key Request</h2>
-                <table class="table table-dark table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Requested by</th>
-                            <th scope="col">Handled by</th>
-                            <th scope="col">Ebook name</th>
-                            <th scope="col">Request Date</th>
-                            <th scope="col">State</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% keyRequests.forEach(request => { %>
+            <div class="table-container col-lg-10">
+                <h1 class="text-success d-flex justify-content-center mt-5">NOTIFICATION</h1>
+                <div class="key-request">
+                    <h2>Key Request</h2>
+                    <table class="table text-white">
+                        <thead>
                             <tr>
-                                <td><%= request.serialNumber %></td>
-                                <td><%= request.requestBy %></td>
-                                <td><%= request.handleBy %></td>
-                                <td><%= request.ebookName %></td>
-                                <td><%= request.formattedRequestDate %></td>
-                                <td><%= request.state %></td>
-                                <td>
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal-<%= request._id %>">Approve</button>
-                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-<%= request._id %>">Reject</button>
-                                </td>
+                                <th scope="col">No.</th>
+                                <th scope="col">Requested by</th>
+                                <th scope="col">Handled by</th>
+                                <th scope="col">Ebook name</th>
+                                <th scope="col">Request Date</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Actions</th>
                             </tr>
-
-                            <div class="modal fade" id="approveModal-<%= request._id %>" tabindex="-1" aria-labelledby="approveModalLabel-<%= request._id %>" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <form action="/approveRequest" method="post">
+                        </thead>
+                        <tbody>
+                            <% keyRequests.forEach(request => { %>
+                                <tr>
+                                    <td><%= request.serialNumber %></td>
+                                    <td><%= request.requestBy %></td>
+                                    <td><%= request.handleBy %></td>
+                                    <td><%= request.ebookName %></td>
+                                    <td><%= request.formattedRequestDate %></td>
+                                    <td><%= request.state %></td>
+                                    <td>
+                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal-<%= request._id %>">Approve</button>
+                                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-<%= request._id %>">Reject</button>
+                                    </td>
+                                </tr>
+    
+                                <div class="modal fade" id="approveModal-<%= request._id %>" tabindex="-1" aria-labelledby="approveModalLabel-<%= request._id %>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="/approveRequest" method="post">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveModalLabel-<%= request._id %>">Approve Request</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to <strong style="color: rgba(0, 255, 55, 0.481);">APPROVE</strong> <strong><%= request.requestBy %></strong> to access ebook: <strong><%= request.ebookName %></strong>?
+                                                    <input type="hidden" name="requestId" value="<%= request._id %>">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-success">Approve</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="modal fade" id="rejectModal-<%= request._id %>" tabindex="-1" aria-labelledby="rejectModalLabel-<%= request._id %>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="approveModalLabel-<%= request._id %>">Approve Request</h5>
+                                                <h5 class="modal-title" id="rejectModalLabel-<%= request._id %>">Reject Request</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">
-                                                Are you sure you want to <strong style="color: rgba(0, 255, 55, 0.481);">APPROVE</strong> <strong><%= request.requestBy %></strong> to access ebook: <strong><%= request.ebookName %></strong>?
-                                                <input type="hidden" name="requestId" value="<%= request._id %>">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-success">Approve</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="rejectModal-<%= request._id %>" tabindex="-1" aria-labelledby="rejectModalLabel-<%= request._id %>" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="rejectModalLabel-<%= request._id %>">Reject Request</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <form method="post" action="/rejectRequest">
+                                                <div class="modal-body">
+                                                    Are you sure you want to <strong style="color: #dc3545;">REJECT</strong> <strong><%= request.requestBy %></strong> to access ebook: <strong><%= request.ebookName %></strong>?
+                                                    <input type="hidden" name="requestId" value="<%= request._id %>">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <form method="post" action="/rejectRequest">
-                                            <div class="modal-body">
-                                                Are you sure you want to <strong style="color: #dc3545;">REJECT</strong> <strong><%= request.requestBy %></strong> to access ebook: <strong><%= request.ebookName %></strong>?
-                                                <input type="hidden" name="requestId" value="<%= request._id %>">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">Reject</button>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
-                            </div>
-                        <% }) %>
-                    </tbody>
-                </table>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
 
-                <h2 style="color: aliceblue;">Your Request</h2>
-                <table class="table table-dark table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Handle by</th>
-                            <th scope="col">Ebook name</th>
-                            <th scope="col">Request Date</th>
-                            <th scope="col">Handle Date</th>
-                            <th scope="col">Key</th>
-                            <th scope="col">State</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% yourRequests.forEach(request => { %>
+                <div class="your-request">
+                    <h2>Your Request</h2>
+                    <table class="table text-white">
+                        <thead>
                             <tr>
-                                <td><%= request.serialNumber %></td>
-                                <td><%= request.handleBy %></td>
-                                <td><%= request.ebookName %></td>
-                                <td><%= request.formattedRequestDate %></td>
-                                <td><%= request.formattedHandleDate %></td>
-                                <td><%= request.key %></td>
-                                <td><%= request.state %></td>
-                                <td>
-                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= request._id %>">Delete</button>
-                                    <button class="btn btn-primary copy-key" data-key="<%= request.key %>">Copy Key</button>
-                                </td>
+                                <th scope="col">No.</th>
+                                <th scope="col">Handle by</th>
+                                <th scope="col">Ebook name</th>
+                                <th scope="col">Request Date</th>
+                                <th scope="col">Handle Date</th>
+                                <th scope="col">Key</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Actions</th>
                             </tr>
-
-                            <div class="modal fade" id="cancelModal-<%= request._id %>" tabindex="-1" aria-labelledby="cancelModalLabel-<%= request._id %>" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="cancelModalLabel-<%= request._id %>">Delete Request</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </thead>
+                        <tbody>
+                            <% yourRequests.forEach(request => { %>
+                                <tr>
+                                    <td><%= request.serialNumber %></td>
+                                    <td><%= request.handleBy %></td>
+                                    <td><%= request.ebookName %></td>
+                                    <td><%= request.formattedRequestDate %></td>
+                                    <td><%= request.formattedHandleDate %></td>
+                                    <td class="key-column"><%= request.key %></td>
+                                    <td><%= request.state %></td>
+                                    <td>
+                                        <button class="btn btn-danger me-3" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= request._id %>">Delete</button>
+                                        <button class="btn btn-primary copy-key" data-key="<%= request.key %>">Copy Key</button>
+                                    </td>
+                                </tr>
+    
+                                <div class="modal fade" id="cancelModal-<%= request._id %>" tabindex="-1" aria-labelledby="cancelModalLabel-<%= request._id %>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelModalLabel-<%= request._id %>">Delete Request</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form method="post" action="/deleteRequest">
+                                                <div class="modal-body">
+                                                    Are you sure you want to <strong style="color: #dc3545;">DELETE</strong> your request for ebook: <strong><%= request.ebookName %></strong>?
+                                                    <input type="hidden" name="requestId" value="<%= request._id %>">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <form method="post" action="/deleteRequest">
-                                            <div class="modal-body">
-                                                Are you sure you want to <strong style="color: #dc3545;">DELETE</strong> your request for ebook: <strong><%= request.ebookName %></strong>?
-                                                <input type="hidden" name="requestId" value="<%= request._id %>">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
-                            </div>
-                        <% }) %>
-                    </tbody>
-                </table>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div>
-                    <p style="color: aliceblue; font-style:italic">You can use the key for each ebook only once with a limit time.</p>
+                    <p class="d-flex justify-content-center text-white mb-2">You can use the key for each ebook only once with a limit time.</p>
                 </div>
             </div>
         </div>

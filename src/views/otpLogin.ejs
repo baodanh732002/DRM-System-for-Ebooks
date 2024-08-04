@@ -24,21 +24,21 @@
         <div class="form-box" id="otpForm">
             <div class="form-value">
                 <form action="/verify-otp" method="post">
-                    <h2 style="color: white;">OTP Authentication</h2>
-                    <p style="color: white;">OTP will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
+                    <h2 class="text-white">OTP Authentication</h2>
+                    <p class="text-white">OTP will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
                     <% if (typeof message !== 'undefined') { %>
                         <div class="alert alert-danger" role="alert" id="error-message">
                           <%= message %>
                         </div>
                     <% } %>
-                    <div class="inputbox">
+                    <div class="inputbox mt-4 mb-4">
                         <ion-icon name="mail-outline"></ion-icon>
                         <input type="text" class="input" id="otpCode" name="otp" required/>
                         <label for="otpCode">OTP Code</label>
                     </div>
                     <input type="submit" class="submit" value="Verify">
                 </form>
-                <button onclick="resendOtp()" class="btn btn-primary mt-3">Resend OTP</button>
+                <button onclick="resendOtp()" class="btn btn-primary btn-resend mt-3">Resend OTP</button>
             </div>
         </div>
     </section>

@@ -11,33 +11,27 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="/css/loginStyle.css">
-    <style>
-        .countdown-timer {
-            color: white;
-            font-size: 1.2em;
-        }
-    </style>
 </head>
 <body>
     <section class="login-box">
         <div class="form-box" id="verifyResetCodeForm">
-            <div class="form-value">
+            <div class="form-value p-2">
                 <form action="/verify-reset-code" method="post">
-                    <h2 style="color: white;">Verify Reset Password Code</h2>
-                    <p style="color: white;">Code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
+                    <h2 class="text-white">Verify Reset Password Code</h2>
+                    <p class="text-white">Code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
                     <% if (typeof message !== 'undefined') { %>
                         <div class="alert alert-danger" role="alert" id="error-message">
                           <%= message %>
                         </div>
                     <% } %>
-                    <div class="inputbox">
+                    <div class="inputbox mt-4 mb-4">
                         <ion-icon name="mail-outline"></ion-icon>
                         <input type="text" class="input" id="resetCode" name="resetCode" required/>
                         <label for="resetCode">Reset Code</label>
                     </div>
                     <input type="submit" class="submit" value="Verify">
                 </form>
-                <button onclick="resendResetCode()" class="btn btn-primary mt-3">Resend Code</button>
+                <button onclick="resendResetCode()" class="btn btn-primary btn-resend mt-3">Resend Code</button>
             </div>
         </div>
     </section>

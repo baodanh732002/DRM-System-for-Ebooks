@@ -11,33 +11,27 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="/css/loginStyle.css">
-    <style>
-        .countdown-timer {
-            color: white;
-            font-size: 1.2em;
-        }
-    </style>
 </head>
 <body>
     <section class="login-box">
         <div class="form-box" id="authForm">
-            <div class="form-value">
+            <div class="form-value p-2">
                 <form action="/verify-change" method="post">
-                    <h2 style="color: white;">Verify Change Information Code</h2>
-                    <p style="color: white;">Authentication code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
+                    <h2 class="text-white">Verify Change Information Code</h2>
+                    <p class="text-white">Authentication code will expire in <span id="countdown" class="countdown-timer"><%= countdown %></span>.</p>
                     <% if (typeof message !== 'undefined') { %>
                         <div class="alert alert-danger" role="alert" id="error-message">
                           <%= message %>
                         </div>
                     <% } %>
-                    <div class="inputbox">
+                    <div class="inputbox mt-4 mb-4">
                         <ion-icon name="mail-outline"></ion-icon>
                         <input type="text" class="input" id="authCode" name="authCode" required/>
                         <label for="authCode">Authentication Code</label>
                     </div>
                     <input type="submit" class="submit" value="Verify">
                 </form>
-                <button onclick="resendAuthCode()" class="btn btn-primary mt-3">Resend Authentication Code</button>
+                <button onclick="resendAuthCode()" class="btn btn-primary mt-3 btn-resend">Resend Authentication Code</button>
             </div>
         </div>
     </section>

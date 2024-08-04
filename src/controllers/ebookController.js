@@ -343,8 +343,8 @@ class EbookController {
             if (ebookId) {
                 const ebook = await Ebook.findById(ebookId);
                 if (ebook) { 
-                    const inputPath = path.join(ebook.ebookFile);
-                    const tempOutputPath = path.join(__dirname, '..', 'public', 'temp', `${ebook._id}_decrypted.pdf`);
+                    const filename = path.basename(ebook.ebookFile);
+                    const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
     
                     const isOwner = ebook.author === user.username;
     
@@ -353,9 +353,9 @@ class EbookController {
                             const now = new Date().getTime();
                             const expiresAt = req.session.expiresAt || 0;
     
-                            if (fs.existsSync(tempOutputPath) && now < expiresAt) {
+                            if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename)) && now < expiresAt) {
                                 res.render('ebookReading', {
-                                    pdfFilePath: path.basename(tempOutputPath),
+                                    pdfFilePath: tempOutputFilename,
                                     isEncrypted: true,
                                     message: null,
                                     expiresAt,
@@ -369,7 +369,7 @@ class EbookController {
                                 console.log('File key decrypted.');
     
                                 console.log('Decrypting file...');
-                                await EncryptionService.decryptFile(inputPath, tempOutputPath, { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
+                                await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
                                 console.log('File decrypted.');
     
                                 const limitTime = 60000; // 1 minute
@@ -377,13 +377,13 @@ class EbookController {
                                 req.session.expiresAt = newExpiresAt;
     
                                 setTimeout(() => {
-                                    fs.unlink(tempOutputPath, (err) => {
+                                    fs.unlink(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), (err) => {
                                         if (err) console.error(`Error deleting temp file: ${err.message}`);
                                     });
                                 }, limitTime);
     
                                 res.render('ebookReading', {
-                                    pdfFilePath: path.basename(tempOutputPath),
+                                    pdfFilePath: tempOutputFilename,
                                     isEncrypted: true,
                                     message: null,
                                     expiresAt: newExpiresAt,
@@ -394,7 +394,7 @@ class EbookController {
                             }
                         } else {
                             res.render('ebookReading', {
-                                pdfFilePath: path.basename(ebook.ebookFile),
+                                pdfFilePath: filename,
                                 isEncrypted: false,
                                 message: null,
                                 expiresAt: null,
@@ -450,6 +450,7 @@ class EbookController {
         }
     }
     
+    
  
     async accessEbookReading(req, res) {
         try {
@@ -460,7 +461,7 @@ class EbookController {
                 return res.redirect("/login");
             }
     
-            const accessRequest = await AccessRequest.findOne({ ebookId, key: accessKey, state: 'Approved', requestBy: user.username});
+            const accessRequest = await AccessRequest.findOne({ ebookId, key: accessKey, state: 'Approved', requestBy: user.username });
     
             if (!accessRequest) {
                 const ebook = await Ebook.findById(ebookId);
@@ -497,15 +498,15 @@ class EbookController {
                 });
             }
     
-            const inputPath = path.join(ebook.ebookFile);
-            const tempOutputPath = path.join(__dirname, '..', 'public', 'temp', `${ebook._id}_decrypted.pdf`);
+            const filename = path.basename(ebook.ebookFile);
+            const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
     
             const tempExpiryTime = Date.now() + 60 * 1000;
     
             if (ebook.encrypted) {
-                if (fs.existsSync(tempOutputPath)) {
+                if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename))) {
                     res.render('ebookReading', {
-                        pdfFilePath: path.basename(tempOutputPath),
+                        pdfFilePath: tempOutputFilename,
                         isEncrypted: true,
                         message: null,
                         messageType: null,
@@ -516,19 +517,19 @@ class EbookController {
                     });
                 } else {
                     console.log('Decrypting file...');
-                    await EncryptionService.decryptFile(inputPath, tempOutputPath, { encryptedKey: accessKey, iv: ebook.iv });
+                    await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: accessKey, iv: ebook.iv });
                     console.log('File decrypted.');
     
                     await AccessRequest.deleteOne({ _id: accessRequest._id });
     
                     setTimeout(() => {
-                        fs.unlink(tempOutputPath, (err) => {
+                        fs.unlink(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), (err) => {
                             if (err) console.error(`Error deleting temp file: ${err.message}`);
                         });
                     }, 60 * 1000);
     
                     res.render('ebookReading', {
-                        pdfFilePath: path.basename(tempOutputPath),
+                        pdfFilePath: tempOutputFilename,
                         isEncrypted: true,
                         message: null,
                         messageType: null,
@@ -540,7 +541,7 @@ class EbookController {
                 }
             } else {
                 res.render('ebookReading', {
-                    pdfFilePath: path.basename(ebook.ebookFile),
+                    pdfFilePath: filename,
                     isEncrypted: false,
                     message: null,
                     messageType: null,
@@ -564,6 +565,7 @@ class EbookController {
             });
         }
     }
+    
     
     
     

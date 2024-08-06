@@ -82,6 +82,58 @@ box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
 transition: background-color 5000s ease-in-out 0s;
 }
 
+.inputbox input[type="date"] {
+  font-size: 16px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  opacity: 0;
+  color: transparent; /* Hide the text initially */
+}
+
+.inputbox input[type="date"]:focus {
+    color: #000; /* Show the text on focus */
+}
+
+.inputbox input[type="date"]:not(:placeholder-shown) {
+    color: #000; /* Show the text when a date is selected */
+}
+
+.inputbox input[type="date"]::-webkit-inner-spin-button,
+.inputbox input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+.inputbox input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 100%; 
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 3; /* Make sure the calendar icon is clickable */
+}
+
+.inputbox input[type="date"]::before {
+    content: attr(placeholder);
+    position: absolute;
+    top: 50%;
+    left: 35px;
+    transform: translateY(-50%);
+    color: #aaa;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.inputbox input[type="date"]:focus::before,
+.inputbox input[type="date"]:not(:placeholder-shown)::before {
+    display: none; /* Hide the placeholder text on focus and when a date is selected */
+}
+
 .forget {
   margin: -15px 0 15px;
   font-size: .9em;

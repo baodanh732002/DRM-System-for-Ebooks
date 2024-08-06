@@ -182,7 +182,7 @@ label {
     background: var(--background);
     position: relative;
     z-index: 1;
-    height: auto;
+    height: 420px;
 }
 
 .display .card img {

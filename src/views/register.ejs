@@ -42,6 +42,7 @@
                     <div class="inputbox mt-4 mb-4">
                         <ion-icon name="calendar-outline"></ion-icon>
                         <input type="date" class="input" id="birthdate" name="birthdate" required/>
+                        <label for="birthdate">Birth Date</label>
                     </div>
                     <div class="inputbox mt-4 mb-4">
                         <ion-icon name="lock-closed-outline"></ion-icon>
@@ -62,4 +63,12 @@
         </div>
     </section>
 </body>
+<script>
+    document.getElementById('birthdate').addEventListener('change', function() {
+        if (this.value) {
+            this.style.color = '#fff'; // Show text color when a date is selected
+            this.style.opacity = '1'
+        }
+    });
+</script>
 </html>

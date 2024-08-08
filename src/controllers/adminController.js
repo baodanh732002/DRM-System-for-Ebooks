@@ -48,8 +48,8 @@ class AdminController{
                     { $sort: { sortOrder: 1 } },
                     { $project: { sortOrder: 0 } } 
                 ]);
-    
-                res.render("ebookManagement", { ebookData, admin, message: null});
+
+                res.render("ebookManagement", { ebookData, admin, message: null, messageType: null});
             } catch (error) {
                 console.error("Error rendering ebookManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -136,7 +136,11 @@ class AdminController{
                     await ebook.save();
                 }
     
+                req.session.message = `Ebook ${ebook.title} has been accepted successfully.`;
+                req.session.messageType = 'success';
                 res.redirect("/ebookManagement");
+                req.session.message = null;
+                req.session.messageType = null;
             } catch (error) {
                 console.error(error);
                 res.status(500).send("Internal Server Error");
@@ -165,7 +169,11 @@ class AdminController{
                     return res.status(404).send("Ebook not found");
                 }
 
-                res.redirect("/ebookManagement")
+                req.session.message = `Ebook ${ebook.title} has been denied successfully.`;
+                req.session.messageType = 'error';
+                res.redirect("/ebookManagement");
+                req.session.message = null;
+                req.session.messageType = null;
             } catch (error) {
                 console.error(error);
             }

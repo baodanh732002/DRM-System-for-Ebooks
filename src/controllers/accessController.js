@@ -137,6 +137,7 @@ class AccessController {
                 handleBy: request.handleBy,
                 ebookName: await fetchEbookTitle(request.ebookId),
                 formattedRequestDate: formatDateTime(request.requestAt),
+                formattedHandleDate: request.handleAt ? formatDateTime(request.handleAt) : '',
                 state: request.state,
                 key: request.key 
             })));
@@ -178,15 +179,15 @@ class AccessController {
                 return res.status(404).send("Ebook not found");
             }
     
-            // Generate user-specific key and iv
+            // Generate user-specific key
             const userSpecificKey = EncryptionService.generateUserSpecificKey(ebook.encryptedKey, request.requestBy);
-            const iv = crypto.randomBytes(16).toString('base64');
     
-            const encryptedUserSpecificKey = EncryptionService.encryptKey(Buffer.from(userSpecificKey, 'base64'));
+            // Encrypt user-specific key using RSA
+            const encryptedUserSpecificKey = EncryptionService.encryptKeyRSA(Buffer.from(userSpecificKey, 'base64'));
     
             request.state = "Approved";
             request.key = encryptedUserSpecificKey;
-            request.iv = iv;
+            request.iv = ebook.iv; // Sử dụng iv đã được lưu từ trước khi mã hóa ebook
             request.handleAt = new Date();
     
             await request.save();

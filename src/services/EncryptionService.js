@@ -1,10 +1,15 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const algorithm = 'aes-256-cbc';
 const ivLength = 16;
 const masterKey = Buffer.from(process.env.MASTER_KEY, 'base64');
+
+const privateKey = fs.readFileSync(path.resolve(__dirname, '../../private_key.pem'), 'utf8');
+const publicKey = fs.readFileSync(path.resolve(__dirname, '../../public_key.pem'), 'utf8');
+
 
 const EncryptionService = {
     encryptFile: async function(inputPath, outputPath) {
@@ -19,7 +24,7 @@ const EncryptionService = {
             input.pipe(cipher).pipe(output);
 
             output.on('finish', () => {
-                const encryptedKey = this.encryptKey(key);
+                const encryptedKey = this.encryptKeyRSA(key);
                 resolve({ encryptedKey, iv: iv.toString('base64') });
             });
 
@@ -36,7 +41,7 @@ const EncryptionService = {
                 return reject(new Error('Invalid keyData: encryptedKey or iv is missing'));
             }
 
-            const key = this.decryptKey(encryptedKey);
+            const key = this.decryptKeyRSA(encryptedKey);
 
             const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'base64'));
             const input = fs.createReadStream(inputPath);
@@ -66,6 +71,14 @@ const EncryptionService = {
         let decrypted = decipher.update(Buffer.from(encryptedKey, 'base64'));
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted;
+    },
+
+    encryptKeyRSA: function(key) {
+        return crypto.publicEncrypt(publicKey, key).toString('base64');
+    },
+
+    decryptKeyRSA: function(encryptedKey) {
+        return crypto.privateDecrypt(privateKey, Buffer.from(encryptedKey, 'base64'));
     },
 
     generateUserSpecificKey: function(baseKey, userId) {

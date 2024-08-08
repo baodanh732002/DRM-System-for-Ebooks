@@ -125,7 +125,6 @@
                                 <th scope="col">Ebook name</th>
                                 <th scope="col">Request Date</th>
                                 <th scope="col">Handle Date</th>
-                                <th scope="col">Key</th>
                                 <th scope="col">State</th>
                                 <th scope="col">Actions</th>
                             </tr>
@@ -138,11 +137,23 @@
                                     <td><%= request.ebookName %></td>
                                     <td><%= request.formattedRequestDate %></td>
                                     <td><%= request.formattedHandleDate %></td>
-                                    <td class="key-column"><%= request.key %></td>
-                                    <td><%= request.state %></td>
+                                    <td>
+                                        <% if (request.state === 'Pending') { %>
+                                            <span style="color: #f0ad4e;"><%= request.state %></span>
+                                        <% } else if (request.state === 'Approved') { %>
+                                            <span style="color: #5cb85c;"><%= request.state %></span>
+                                        <% } else if (request.state === 'Rejected') { %>
+                                            <span style="color: #d9534f;"><%= request.state %></span>
+                                        <% } else { %>
+                                            <%= request.state %>
+                                        <% } %>
+                                    </td>
                                     <td>
                                         <button class="btn btn-danger me-3" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= request._id %>">Delete</button>
-                                        <button class="btn btn-primary copy-key" data-key="<%= request.key %>">Copy Key</button>
+                                        
+                                        <% if (request.state === 'Approved') { %>
+                                            <button class="btn btn-primary copy-key" data-key="<%= request.key %>">Copy Key</button>
+                                        <% } %>
                                     </td>
                                 </tr>
                 
@@ -201,7 +212,7 @@
                 button.addEventListener('click', () => {
                     const key = button.getAttribute('data-key');
                     navigator.clipboard.writeText(key).then(() => {
-                        alert('Key copied to clipboard: ' + key);
+                        alert('Key copied to clipboard.');
                     }).catch(err => {
                         console.error('Could not copy text: ', err);
                     });

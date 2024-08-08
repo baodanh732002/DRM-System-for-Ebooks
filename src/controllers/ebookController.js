@@ -80,7 +80,7 @@ class EbookController {
     
             await newEbook.save();
     
-            req.session.message = 'New eBook has been added successfully.';
+            req.session.message = `New eBook ${title} has been added successfully.`;
             req.session.messageType = 'success';
 
             return res.redirect('/myEbooks');
@@ -322,6 +322,9 @@ class EbookController {
             await AccessRequest.deleteMany({ ebookId: id });
     
             await Ebook.deleteOne({ _id: id });
+
+            req.session.message = `EBook ${currentEbook.title} has been deleted successfully.`;
+            req.session.messageType = 'success'
     
             res.redirect("/myEbooks");
         } catch (error) {
@@ -363,9 +366,7 @@ class EbookController {
                                     ebookName: ebook.title,
                                     isOwner: isOwner
                                 });
-                            } else {
-                                const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
-    
+                            } else { 
                                 await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
                                 const limitTime = 60000; // 1 minute
@@ -524,9 +525,7 @@ class EbookController {
                         ebookName: ebook.title,
                         isOwner: false
                     });
-                } else {
-                    const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
-    
+                } else {   
                     await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
                     const limitTime = 60000; // 1 minute

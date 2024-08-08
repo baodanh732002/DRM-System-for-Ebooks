@@ -8,7 +8,8 @@ const accessRequestSchema = new Schema({
     requestAt: { type: Date, required: true },
     handleAt: { type: Date },
     key: { type: String },
-    state: { type: String, required: true}
+    iv: { type: String }, // Added iv field
+    state: { type: String, required: true }
 });
 
 const AccessRequest = mongoose.model("AccessRequest", accessRequestSchema);

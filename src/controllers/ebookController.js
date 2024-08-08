@@ -342,7 +342,7 @@ class EbookController {
             const ebookId = req.params.ebookId;
             if (ebookId) {
                 const ebook = await Ebook.findById(ebookId);
-                if (ebook) { 
+                if (ebook) {
                     const filename = path.basename(ebook.ebookFile);
                     const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
     
@@ -364,22 +364,25 @@ class EbookController {
                                     isOwner: isOwner
                                 });
                             } else {
-                                console.log('Decrypting file key...');
                                 const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
-                                console.log('File key decrypted.');
     
-                                console.log('Decrypting file...');
                                 await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
-                                console.log('File decrypted.');
     
                                 const limitTime = 60000; // 1 minute
                                 const newExpiresAt = now + limitTime;
                                 req.session.expiresAt = newExpiresAt;
     
                                 setTimeout(() => {
-                                    fs.unlink(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), (err) => {
-                                        if (err) console.error(`Error deleting temp file: ${err.message}`);
-                                    });
+                                    const filePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
+                                    
+                                    if (fs.existsSync(filePath)) {
+                                        fs.unlink(filePath, (err) => {
+                                            if (err) console.error(err);
+                                            req.session.expiresAt = 0;
+                                        });
+                                    } else {
+                                        req.session.expiresAt = 0; // Đảm bảo vẫn reset thời gian hết hạn
+                                    }
                                 }, limitTime);
     
                                 res.render('ebookReading', {
@@ -397,61 +400,66 @@ class EbookController {
                                 pdfFilePath: filename,
                                 isEncrypted: false,
                                 message: null,
-                                expiresAt: null,
+                                expiresAt: 0,
                                 ebookId: ebook._id,
                                 ebookName: ebook.title,
                                 isOwner: isOwner
                             });
                         }
                     } else {
-                        res.status(403).render('ebookReading', {
-                            message: 'You do not have permission to view this ebook.',
-                            pdfFilePath: null,
-                            isEncrypted: false,
-                            expiresAt: null,
+                        const accessRequest = await AccessRequest.findOne({
                             ebookId: ebook._id,
-                            ebookName: ebook.title,
-                            isOwner: isOwner
+                            requestBy: user.username,
+                            state: 'Approved'
                         });
+    
+                        if (accessRequest) {
+                            if (ebook.encrypted) {
+                                if (!accessRequest.key || !accessRequest.iv) {
+                                    return res.status(403).send("You don't have access to this ebook");
+                                }
+    
+                                const decryptedUserKey = EncryptionService.decryptUserSpecificKey(accessRequest.key);
+    
+                                await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: decryptedUserKey, iv: accessRequest.iv });
+    
+                                res.render('ebookReading', {
+                                    pdfFilePath: tempOutputFilename,
+                                    isEncrypted: true,
+                                    message: null,
+                                    expiresAt: null,
+                                    ebookId: ebook._id,
+                                    ebookName: ebook.title,
+                                    isOwner: isOwner
+                                });
+                            } else {
+                                res.render('ebookReading', {
+                                    pdfFilePath: filename,
+                                    isEncrypted: false,
+                                    message: null,
+                                    expiresAt: 0,
+                                    ebookId: ebook._id,
+                                    ebookName: ebook.title,
+                                    isOwner: isOwner
+                                });
+                            }
+                        } else {
+                            res.status(403).send("You don't have access to this ebook");
+                        }
                     }
                 } else {
-                    res.status(404).render("ebookReading", {
-                        message: "Ebook not found.",
-                        pdfFilePath: null,
-                        isEncrypted: false,
-                        expiresAt: null,
-                        ebookId: null,
-                        ebookName: null,
-                        isOwner: null
-                    });
+                    res.status(404).send("Ebook not found");
                 }
             } else {
-                res.status(400).render("ebookReading", {
-                    message: "Ebook ID is missing.",
-                    pdfFilePath: null,
-                    isEncrypted: false,
-                    expiresAt: null,
-                    ebookId: null,
-                    ebookName: null,
-                    isOwner: null
-                });
+                res.status(400).send("Ebook ID is required");
             }
         } catch (error) {
             console.error(error);
-            res.status(500).render("ebookReading", {
-                message: "Failed to render ebook Reading.",
-                pdfFilePath: null,
-                isEncrypted: false,
-                expiresAt: null,
-                ebookId: null,
-                ebookName: null,
-                isOwner: null
-            });
+            res.status(500).send("Failed to open ebook for reading");
         }
     }
     
     
- 
     async accessEbookReading(req, res) {
         try {
             const { ebookId, accessKey } = req.body;
@@ -461,6 +469,7 @@ class EbookController {
                 return res.redirect("/login");
             }
     
+            // Tìm AccessRequest với accessKey của người dùng
             const accessRequest = await AccessRequest.findOne({ ebookId, key: accessKey, state: 'Approved', requestBy: user.username });
     
             if (!accessRequest) {
@@ -501,39 +510,47 @@ class EbookController {
             const filename = path.basename(ebook.ebookFile);
             const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
     
-            const tempExpiryTime = Date.now() + 60 * 1000;
+            const now = new Date().getTime();
+            const expiresAt = req.session.expiresAt || 0;
     
             if (ebook.encrypted) {
-                if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename))) {
+                if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename)) && now < expiresAt) {
                     res.render('ebookReading', {
                         pdfFilePath: tempOutputFilename,
                         isEncrypted: true,
                         message: null,
-                        messageType: null,
-                        expiresAt: tempExpiryTime,
+                        expiresAt,
                         ebookId: ebook._id,
                         ebookName: ebook.title,
                         isOwner: false
                     });
                 } else {
-                    console.log('Decrypting file...');
-                    await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: accessKey, iv: ebook.iv });
-                    console.log('File decrypted.');
+                    const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
     
-                    await AccessRequest.deleteOne({ _id: accessRequest._id });
+                    await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
+    
+                    const limitTime = 60000; // 1 minute
+                    const newExpiresAt = now + limitTime;
+                    req.session.expiresAt = newExpiresAt;
     
                     setTimeout(() => {
-                        fs.unlink(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), (err) => {
-                            if (err) console.error(`Error deleting temp file: ${err.message}`);
-                        });
-                    }, 60 * 1000);
+                        const filePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
+                        
+                        if (fs.existsSync(filePath)) {
+                            fs.unlink(filePath, (err) => {
+                                if (err) console.error(err);
+                                req.session.expiresAt = 0;
+                            });
+                        } else {
+                            req.session.expiresAt = 0; // Đảm bảo vẫn reset thời gian hết hạn
+                        }
+                    }, limitTime);
     
                     res.render('ebookReading', {
                         pdfFilePath: tempOutputFilename,
                         isEncrypted: true,
                         message: null,
-                        messageType: null,
-                        expiresAt: tempExpiryTime,
+                        expiresAt: newExpiresAt,
                         ebookId: ebook._id,
                         ebookName: ebook.title,
                         isOwner: false
@@ -544,8 +561,7 @@ class EbookController {
                     pdfFilePath: filename,
                     isEncrypted: false,
                     message: null,
-                    messageType: null,
-                    expiresAt: null,
+                    expiresAt: 0,
                     ebookId: ebook._id,
                     ebookName: ebook.title,
                     isOwner: false
@@ -565,6 +581,9 @@ class EbookController {
             });
         }
     }
+    
+    
+    
     
     
     

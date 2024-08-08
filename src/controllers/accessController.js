@@ -3,6 +3,7 @@ const Admin = require("../models/Admins");
 const Ebook = require("../models/Ebooks");
 const AccessRequest = require("../models/AccessRequest");
 const EncryptionService = require("../services/EncryptionService");
+const crypto = require('crypto');
 
 class AccessController {
     async requestAccess(req, res) {
@@ -94,7 +95,9 @@ class AccessController {
             console.error(error);
             res.status(500).send("Failed to submit access request");
         }
-    }    
+    }
+    
+    
 
     async getRequests(req, res) {
         try {
@@ -154,65 +157,6 @@ class AccessController {
             res.status(500).send("Failed to retrieve access requests");
         }
     }
-
-    async getRequests(req, res) {
-        try {
-            const user = req.session.user;
-            if (!user) {
-                return res.redirect('/login');
-            }
-    
-            const keyRequests = await AccessRequest.find({ handleBy: user.username, state: "Pending" });
-            const yourRequests = await AccessRequest.find({ requestBy: user.username });
-    
-            const formatDateTime = (date) => {
-                const d = new Date(date);
-                return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-            };
-     
-            const fetchEbookTitle = async (ebookId) => {
-                const ebook = await Ebook.findById(ebookId);
-                return ebook ? ebook.title : 'Unknown';
-            };
-    
-            const formattedKeyRequests = await Promise.all(keyRequests.map(async (request, index) => ({
-                _id: request._id,
-                serialNumber: index + 1,
-                requestBy: request.requestBy,
-                handleBy: request.handleBy,
-                ebookName: await fetchEbookTitle(request.ebookId),
-                formattedRequestDate: formatDateTime(request.requestAt),
-                formattedHandleDate: request.handleAt ? formatDateTime(request.handleAt) : '',
-                state: request.state,
-                key: request.key
-            })));
-    
-            const formattedYourRequests = await Promise.all(yourRequests.map(async (request, index) => ({
-                _id: request._id,
-                serialNumber: index + 1,
-                requestBy: request.requestBy,
-                handleBy: request.handleBy,
-                ebookName: await fetchEbookTitle(request.ebookId),
-                formattedRequestDate: formatDateTime(request.requestAt),
-                formattedHandleDate: request.handleAt ? formatDateTime(request.handleAt) : '',
-                state: request.state,
-                key: request.key
-            })));
-    
-            const successMessage = req.session.successMessage;
-            console.log(successMessage)
-
-            res.render('notification', {
-                keyRequests: formattedKeyRequests,
-                yourRequests: formattedYourRequests,
-                user,
-                successMessage
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send("Failed to retrieve access requests");
-        }
-    }
     
     async approveRequest(req, res) {
         try {
@@ -222,8 +166,6 @@ class AccessController {
             }
     
             const { requestId } = req.body;
-    
-            console.log('requestId:', requestId);
     
             const request = await AccessRequest.findById(requestId);
     
@@ -236,10 +178,15 @@ class AccessController {
                 return res.status(404).send("Ebook not found");
             }
     
-            const { encryptedKey, iv } = ebook;
+            // Generate user-specific key and iv
+            const userSpecificKey = EncryptionService.generateUserSpecificKey(ebook.encryptedKey, request.requestBy);
+            const iv = crypto.randomBytes(16).toString('base64');
+    
+            const encryptedUserSpecificKey = EncryptionService.encryptKey(Buffer.from(userSpecificKey, 'base64'));
     
             request.state = "Approved";
-            request.key = encryptedKey;
+            request.key = encryptedUserSpecificKey;
+            request.iv = iv;
             request.handleAt = new Date();
     
             await request.save();
@@ -257,6 +204,11 @@ class AccessController {
             res.status(500).send("Failed to approve request");
         }
     }
+    
+    
+    
+    
+    
 
     async rejectRequest(req, res){
         try{

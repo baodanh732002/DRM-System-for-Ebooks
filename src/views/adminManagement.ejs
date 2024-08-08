@@ -18,10 +18,22 @@
 
     <link rel="stylesheet" href="/css/adminStyle.css">
 </head>
-
+<style>
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 200px;
+        z-index: 9999;
+        display: none;
+    }
+</style>
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/headerAdmin'); -%>
+
+    <div id="alert-container" class="alert alert-danger" role="alert"></div>
+    <input type="hidden" id="hiddenMessage" value="<%= typeof message !== 'undefined' ? message : '' %>">
 
     <!-- ======= BODY ======= -->
     <div class="content">
@@ -106,11 +118,6 @@
                     <div>
                         <h2 class="d-flex justify-content-center mb-4">ADD NEW ADMIN</h2>
                     </div>
-                    <% if(typeof message !== 'undefined') { %>
-                        <div class="alert alert-danger" role="alert">
-                            <%= message %>
-                        </div>
-                    <% }%>
                     
                     <div class="inputbox">
                         <ion-icon name="person-add-outline"></ion-icon>
@@ -228,5 +235,27 @@
         }
     }
     document.addEventListener('DOMContentLoaded', renderItems); 
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const hiddenMessage = document.getElementById('hiddenMessage').value;
+        if (hiddenMessage) {
+            showAlert(hiddenMessage);
+        }
+    });
+
+    function showAlert(message) {
+        const alertContainer = document.getElementById('alert-container');
+        alertContainer.textContent = message;
+        alertContainer.style.display = 'block';
+
+        setTimeout(() => {
+            alertContainer.style.transition = 'opacity 1s';
+            alertContainer.style.opacity = 0;
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+                alertContainer.style.opacity = 1;
+            }, 1000);
+        }, 3000);
+    }
 </script>
 </html>

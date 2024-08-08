@@ -20,7 +20,7 @@ const EncryptionService = {
 
             output.on('finish', () => {
                 const encryptedKey = this.encryptKey(key);
-                resolve({ encryptedKey, iv });
+                resolve({ encryptedKey, iv: iv.toString('base64') });
             });
 
             output.on('error', (err) => {
@@ -32,6 +32,10 @@ const EncryptionService = {
     decryptFile: async function(inputPath, outputPath, keyData) {
         return new Promise((resolve, reject) => {
             const { encryptedKey, iv } = keyData;
+            if (!encryptedKey || !iv) {
+                return reject(new Error('Invalid keyData: encryptedKey or iv is missing'));
+            }
+
             const key = this.decryptKey(encryptedKey);
 
             const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'base64'));
@@ -62,6 +66,22 @@ const EncryptionService = {
         let decrypted = decipher.update(Buffer.from(encryptedKey, 'base64'));
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted;
+    },
+
+    generateUserSpecificKey: function(baseKey, userId) {
+        return crypto.createHash('sha256').update(`${baseKey}-${userId}`).digest('base64');
+    },
+
+    encryptUserSpecificKey: function(baseKey, userId) {
+        const userSpecificKey = this.generateUserSpecificKey(baseKey, userId);
+        const iv = crypto.randomBytes(ivLength);
+        const encryptedKey = this.encryptKey(Buffer.from(userSpecificKey, 'base64'));
+        return { encryptedKey, iv: iv.toString('base64') };
+    },
+
+    decryptUserSpecificKey: function(encryptedUserKey) {
+        const decryptedKey = this.decryptKey(encryptedUserKey);
+        return decryptedKey.toString('base64');
     }
 };
 

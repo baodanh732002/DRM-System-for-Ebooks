@@ -28,7 +28,6 @@ class IndexController {
                     };
                 });      
                 
-                console.log(formattedEbookDataNewest)
     
                 const ebooksDataPopular = await Ebook.aggregate([{ $sample: { size: 4 } }]);
     

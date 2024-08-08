@@ -118,15 +118,20 @@ class AdminController{
                 }
     
                 if (!ebook.encrypted) {
-                    const inputPath = path.join(ebook.ebookFile);
+                    const inputPath = path.resolve(ebook.ebookFile);
                     const outputPath = inputPath.replace('.pdf', '_encrypted.pdf');
     
+                    // Giả sử EncryptionService.encryptFile xử lý việc tạo IV
                     const { encryptedKey, iv } = await EncryptionService.encryptFile(inputPath, outputPath);
     
                     fs.renameSync(outputPath, inputPath);
     
-                    ebook.encryptedKey = encryptedKey;
-                    ebook.iv = iv.toString('base64');
+                    // Kiểm tra giá trị trả về
+                    console.log('encryptedKey:', encryptedKey);
+                    console.log('iv:', iv);
+    
+                    ebook.encryptedKey = encryptedKey; // Không cần .encryptedKey vì encryptedKey đã là chuỗi
+                    ebook.iv = iv; // Lưu trực tiếp chuỗi iv
                     ebook.encrypted = true;
                     await ebook.save();
                 }
@@ -453,6 +458,21 @@ class AdminController{
                 const admin = req.session.admin || null;
                 const { adname, email, phone, password, confirm } = req.body;
                 console.log(req.body);
+
+                const adminData = await Admin.find()
+
+                const formattedAdminData = adminData.map((admin) => {
+                    const date = new Date(admin.date);
+                    const formattedDate = date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    return {
+                        ...admin.toObject(),
+                        formattedDate
+                    };
+                });
     
                 let regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
                 let regPhone = /^0\d{9,10}$/;
@@ -461,31 +481,36 @@ class AdminController{
                 if (!adname || !email || !phone || !password || !confirm) {
                     return res.render("adminManagement", {
                         message: "Please fill in all required fields.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
                 if (regEmail.test(email) == false) {
                     return res.render("adminManagement", {
                         message: "Please fill the correct email.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
                 if (regPhone.test(phone) == false) {
                     return res.render("adminManagement", {
                         message: "Invalid Phone.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
                 if (!regPassword.test(password)) {
                     return res.render("adminManagement", {
                         message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
                 if (password !== confirm) {
                     return res.render("adminManagement", {
                         message: "Password and Confirm Password do not match.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
     
@@ -493,7 +518,8 @@ class AdminController{
                 if (existAdmin) {
                     return res.render("adminManagement", {
                         message: "Email already registered.",
-                        admin
+                        admin,
+                        formattedAdminData
                     });
                 }
     

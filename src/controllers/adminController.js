@@ -360,9 +360,15 @@ class AdminController{
                     return res.status(404).send('Ebook not found');
                 }
     
+                const basePath = path.join(__dirname, '../../public/contents/');
+    
                 if (files && files.imageFile && files.imageFile.length > 0) {
                     if (ebook.imageFile) {
-                        fs.unlinkSync(ebook.imageFile);
+                        const imageFilename = path.basename(ebook.imageFile);
+                        const imagePath = path.join(basePath, imageFilename);
+                        if (fs.existsSync(imagePath)) {
+                            fs.unlinkSync(imagePath);
+                        }
                     }
                     updateData.imageFile = files.imageFile[0].path;
                     updateData.imageFileOriginalName = files.imageFile[0].originalname;
@@ -370,7 +376,11 @@ class AdminController{
     
                 if (files && files.ebookFile && files.ebookFile.length > 0) {
                     if (ebook.ebookFile) {
-                        fs.unlinkSync(ebook.ebookFile);
+                        const ebookFilename = path.basename(ebook.ebookFile);
+                        const ebookPath = path.join(basePath, ebookFilename);
+                        if (fs.existsSync(ebookPath)) {
+                            fs.unlinkSync(ebookPath);
+                        }
                     }
                     updateData.ebookFile = files.ebookFile[0].path;
                     updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
@@ -407,29 +417,42 @@ class AdminController{
         }
     }
     
+    
 
-    async handleDeleteEbook(req, res){
+    async handleDeleteEbook(req, res) {
         if (req.session.admin) {
             try {
-                const admin = req.session.admin || null;
                 const { id } = req.body;
     
                 const currentEbook = await Ebook.findById(id);
+                if (!currentEbook) {
+                    return res.status(404).send('Ebook not found');
+                }
+    
+                const basePath = path.join(__dirname, '../../public/contents/');
     
                 if (currentEbook.imageFile) {
-                    fs.unlinkSync(path.join(currentEbook.imageFile));
+                    const imageFilename = path.basename(currentEbook.imageFile);
+                    const imagePath = path.join(basePath, imageFilename);
+                    if (fs.existsSync(imagePath)) {
+                        fs.unlinkSync(imagePath);
+                    }
                 }
     
                 if (currentEbook.ebookFile) {
-                    fs.unlinkSync(path.join(currentEbook.ebookFile));
+                    const ebookFilename = path.basename(currentEbook.ebookFile);
+                    const ebookPath = path.join(basePath, ebookFilename);
+                    if (fs.existsSync(ebookPath)) {
+                        fs.unlinkSync(ebookPath);
+                    }
                 }
-
+    
                 await AccessRequest.deleteMany({ ebookId: id });
-
+    
                 await Ebook.deleteOne({ _id: id });
     
                 req.session.successMessage = `Ebook ${currentEbook.title} has been deleted successfully.`;
-
+    
                 res.redirect("/ebookManagement");
             } catch (error) {
                 console.error(error);
@@ -441,6 +464,7 @@ class AdminController{
             return res.redirect('/login');
         }
     }
+    
 
     async getAdminManagement(req, res){
         if (req.session.admin) {

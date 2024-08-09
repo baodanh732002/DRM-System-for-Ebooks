@@ -61,11 +61,13 @@
         <div class="container">
             <h1 class="mt-5 mb-3">ADMIN MANAGEMENT</h1>
             <div class="admin-new d-flex justify-content-end mb-2">
-                <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
-                    <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
-                    New
-                </button>
-            </div>
+                <% if (admin.adname === 'AdminSystem') { %>
+                    <button id="open" class="btn btn-success bi me-2 mt-2 mb-2 d-flex align-items-center">
+                        <ion-icon class="mr-2" name="add-circle-outline"></ion-icon>
+                        New
+                    </button>
+                <% } %>
+            </div>            
             <table id="items-table">
                 <thead class="table-dark">
                     <tr>
@@ -78,22 +80,25 @@
                     </tr>
                 </thead>
                 <tbody id="items-body">
-                    <%if(formattedAdminData && formattedAdminData.length > 0){
-                        formattedAdminData.forEach(admin => {%>
+                    <% if (formattedAdminData && formattedAdminData.length > 0) { 
+                        formattedAdminData.forEach(currentAdmin => { 
+                            if (currentAdmin.adname !== 'AdminSystem') { %> <!-- Kiểm tra nếu không phải AdminSystem -->
                             <tr id="item-1">
                                 <th scope="row"></th>
-                                <td><%= admin.adname%></td>
-                                <td><%= admin.email%></td>
-                                <td><%= admin.phone%></td>
-                                <td><%= admin.formattedDate%></td>
+                                <td><%= currentAdmin.adname %></td>
+                                <td><%= currentAdmin.email %></td>
+                                <td><%= currentAdmin.phone %></td>
+                                <td><%= currentAdmin.formattedDate %></td>
                                 <td>
-                                    <button class="btn btn-danger" data-toggle="modal" data-target=".deleteAdmin<%= admin._id%>">
-                                        <ion-icon name="trash-outline"></ion-icon> Delete
-                                    </button>
+                                    <% if (admin.adname === 'AdminSystem') { %> <!-- Sử dụng `admin.adname` từ thông tin admin đăng nhập -->
+                                        <button class="btn btn-danger" data-toggle="modal" data-target=".deleteAdmin<%= currentAdmin._id %>">
+                                            <ion-icon name="trash-outline"></ion-icon> Delete
+                                        </button>
+                                    <% } %>
                                 </td>
                             </tr>
-
-                            <div class="modal fade deleteAdmin<%= admin._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    
+                            <div class="modal fade deleteAdmin<%= currentAdmin._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <!-- Modal Header -->
@@ -105,8 +110,8 @@
                                         <!-- Modal body -->
                                         <form action="/adminManagement_delete" method="post">
                                             <div class="modal-body">
-                                                <input type="hidden" id="id" name="id" placeholder="" value="<%= admin._id%>">
-                                                <h5>Are you sure you want to delete this admin: <strong><%= admin.adname%></strong>?</h5>
+                                                <input type="hidden" id="id" name="id" value="<%= currentAdmin._id %>">
+                                                <h5>Are you sure you want to delete this admin: <strong><%= currentAdmin.adname %></strong>?</h5>
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
@@ -117,10 +122,9 @@
                                     </div>
                                 </div>
                             </div>
-                        <%})%>
-                    <%}%>
-                    
-
+                        <% } 
+                        }) %>
+                    <% } %>                    
                 </tbody>
             </table>
             <div class="pagination">

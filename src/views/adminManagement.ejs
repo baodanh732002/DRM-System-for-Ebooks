@@ -27,10 +27,31 @@
         z-index: 9999;
         display: none;
     }
+    .fade-out {
+        transition: opacity 0.5s ease-out;
+        opacity: 0;
+    }
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: auto;
+        max-width: 300px;
+        text-align: center;
+    }
 </style>
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/headerAdmin'); -%>
+
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+        <div class="notification-container">
+            <div id="success-notification" class="alert alert-success" role="alert">
+                <%= successMessage %>
+            </div>
+        </div>
+    <% } %>
 
     <div id="alert-container" class="alert alert-danger" role="alert"></div>
     <input type="hidden" id="hiddenMessage" value="<%= typeof message !== 'undefined' ? message : '' %>">
@@ -156,22 +177,7 @@
         </div>
     </div>
 
-    <div class="modal fade addNewAdmin" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    New Admin has been added successfully.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="reloadPageButton">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </body>
 <script>
     const btn_new = document.getElementById('open');
@@ -242,6 +248,34 @@
             showAlert(hiddenMessage);
         }
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const successNotification = document.getElementById('success-notification');
+    
+        if (successNotification && successNotification.textContent.trim()) {
+            // Đảm bảo thông báo hiển thị ở góc phải
+            successNotification.style.display = 'block';
+    
+            // Mờ dần sau 3 giây
+            setTimeout(() => {
+                successNotification.classList.add('fade-out');
+            }, 3000);
+    
+            // Xóa thông báo sau khi mờ dần
+            setTimeout(() => {
+                successNotification.style.display = 'none';
+            }, 4000);
+    
+            // Yêu cầu xóa message từ session
+            fetch('/clearSuccessMessageInNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+    });
+    
 
     function showAlert(message) {
         const alertContainer = document.getElementById('alert-container');

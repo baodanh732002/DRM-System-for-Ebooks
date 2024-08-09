@@ -49,7 +49,9 @@ class AdminController{
                     { $project: { sortOrder: 0 } } 
                 ]);
 
-                res.render("ebookManagement", { ebookData, admin, message: null, messageType: null});
+                const successMessage = req.session.successMessage;
+
+                res.render("ebookManagement", { ebookData, admin, message: null, messageType: null, successMessage});
             } catch (error) {
                 console.error("Error rendering ebookManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -136,11 +138,10 @@ class AdminController{
                     await ebook.save();
                 }
     
-                req.session.message = `Ebook ${ebook.title} has been accepted successfully.`;
-                req.session.messageType = 'success';
+                req.session.successMessage = `Ebook ${ebook.title} has been accepted successfully.`;
+
                 res.redirect("/ebookManagement");
-                req.session.message = null;
-                req.session.messageType = null;
+
             } catch (error) {
                 console.error(error);
                 res.status(500).send("Internal Server Error");
@@ -169,11 +170,10 @@ class AdminController{
                     return res.status(404).send("Ebook not found");
                 }
 
-                req.session.message = `Ebook ${ebook.title} has been denied successfully.`;
-                req.session.messageType = 'error';
+                req.session.successMessage = `Ebook ${ebook.title} has been denied successfully.`;
+
                 res.redirect("/ebookManagement");
-                req.session.message = null;
-                req.session.messageType = null;
+
             } catch (error) {
                 console.error(error);
             }
@@ -191,7 +191,7 @@ class AdminController{
                 const userData = await User.find()
 
                 const formattedUserData = userData.map((user) => {
-                    const date = new Date(user.date);
+                    const date = new Date(user.createAt);
                     const formattedDate = date.toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
@@ -202,7 +202,11 @@ class AdminController{
                         formattedDate
                     };
                 });
-                res.render("userManagement", {formattedUserData, admin});
+
+                const successMessage = req.session.successMessage;
+
+
+                res.render("userManagement", {formattedUserData, admin, successMessage});
             } catch (error) {
                 console.error("Error rendering userManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -212,19 +216,35 @@ class AdminController{
         }
     }
 
-    async handleUserDelete(req, res){
+    async handleUserDelete(req, res) {
         if (req.session.admin) {
             try {
-                const {id} = req.body
-                await User.deleteOne({_id: id})
-                res.redirect("/userManagement")
+                const { id } = req.body;
+                const currentUser = await User.findById({ _id: id });
+    
+                if (currentUser) {
+                    // Xóa tất cả các ebook có author là username của user bị xóa
+                    await Ebook.deleteMany({ author: currentUser.username });
+    
+                    // Xóa user
+                    await User.deleteOne({ _id: id });
+    
+                    req.session.successMessage = `User ${currentUser.username} and all their ebooks have been deleted successfully.`;
+    
+                    res.redirect("/userManagement");
+                } else {
+                    req.session.successMessage = `User not found.`;
+                    res.redirect("/userManagement");
+                }
             } catch (error) {
                 console.error(error);
+                res.status(500).send("Failed to delete user and their ebooks.");
             }
         } else {
             return res.redirect('/login');
         }
     }
+    
 
     async handleAddNewEbook(req, res) {
         if (req.session.admin) {
@@ -304,6 +324,8 @@ class AdminController{
                 newEbook.encrypted = true;
                 await newEbook.save();
     
+                req.session.successMessage = `Ebook ${newEbook.title} has been added successfully.`;
+
                 res.redirect("/ebookManagement");
             } catch (error) {
                 console.error(error);
@@ -406,6 +428,8 @@ class AdminController{
 
                 await Ebook.deleteOne({ _id: id });
     
+                req.session.successMessage = `Ebook ${currentEbook.title} has been deleted successfully.`;
+
                 res.redirect("/ebookManagement");
             } catch (error) {
                 console.error(error);
@@ -436,7 +460,10 @@ class AdminController{
                         formattedDate
                     };
                 });
-                res.render("adminManagement", {formattedAdminData, admin});
+
+                const successMessage = req.session.successMessage;
+ 
+                res.render("adminManagement", {formattedAdminData, admin, successMessage});
             } catch (error) {
                 console.error("Error rendering userManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -446,26 +473,12 @@ class AdminController{
         }
     }
 
-    async handleUserDelete(req, res){
-        if (req.session.admin) {
-            try {
-                const {id} = req.body
-                await User.deleteOne({_id: id})
-                res.redirect("/userManagement")
-            } catch (error) {
-                console.error(error);
-            }
-        } else {
-            return res.redirect('/login');
-        }
-    }
 
     async handleAddNewAdmin(req, res) {
         if (req.session.admin) {
             try {
                 const admin = req.session.admin || null;
                 const { adname, email, phone, password, confirm } = req.body;
-                console.log(req.body);
 
                 const adminData = await Admin.find()
 
@@ -543,6 +556,9 @@ class AdminController{
                 });
     
                 await newAdmin.save();
+
+                req.session.successMessage = `Admin ${newAdmin.adname} has been added successfully.`;
+
                 res.redirect("/adminManagement");
             } catch (error) {
                 console.log(error);
@@ -557,19 +573,36 @@ class AdminController{
     }
     
 
-    async handleAdminDelete(req, res){
+    async handleAdminDelete(req, res) {
         if (req.session.admin) {
             try {
-                const {id} = req.body
-                await Admin.deleteOne({_id: id})
-                res.redirect("/adminManagement")
+                const { id } = req.body;
+    
+                // Tìm admin hiện tại
+                const currentAdmin = await Admin.findById(id);
+    
+                if (!currentAdmin) {
+                    return res.status(404).send("Admin not found");
+                }
+    
+                // Xóa tất cả ebook của admin này
+                await Ebook.deleteMany({ author: currentAdmin.adname });
+    
+                // Xóa admin
+                await Admin.deleteOne({ _id: id });
+    
+                req.session.successMessage = `Admin ${currentAdmin.adname} has been deleted successfully.`;
+    
+                res.redirect("/adminManagement");
             } catch (error) {
                 console.error(error);
+                res.status(500).send("Failed to delete admin");
             }
         } else {
             return res.redirect('/login');
         }
     }
+    
 
     async getRequestManagement(req, res){
         if (req.session.admin) {
@@ -614,7 +647,7 @@ class AdminController{
         }
     }
 
-    async approveRequestAdmin(req, res){
+    async approveRequestAdmin(req, res) {
         try {
             const admin = req.session.admin;
             if (!admin) {
@@ -633,10 +666,15 @@ class AdminController{
                 return res.status(404).send("Ebook not found");
             }
     
-            const { encryptedKey, iv } = ebook;
+            // Generate user-specific key using the same logic as in the user approveRequest
+            const userSpecificKey = EncryptionService.generateUserSpecificKey(ebook.encryptedKey, request.requestBy);
+    
+            // Encrypt user-specific key using RSA
+            const encryptedUserSpecificKey = EncryptionService.encryptKeyRSA(Buffer.from(userSpecificKey, 'base64'));
     
             request.state = "Approved";
-            request.key = encryptedKey;
+            request.key = encryptedUserSpecificKey;
+            request.iv = ebook.iv; // Sử dụng iv đã được lưu từ trước khi mã hóa ebook
             request.handleAt = new Date();
     
             await request.save();
@@ -647,14 +685,14 @@ class AdminController{
             };
     
             req.session.successMessage = `Successfully approved the request by ${request.requestBy} for ebook ${await fetchEbookTitle(request.ebookId)}.`;
-            console.log(req.session.successMessage)
-
+    
             res.redirect('/requestManagement');
         } catch (error) {
             console.error(error);
             res.status(500).send("Failed to approve request");
         }
     }
+    
     
     async rejectRequestAdmin(req, res){
         try {
@@ -680,7 +718,6 @@ class AdminController{
             };
     
             req.session.successMessage = `Successfully rejected the request by ${request.requestBy} for ebook ${await fetchEbookTitle(request.ebookId)}.`;
-            console.log(req.session.successMessage)
             
             res.redirect("/requestManagement");
         } catch (error) {
@@ -722,8 +759,8 @@ class AdminController{
                 });
             }
     
-            const inputPath = path.join(ebook.ebookFile);
-            const tempOutputPath = path.join(__dirname, '..', 'public', 'temp', `${ebook._id}_decrypted.pdf`);
+            const filename = path.basename(ebook.ebookFile);
+            const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
             const isOwner = ebook.author === admin.adname;
     
             if (isOwner) {
@@ -731,9 +768,9 @@ class AdminController{
                     const now = new Date().getTime();
                     const expiresAt = req.session.expiresAt || 0;
     
-                    if (fs.existsSync(tempOutputPath) && now < expiresAt) {
+                    if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename)) && now < expiresAt) {
                         res.render('reviewEbook', {
-                            pdfFilePath: path.basename(tempOutputPath),
+                            pdfFilePath: tempOutputFilename,
                             isEncrypted: true,
                             message: null,
                             expiresAt,
@@ -742,26 +779,27 @@ class AdminController{
                             isOwner: isOwner
                         });
                     } else {
-                        console.log('Decrypting file key...');
-                        const decryptedKey = EncryptionService.decryptKey(ebook.encryptedKey);
-                        console.log('File key decrypted.');
+                        await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
-                        console.log('Decrypting file...');
-                        await EncryptionService.decryptFile(inputPath, tempOutputPath, { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
-                        console.log('File decrypted.');
-    
-                        const limitTime = 60000;
+                        const limitTime = 60000; // 1 minute
                         const newExpiresAt = now + limitTime;
                         req.session.expiresAt = newExpiresAt;
     
                         setTimeout(() => {
-                            fs.unlink(tempOutputPath, (err) => {
-                                if (err) console.error(`Error deleting temp file: ${err.message}`);
-                            });
+                            const filePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
+                            
+                            if (fs.existsSync(filePath)) {
+                                fs.unlink(filePath, (err) => {
+                                    if (err) console.error(err);
+                                    req.session.expiresAt = 0;
+                                });
+                            } else {
+                                req.session.expiresAt = 0;
+                            }
                         }, limitTime);
     
                         res.render('reviewEbook', {
-                            pdfFilePath: path.basename(tempOutputPath),
+                            pdfFilePath: tempOutputFilename,
                             isEncrypted: true,
                             message: null,
                             expiresAt: newExpiresAt,
@@ -772,7 +810,7 @@ class AdminController{
                     }
                 } else {
                     res.render('reviewEbook', {
-                        pdfFilePath: path.basename(ebook.ebookFile),
+                        pdfFilePath: filename,
                         isEncrypted: false,
                         message: null,
                         expiresAt: null,
@@ -783,7 +821,7 @@ class AdminController{
                 }
             } else if (ebook.state === 'Pending') {
                 res.render('reviewEbook', {
-                    pdfFilePath: path.basename(ebook.ebookFile),
+                    pdfFilePath: filename,
                     isEncrypted: false,
                     message: null,
                     expiresAt: null,
@@ -805,7 +843,7 @@ class AdminController{
         } catch (error) {
             console.error(error);
             res.status(500).render('reviewEbook', {
-                message: 'Failed to render ebook Reading.',
+                message: 'Failed to render ebook for review.',
                 pdfFilePath: null,
                 isEncrypted: false,
                 expiresAt: null,
@@ -816,7 +854,6 @@ class AdminController{
         }
     }
     
-
 }
 
 module.exports = new AdminController()

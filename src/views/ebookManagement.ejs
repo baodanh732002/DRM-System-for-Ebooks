@@ -29,11 +29,32 @@
         text-align: center;
         display: none; 
     }
+    .fade-out {
+        transition: opacity 0.5s ease-out;
+        opacity: 0;
+    }
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: auto;
+        max-width: 300px;
+        text-align: center;
+    }
 </style>
 
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/headerAdmin'); -%>
+
+    <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+        <div class="notification-container">
+            <div id="success-notification" class="alert alert-success" role="alert">
+                <%= successMessage %>
+            </div>
+        </div>
+    <% } %>
 
     <div id="error-message" class="alert alert-danger text-center" style="display: none;"></div>
 
@@ -241,12 +262,6 @@
 
     <div id="notification" class="alert alert-success text-center" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
 
-    <% if (message) { %>
-        <input type="hidden" id="hiddenMessage" value="<%= message %>">
-    <% } %>
-    <% if (messageType) { %>
-        <input type="hidden" id="hiddenMessageType" value="<%= messageType %>">
-    <% } %>
 </body>
 <script>
     const btn_new = document.getElementById('open');
@@ -369,6 +384,30 @@
                 itemsBody.appendChild(clone);
             });
         }
+        
+        const successNotification = document.getElementById('success-notification');
+        if (successNotification) {
+            // Đảm bảo thông báo hiển thị ở góc phải
+            successNotification.classList.add('notification-container');
+
+            // Mờ dần sau 3 giây
+            setTimeout(() => {
+                successNotification.classList.add('fade-out');
+            }, 3000);
+
+            // Xóa thông báo sau khi mờ dần
+            setTimeout(() => {
+                successNotification.style.display = 'none';
+            }, 4000);
+
+            // Yêu cầu xóa message từ session
+            fetch('/clearSuccessMessageInNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
     });
 
     $(document).ready(function() {
@@ -386,32 +425,6 @@
         }
     });
 
-    $(document).ready(function() {
-        const hiddenMessage = document.getElementById('hiddenMessage');
-        const messageType = '<%= messageType %>';  // messageType from session
 
-        if (hiddenMessage) {
-            const message = hiddenMessage.value;
-            const notificationDiv = document.getElementById('notification');
-
-            if (message) {
-                notificationDiv.textContent = message;
-
-                if (messageType === 'error') {
-                    notificationDiv.classList.add('alert-danger');
-                    notificationDiv.classList.remove('alert-success');
-                } else {
-                    notificationDiv.classList.add('alert-success');
-                    notificationDiv.classList.remove('alert-danger');
-                }
-
-                notificationDiv.style.display = 'block';
-
-                setTimeout(function() {
-                    $('#notification').fadeOut('slow');
-                }, 3000);
-            }
-        }
-    });
 </script>
 </html>

@@ -366,9 +366,7 @@ class EbookController {
                 const ebook = await Ebook.findById(ebookId);
                 if (ebook) {
                     const filename = path.basename(ebook.ebookFile);
-                    console.log(ebook.ebookFile)
                     const ebookPath = path.join(__dirname, '..', 'public', 'contents', filename);
-                    console.log(ebookPath)
                     const tempOutputFilename = `${ebook._id}_decrypted.pdf`;
     
                     const isOwner = ebook.author === user.username;
@@ -378,6 +376,7 @@ class EbookController {
                             const now = new Date().getTime();
                             const expiresAt = req.session.expiresAt || 0;
     
+                            // Kiểm tra nếu file đã giải mã tồn tại và chưa hết hạn
                             if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename)) && now < expiresAt) {
                                 res.render('ebookReading', {
                                     pdfFilePath: tempOutputFilename,
@@ -389,12 +388,14 @@ class EbookController {
                                     isOwner: isOwner
                                 });
                             } else {
+                                // Giải mã file ebook
                                 await EncryptionService.decryptFile(ebookPath, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
                                 const limitTime = 60000; // 1 minute
                                 const newExpiresAt = now + limitTime;
                                 req.session.expiresAt = newExpiresAt;
     
+                                // Đặt thời gian để xóa file sau khi hết hạn
                                 setTimeout(() => {
                                     const filePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
     
@@ -419,30 +420,32 @@ class EbookController {
                                 });
                             }
                         } else {
+                            // Xử lý khi ebook không được mã hóa
                             res.render('ebookReading', {
                                 pdfFilePath: filename,
                                 isEncrypted: false,
                                 message: null,
-                                expiresAt: 0,
+                                expiresAt: 0, // Không có hạn sử dụng
                                 ebookId: ebook._id,
                                 ebookName: ebook.title,
                                 isOwner: isOwner
                             });
                         }
                     } else {
-                        res.status(403).send("You don't have access to this ebook");
+                        res.status(403).send("Bạn không có quyền truy cập vào ebook này.");
                     }
                 } else {
-                    res.status(404).send("Ebook not found");
+                    res.status(404).send("Không tìm thấy ebook.");
                 }
             } else {
-                res.status(400).send("Ebook ID is required");
+                res.status(400).send("Cần cung cấp ID của ebook.");
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send("Failed to open ebook for reading");
+            res.status(500).send("Không thể mở ebook để đọc.");
         }
     }
+    
     
     
     

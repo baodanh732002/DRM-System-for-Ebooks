@@ -88,11 +88,9 @@
     const expiresAt = parseInt(document.getElementById('expiresAt').value);
     const completePdfPath = isEncrypted ? '/temp/' + pdfFilePath : '/contents/' + pdfFilePath;
 
-    const now = Date.now();
-
     if (message) {
         alert(message);
-    } else if (now >= expiresAt) {
+    } else if (isEncrypted && Date.now() >= expiresAt) {  // Chỉ kiểm tra thời gian hết hạn nếu ebook được mã hóa
         alert('File has expired. Please reload from the main view page.');
         goBack();
     } else {
@@ -104,25 +102,27 @@
                         totalPages = pdfDoc.numPages;
                         renderPage(currentPage);
 
-                        setInterval(() => {
-                            const now = Date.now();
-                            if (now >= expiresAt) {
-                                alert('File has expired. Please reload from the main view page.');
-                                goBack();
-                            } else {
-                                fetch(completePdfPath, { method: 'HEAD' })
-                                    .then(response => {
-                                        if (!response.ok) {
+                        if (isEncrypted) {  // Chỉ đặt interval kiểm tra thời gian nếu ebook được mã hóa
+                            setInterval(() => {
+                                const now = Date.now();
+                                if (now >= expiresAt) {
+                                    alert('File has expired. Please reload from the main view page.');
+                                    goBack();
+                                } else {
+                                    fetch(completePdfPath, { method: 'HEAD' })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                alert('File has expired. Please reload from the main view page.');
+                                                goBack();
+                                            }
+                                        })
+                                        .catch(() => {
                                             alert('File has expired. Please reload from the main view page.');
                                             goBack();
-                                        }
-                                    })
-                                    .catch(() => {
-                                        alert('File has expired. Please reload from the main view page.');
-                                        goBack();
-                                    });
-                            }
-                        }, 5000);
+                                        });
+                                }
+                            }, 5000);
+                        }
                     });
                 } else {
                     alert('File has expired or been deleted.');

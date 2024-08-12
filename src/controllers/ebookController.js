@@ -75,7 +75,8 @@ class EbookController {
                 author: author,
                 date: date,
                 note: '',
-                action_by: ''
+                action_by: '',
+                encrypted: false
             });
     
             await newEbook.save();
@@ -247,8 +248,8 @@ class EbookController {
             }
     
             const { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
-    
             const files = req.files;
+    
             const updateData = {
                 title,
                 type,
@@ -291,7 +292,10 @@ class EbookController {
                 }
                 updateData.ebookFile = files.ebookFile[0].path;
                 updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
-                updateData.encrypted = false;
+                updateData.encrypted = false; // Only set to false if the ebook file is updated
+            } else {
+                // If ebookFile is not updated, ensure encrypted field remains unchanged
+                updateData.encrypted = currentEbook.encrypted;
             }
     
             const ebook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
@@ -306,7 +310,7 @@ class EbookController {
         }
     }
     
-        
+  
 
 
     async deleteMyEbookDetail(req, res) {

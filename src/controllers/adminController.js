@@ -844,15 +844,32 @@ class AdminController{
                     });
                 }
             } else if (ebook.state === 'Pending') {
-                res.render('reviewEbook', {
-                    pdfFilePath: filename,
-                    isEncrypted: false,
-                    message: null,
-                    expiresAt: null,
-                    ebookId: ebook._id,
-                    ebookName: ebook.title,
-                    isOwner: isOwner
-                });
+                if (ebook.encrypted) {
+                    const outputFilePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
+                    if (!fs.existsSync(outputFilePath)) {
+                        await EncryptionService.decryptFile(ebook.ebookFile, outputFilePath, { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
+                    }
+    
+                    res.render('reviewEbook', {
+                        pdfFilePath: tempOutputFilename,
+                        isEncrypted: true,
+                        message: null,
+                        expiresAt: null,
+                        ebookId: ebook._id,
+                        ebookName: ebook.title,
+                        isOwner: isOwner
+                    });
+                } else {
+                    res.render('reviewEbook', {
+                        pdfFilePath: filename,
+                        isEncrypted: false,
+                        message: null,
+                        expiresAt: null,
+                        ebookId: ebook._id,
+                        ebookName: ebook.title,
+                        isOwner: isOwner
+                    });
+                }
             } else {
                 res.status(403).render('reviewEbook', {
                     message: 'You do not have permission to view this ebook.',
@@ -877,6 +894,7 @@ class AdminController{
             });
         }
     }
+    
     
 }
 

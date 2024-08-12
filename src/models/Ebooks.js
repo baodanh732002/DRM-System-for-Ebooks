@@ -21,7 +21,7 @@ const ebookSchema = new Schema({
   action_by: { type: String},
   encryptedKey: { type: String},
   iv: { type: String},
-  encrypted: { type: Boolean, default: false }
+  encrypted: { type: Boolean}
 });
 
 const Ebook = mongoose.model("Ebook", ebookSchema);

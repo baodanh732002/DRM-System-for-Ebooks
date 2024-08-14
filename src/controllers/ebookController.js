@@ -15,10 +15,6 @@ class EbookController {
     
             let { title, type, language, pub_year, publisher, doi, isbn, description, author } = req.body;
             
-            pub_year = parseInt(pub_year, 10);
-            if (isNaN(pub_year) || pub_year <= 0) {
-                return res.render("myEbooks", { message: 'Publication year must be a valid positive number.', messageType: 'error', user, formattedEbookData });
-            }
     
             const state = 'Pending';
             const date = new Date();
@@ -45,6 +41,11 @@ class EbookController {
     
             if (!files || !files.imageFile || !files.ebookFile) {
                 return res.render("myEbooks", { message: 'Both image and ebook file must be uploaded.', messageType: 'error', user, formattedEbookData});
+            }
+
+            pub_year = parseInt(pub_year, 10);
+            if (isNaN(pub_year) || pub_year <= 0) {
+                return res.render("myEbooks", { message: 'Publication year must be a valid positive number.', messageType: 'error', user, formattedEbookData });
             }
     
             const existDOI = await Ebook.findOne({ doi: doi });

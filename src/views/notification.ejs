@@ -152,7 +152,7 @@
                                         <button class="btn btn-danger me-3" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= request._id %>">Delete</button>
                                         
                                         <% if (request.state === 'Approved') { %>
-                                            <button class="btn btn-primary copy-key" data-key="<%= request.key %>">Copy Key</button>
+                                            <button class="btn btn-primary copy-key" data-key="<%= request.key %>" data-ebook-name="<%= request.ebookName %>">Copy Key</button>
                                         <% } %>
                                     </td>
                                 </tr>
@@ -183,7 +183,7 @@
                 </div>
 
                 <div>
-                    <p class="d-flex justify-content-center text-white mb-2">You can use the key for each ebook only once with a limit time.</p>
+                    <p class="d-flex justify-content-center text-white mb-2">You can access ebook with a limit time.</p>
                 </div>
             </div>
         </div>
@@ -199,7 +199,7 @@
                 setTimeout(() => {
                     successNotification.classList.add('fade-out');
                 }, 3000);
-
+        
                 fetch('/clearSuccessMessageInNotification', {
                     method: 'POST',
                     headers: {
@@ -207,18 +207,19 @@
                     }
                 });
             }
-
+        
             document.querySelectorAll('.copy-key').forEach(button => {
                 button.addEventListener('click', () => {
                     const key = button.getAttribute('data-key');
+                    const ebookName = button.getAttribute('data-ebook-name'); 
                     navigator.clipboard.writeText(key).then(() => {
-                        alert('Key copied to clipboard.');
+                        alert(`Key for "${ebookName}" copied to clipboard.`); 
                     }).catch(err => {
                         console.error('Could not copy text: ', err);
                     });
                 });
             });
-        });
+        });        
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>

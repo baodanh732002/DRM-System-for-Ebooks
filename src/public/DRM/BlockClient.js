@@ -3,6 +3,22 @@ document.addEventListener('contextmenu', function(e) {
     alert('Right click is disabled.');
 }, false);
 
+function showOverlay() {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'white';
+    overlay.style.zIndex = 9999;
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+        document.body.removeChild(overlay);
+    }, 2000); 
+}
+
 document.addEventListener('selectstart', function(e) {
     e.preventDefault();
 }, false);
@@ -39,5 +55,20 @@ document.addEventListener('keydown', function(e) {
         showOverlay();
     }
 });
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'S' && e.shiftKey && e.metaKey) {
+        e.preventDefault();
+        alert('Screen capture is disabled.');
+    }
+
+    if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'Print') {
+        e.preventDefault();
+        alert('Screen capture is disabled.');
+        showOverlay();
+    }
+});
+
+
 
 

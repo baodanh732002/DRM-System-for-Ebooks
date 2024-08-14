@@ -337,6 +337,13 @@ class LoginController {
     async resetPassword(req, res) {
         const { newPassword, confirmPassword } = req.body;
         const email = req.session.email;
+        const regPassword = /^[a-zA-Z0-9!?@]{6,}$/;
+
+        if (!regPassword.test(newPassword)) {
+            return res.render("resetPassword", {
+                message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.",
+            });
+        }
 
         if (newPassword !== confirmPassword) {
             return res.render('resetPassword', { message: "Passwords do not match." });

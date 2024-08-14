@@ -52,12 +52,15 @@ class AccessController {
             if (existingRequest) {
                 let updateFields = {
                     requestAt: new Date(),
-                    key: ""
+                    key: "",
+                    handleAt: ""
                 };
     
                 if (existingRequest.state !== "Pending") {
                     updateFields.state = "Pending";
                 }
+
+                
     
                 await AccessRequest.findOneAndUpdate(
                     { _id: existingRequest._id },

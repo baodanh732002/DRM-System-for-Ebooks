@@ -44,7 +44,7 @@
                         <td><%= formattedEbookData.type %></td>
                     </tr>
                     <tr>
-                        <th>Author: </th>
+                        <th>Posted by: </th>
                         <td><%= formattedEbookData.author %></td>
                     </tr>
                     <tr>
@@ -56,7 +56,7 @@
                         <td><%= formattedEbookData.pub_year %></td>
                     </tr>
                     <tr>
-                        <th>Publisher: </th>
+                        <th>Author: </th>
                         <td><%= formattedEbookData.publisher %></td>
                     </tr>
                     <tr>
@@ -179,7 +179,7 @@
                         <div class="inputbox col-4 me-0">
                             <ion-icon name="business-outline" class="ms-2"></ion-icon>
                             <input type="text" class="input" id="publisher" name="publisher" value="<%= formattedEbookData.publisher %>" required/>
-                            <label for="publisher">Publisher</label>
+                            <label for="publisher">Author</label>
                         </div>
                     </div>
             
@@ -225,7 +225,7 @@
             
                     <div class="row">
                         <div class="author text-white d-flex justify-content-center mt-3 mb-4">
-                            <strong>Author: <span><%= user.username%></span></strong>
+                            <strong>Posted by: <span><%= user.username%></span></strong>
                         </div>
                         <div class="inputbox" style="display: none;">
                             <ion-icon name="person-circle-outline"></ion-icon>

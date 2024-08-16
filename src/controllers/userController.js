@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
+const Admin = require('../models/Admins')
 
 class UserController {
     async getUserProfile(req, res) {

@@ -90,17 +90,17 @@
                 </table>
                 <% if (formattedEbookData.isAuthorAdmin) { %>
                     <div class="row">
-                        <button class="btn-edit col-lg-4 btn-success" id="btn-edit" type="submit">
+                        <button class="btn-edit col-lg-3 btn-success" id="btn-edit" type="submit">
                             <ion-icon name="create-outline" class="mr-2"></ion-icon>
                             Edit
                         </button>
-                        <a href="/reviewEbook/<%= formattedEbookData._id%>" class="col-lg-4 p-0">
+                        <a href="/reviewEbook/<%= formattedEbookData._id%>" class="col-lg-3 p-0">
                             <button class="btn btn-review btn-primary w-100" id="btn-review" type="submit">
                                 <ion-icon name="eye-outline" class="mr-2"></ion-icon>
                                 View
                             </button>
                         </a>
-                        <button class="btn-delete col-lg-4 btn-danger" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>">
+                        <button class="btn-delete col-lg-3 btn-danger" data-toggle="modal" data-target=".deleteEbook<%= formattedEbookData._id %>">
                             <ion-icon name="trash-outline" class="mr-2"></ion-icon>
                             Delete
                         </button>

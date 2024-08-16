@@ -129,12 +129,12 @@ class UserController {
                 return res.render('userProfile', { user, message: "Current password is incorrect.", userData, userBirthDateFormat });
             }
 
-            if (newPassword !== confirmPassword) {
-                return res.render('userProfile', { user, message: "New password and confirm password do not match.", userData, userBirthDateFormat });
+            if (!regPassword.test(newPassword)) {
+                return res.render('userProfile', { user, message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.", userData, userBirthDateFormat });
             }
 
-            if (!regPassword.test(password)) {
-                return res.render('userProfile', { user, message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.", userData, userBirthDateFormat });
+            if (newPassword !== confirmPassword) {
+                return res.render('userProfile', { user, message: "New password and confirm password do not match.", userData, userBirthDateFormat });
             }
 
             const salt = await bcrypt.genSalt(10);

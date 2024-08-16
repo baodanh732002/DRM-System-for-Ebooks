@@ -50,8 +50,13 @@ class AdminController{
                 ]);
 
                 const successMessage = req.session.successMessage;
+                const message = req.session.message;
+                const messageType = req.session.messageType;
 
-                res.render("ebookManagement", { ebookData, admin, message: null, messageType: null, successMessage});
+                req.session.message = null;
+                req.session.messageType = null;
+
+                res.render("ebookManagement", { ebookData, admin, message, messageType, successMessage});
             } catch (error) {
                 console.error("Error rendering ebookManagement:", error);
                 res.status(500).send("An error occurred while rendering the page.");
@@ -88,7 +93,13 @@ class AdminController{
                         formattedImageFile
                     };
     
-                    res.render('ebookDetailManagement', { formattedEbookData, admin });
+                    const message = req.session.message;
+                    const messageType = req.session.messageType;
+
+                    req.session.message = null;
+                    req.session.messageType = null;
+
+                    res.render('ebookDetailManagement', { formattedEbookData, admin, message, messageType});
                 } else {
                     res.status(404).send('Ebook not found');
                 }
@@ -270,16 +281,21 @@ class AdminController{
                     { $sort: { sortOrder: 1 } },
                     { $project: { sortOrder: 0 } }
                 ]);
+
+                pub_year = parseInt(pub_year, 10);
+                if (isNaN(pub_year) || pub_year <= 0) {
+                    return res.render("ebookManagement", { message: 'Publication year must be a valid positive number.', messageType: 'error', admin, ebookData });
+                }
     
                 const files = req.files;
                 if (!files || !files.imageFile || !files.ebookFile) {
-                    return res.render("ebookManagement", { message: 'Both image and ebook file must be uploaded.', admin, ebookData });
+                    return res.render("ebookManagement", { message: 'Both image and ebook file must be uploaded.', messageType: 'error', admin, ebookData });
                 }
     
                 const existDOI = await Ebook.findOne({ doi: doi });
                 const existISBN = await Ebook.findOne({ isbn: isbn });
                 if (existDOI || existISBN) {
-                    return res.render("ebookManagement", { message: "Ebook already existed. Please use another one!", admin, ebookData });
+                    return res.render("ebookManagement", { message: "Ebook already existed. Please use another one!", messageType: 'error', admin, ebookData });
                 }
     
                 const imageFile = files.imageFile[0];
@@ -289,11 +305,11 @@ class AdminController{
                 const ebookFilePath = path.join(__dirname, '..', 'public', 'contents', ebookFile.originalname);
     
                 if (fs.existsSync(imageFilePath)) {
-                    return res.render("ebookManagement", { message: "Image file already exists.", admin, ebookData });
+                    return res.render("ebookManagement", { message: "Image file already exists.", messageType: 'error', admin, ebookData });
                 }
 
                 if (fs.existsSync(imageFilePath) || fs.existsSync(ebookFilePath)) {
-                    return res.render("ebookManagement", { message: "Ebook file already exists.", admin, ebookData });
+                    return res.render("ebookManagement", { message: "Ebook file already exists.", messageType: 'error', admin, ebookData });
                 }
 
     
@@ -350,9 +366,31 @@ class AdminController{
     async handleUpdateEbook(req, res) {
         if (req.session.admin) {
             try {
-                const { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
+                let { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
                 const admin = req.session.admin;
                 const files = req.files;
+    
+                pub_year = parseInt(pub_year, 10);
+                if (isNaN(pub_year) || pub_year <= 0) {
+                    req.session.message = 'Publication year must be a valid positive number.';
+                    req.session.messageType = 'error';
+                    return res.redirect(`ebookDetailManagement?id=${id}`);
+                }
+    
+                const existDOI = await Ebook.findOne({ doi: doi, _id: { $ne: id } });
+                const existISBN = await Ebook.findOne({ isbn: isbn, _id: { $ne: id } });
+                if (existDOI || existISBN) {
+                    req.session.message = "Ebook with the same DOI or ISBN already exists. Please use another one!";
+                    req.session.messageType = 'error';
+                    return res.redirect(`ebookDetailManagement?id=${id}`);
+                }
+    
+                let ebook = await Ebook.findById(id);
+                if (!ebook) {
+                    return res.status(404).send('Ebook not found');
+                }
+    
+                const basePath = path.join(__dirname, '../../src/public/contents/');
     
                 const updateData = {
                     title,
@@ -367,42 +405,53 @@ class AdminController{
                     action_by: admin.adname
                 };
     
-                let ebook = await Ebook.findById(id);
-                if (!ebook) {
-                    return res.status(404).send('Ebook not found');
-                }
-    
-                const basePath = path.join(__dirname, '../../public/contents/');
-    
                 if (files && files.imageFile && files.imageFile.length > 0) {
-                    const newImageFilePath = files.imageFile[0].path;
+                    const imageFile = files.imageFile[0];
+                    const newImagePath = path.join(basePath, imageFile.originalname);
+    
+                    if (fs.existsSync(newImagePath)) {
+                        req.session.message = 'Image file with the same name already exists.';
+                        req.session.messageType = 'error';
+                        return res.redirect(`ebookDetailManagement?id=${id}`);
+                    }
+    
+                    fs.writeFileSync(newImagePath, imageFile.buffer);
     
                     if (ebook.imageFile) {
-                        const imageFilename = path.basename(ebook.imageFile);
-                        const imagePath = path.join(basePath, imageFilename);
-                        if (fs.existsSync(imagePath)) {
-                            fs.unlinkSync(imagePath);
+                        const oldImagePath = path.join(basePath, path.basename(ebook.imageFile));
+                        if (fs.existsSync(oldImagePath)) {
+                            fs.unlinkSync(oldImagePath);
                         }
                     }
     
-                    updateData.imageFile = newImageFilePath;
-                    updateData.imageFileOriginalName = files.imageFile[0].originalname;
+                    updateData.imageFile = newImagePath;
+                    updateData.imageFileOriginalName = imageFile.originalname;
                 }
     
                 if (files && files.ebookFile && files.ebookFile.length > 0) {
-                    const newEbookFilePath = files.ebookFile[0].path;
+                    const ebookFile = files.ebookFile[0];
+                    const newEbookPath = path.join(basePath, ebookFile.originalname);
+    
+                    if (fs.existsSync(newEbookPath)) {
+                        req.session.message = 'Ebook file with the same name already exists.';
+                        req.session.messageType = 'error';
+                        return res.redirect(`ebookDetailManagement?id=${id}`);
+                    }
+    
+                    fs.writeFileSync(newEbookPath, ebookFile.buffer);
     
                     if (ebook.ebookFile) {
-                        const ebookFilename = path.basename(ebook.ebookFile);
-                        const ebookPath = path.join(basePath, ebookFilename);
-                        if (fs.existsSync(ebookPath)) {
-                            fs.unlinkSync(ebookPath);
+                        const oldEbookPath = path.join(basePath, path.basename(ebook.ebookFile));
+                        if (fs.existsSync(oldEbookPath)) {
+                            fs.unlinkSync(oldEbookPath);
                         }
                     }
     
-                    updateData.ebookFile = newEbookFilePath;
-                    updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
-                    updateData.encrypted = false;
+                    updateData.ebookFile = newEbookPath;
+                    updateData.ebookFileOriginalName = ebookFile.originalname;
+                    updateData.encrypted = false; 
+                } else {
+                    updateData.encrypted = ebook.encrypted;
                 }
     
                 ebook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
@@ -423,17 +472,18 @@ class AdminController{
                     await ebook.save();
                 }
     
+                req.session.message = `Ebook ${title} has been updated successfully.`;
+                req.session.messageType = 'success';
                 res.redirect(`ebookDetailManagement?id=${id}`);
             } catch (error) {
                 console.error(error);
-                res.status(500).render("myEbookDetail", {
-                    message: "Failed to update ebook.",
-                });
+                res.status(500).send('Internal Server Error');
             }
         } else {
             return res.redirect('/login');
         }
-    }    
+    }
+    
     
     
 
@@ -447,7 +497,7 @@ class AdminController{
                     return res.status(404).send('Ebook not found');
                 }
     
-                const basePath = path.join(__dirname, '../../public/contents/');
+                const basePath = path.join(__dirname, '../../src/public/contents/');
     
                 if (currentEbook.imageFile) {
                     const imageFilename = path.basename(currentEbook.imageFile);
@@ -482,6 +532,8 @@ class AdminController{
             return res.redirect('/login');
         }
     }
+    
+    
     
 
     async getAdminManagement(req, res){

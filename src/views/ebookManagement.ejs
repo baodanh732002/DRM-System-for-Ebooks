@@ -56,7 +56,8 @@
         </div>
     <% } %>
 
-    <div id="error-message" class="alert alert-danger text-center" style="display: none;"></div>
+    <div id="error-message" class="alert alert-danger text-center"></div>
+
 
     <!-- ======= BODY ======= -->
     <div class="content">
@@ -408,16 +409,14 @@
     });
 
     $(document).ready(function() {
-        const hiddenMessage = document.getElementById('hiddenMessage');
-        if (hiddenMessage) {
-            const message = hiddenMessage.value;
-            const errorMessageDiv = document.getElementById('error-message');
-            if (message) {
-                errorMessageDiv.textContent = message;
-                errorMessageDiv.style.display = 'block';
-                setTimeout(function() {
-                    $('#error-message').fadeOut('slow');
-                }, 3000);
+        var message = "<%= message %>";
+        var messageType = "<%= messageType %>";
+
+        if (message && messageType) {
+            if (messageType === 'success') {
+                $('#success-message').text(message).fadeIn().delay(3000).fadeOut();
+            } else if (messageType === 'error') {
+                $('#error-message').text(message).fadeIn().delay(3000).fadeOut();
             }
         }
     });

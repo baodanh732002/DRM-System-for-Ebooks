@@ -205,8 +205,14 @@ class EbookController {
                     ebookFileName: ebookData.ebookFileOriginalName,
                     formattedImageFile
                 };
+
+                const message = req.session.message;
+                const messageType = req.session.messageType;
+
+                req.session.message = null;
+                req.session.messageType = null;
     
-                res.render('myEbookDetail', { user, formattedEbookData });
+                res.render('myEbookDetail', { user, formattedEbookData, message, messageType});
             } else {
                 res.status(404).send('Ebook not found');
             }
@@ -261,8 +267,30 @@ class EbookController {
                 return res.redirect("/login");
             }
     
-            const { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
+            let { id, title, type, language, pub_year, publisher, doi, isbn, description } = req.body;
             const files = req.files;
+    
+            pub_year = parseInt(pub_year, 10);
+            if (isNaN(pub_year) || pub_year <= 0) {
+                req.session.message = 'Publication year must be a valid positive number.';
+                req.session.messageType = 'error';
+                return res.redirect(`myEbookDetail?id=${id}`);
+            }
+    
+            const existDOI = await Ebook.findOne({ doi: doi, _id: { $ne: id } });
+            const existISBN = await Ebook.findOne({ isbn: isbn, _id: { $ne: id } });
+            if (existDOI || existISBN) {
+                req.session.message = "Ebook with the same DOI or ISBN already exists. Please use another one!";
+                req.session.messageType = 'error';
+                return res.redirect(`myEbookDetail?id=${id}`);
+            }
+    
+            const currentEbook = await Ebook.findById(id);
+            if (!currentEbook) {
+                req.session.message = 'Ebook not found';
+                req.session.messageType = 'error';
+                return res.redirect(`myEbookDetail?id=${id}`);
+            }
     
             const updateData = {
                 title,
@@ -277,16 +305,17 @@ class EbookController {
                 action_by: ""
             };
     
-            const currentEbook = await Ebook.findById(id);
-            if (!currentEbook) {
-                return res.status(404).send('Ebook not found');
-            }
-    
-            const basePath = path.join(__dirname, '../../public/contents/');
-    
+            const basePath = path.join(__dirname, '../../src/public/contents/');
+            
             if (files && files.imageFile && files.imageFile.length > 0) {
                 const imageFile = files.imageFile[0];
                 const newImagePath = path.join(basePath, imageFile.originalname);
+    
+                if (fs.existsSync(newImagePath)) {
+                    req.session.message = 'Image file with the same name already exists.';
+                    req.session.messageType = 'error';
+                    return res.redirect(`myEbookDetail?id=${id}`);
+                }
     
                 fs.writeFileSync(newImagePath, imageFile.buffer);
     
@@ -301,10 +330,23 @@ class EbookController {
                 updateData.imageFileOriginalName = imageFile.originalname;
             }
     
+            const updatedEbook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
+            if (!updatedEbook) {
+                req.session.message = 'Ebook not found';
+                req.session.messageType = 'error';
+                return res.redirect(`myEbookDetail?id=${id}`);
+            }
+    
             if (files && files.ebookFile && files.ebookFile.length > 0) {
                 const ebookFile = files.ebookFile[0];
                 const newEbookPath = path.join(basePath, ebookFile.originalname);
     
+                if (fs.existsSync(newEbookPath)) {
+                    req.session.message = 'Ebook file with the same name already exists.';
+                    req.session.messageType = 'error';
+                    return res.redirect(`myEbookDetail?id=${id}`);
+                }
+                
                 fs.writeFileSync(newEbookPath, ebookFile.buffer);
     
                 if (currentEbook.ebookFile) {
@@ -317,21 +359,25 @@ class EbookController {
                 updateData.ebookFile = newEbookPath;
                 updateData.ebookFileOriginalName = ebookFile.originalname;
                 updateData.encrypted = false; 
+    
+                await Ebook.findByIdAndUpdate(id, updateData, { new: true });
             } else {
                 updateData.encrypted = currentEbook.encrypted;
             }
     
-            const ebook = await Ebook.findByIdAndUpdate(id, updateData, { new: true });
-            if (ebook) {
-                res.redirect(`myEbookDetail?id=${id}`);
-            } else {
-                res.status(404).send('Ebook not found');
-            }
+            req.session.message = `Ebook ${title} has been updated successfully.`;
+            req.session.messageType = 'success';
+            return res.redirect(`myEbookDetail?id=${id}`);
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
     }
+    
+    
+    
+    
+    
     
     async deleteMyEbookDetail(req, res) {
         try {
@@ -344,12 +390,11 @@ class EbookController {
     
             const currentEbook = await Ebook.findById(id);
     
-            const basePath = path.join(__dirname, '../../public/contents/');
+            const basePath = path.join(__dirname, '../../src/public/contents/');
     
             if (currentEbook.imageFile) {
                 const imageFilename = path.basename(currentEbook.imageFile);
                 const imagePath = path.join(basePath, imageFilename);
-                console.log('Constructed image file path:', imagePath);
                 if (fs.existsSync(imagePath)) {
                     fs.unlinkSync(imagePath);
                 }
@@ -357,7 +402,6 @@ class EbookController {
             if (currentEbook.ebookFile) {
                 const ebookFilename = path.basename(currentEbook.ebookFile);
                 const ebookPath = path.join(basePath, ebookFilename);
-                console.log('Constructed ebook file path:', ebookPath);
                 if (fs.existsSync(ebookPath)) {
                     fs.unlinkSync(ebookPath);
                 }

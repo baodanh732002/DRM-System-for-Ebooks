@@ -19,10 +19,24 @@
     <link rel="stylesheet" href="/css/ebookDetailStyle.css">
     <script src="/DRM/BlockClient.js"></script>
 </head>
-
+<style>
+    #error-message, #success-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: auto;
+        max-width: 300px;
+        text-align: center;
+        display: none;
+    }
+</style>
 <body>
     <!-- ======= HEADER ======= -->
     <%- include('./partials/header'); -%>
+
+    <div id="error-message" class="alert alert-danger text-center"></div>
+    <div id="success-message" class="alert alert-success text-center"></div>
 
     <!-- ======= BODY ======= -->
     <div class="container mt-5 mb-5">
@@ -267,6 +281,19 @@
     function goBack() {
         window.history.back();
     }
+
+    $(document).ready(function() {
+        var message = "<%= message %>";
+        var messageType = "<%= messageType %>";
+
+        if (message && messageType) {
+            if (messageType === 'success') {
+                $('#success-message').text(message).fadeIn().delay(3000).fadeOut();
+            } else if (messageType === 'error') {
+                $('#error-message').text(message).fadeIn().delay(3000).fadeOut();
+            }
+        }
+    });
 </script>
 
 </html>

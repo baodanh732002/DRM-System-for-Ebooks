@@ -14,14 +14,7 @@ const userController = require('../controllers/userController')
 
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '..', 'public', 'contents'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 

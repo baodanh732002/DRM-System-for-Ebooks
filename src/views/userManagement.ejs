@@ -158,20 +158,16 @@
     document.addEventListener('DOMContentLoaded', () => {
         const successNotification = document.getElementById('success-notification');
         if (successNotification) {
-            // Đảm bảo thông báo hiển thị ở góc phải
             successNotification.classList.add('notification-container');
 
-            // Mờ dần sau 3 giây
             setTimeout(() => {
                 successNotification.classList.add('fade-out');
             }, 3000);
 
-            // Xóa thông báo sau khi mờ dần
             setTimeout(() => {
                 successNotification.style.display = 'none';
             }, 4000);
 
-            // Yêu cầu xóa message từ session
             fetch('/clearSuccessMessageInNotification', {
                 method: 'POST',
                 headers: {

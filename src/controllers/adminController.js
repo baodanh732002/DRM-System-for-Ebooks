@@ -123,17 +123,15 @@ class AdminController{
                     const inputPath = path.resolve(ebook.ebookFile);
                     const outputPath = inputPath.replace('.pdf', '_encrypted.pdf');
     
-                    // Giả sử EncryptionService.encryptFile xử lý việc tạo IV
                     const { encryptedKey, iv } = await EncryptionService.encryptFile(inputPath, outputPath);
     
                     fs.renameSync(outputPath, inputPath);
     
-                    // Kiểm tra giá trị trả về
                     console.log('encryptedKey:', encryptedKey);
                     console.log('iv:', iv);
     
-                    ebook.encryptedKey = encryptedKey; // Không cần .encryptedKey vì encryptedKey đã là chuỗi
-                    ebook.iv = iv; // Lưu trực tiếp chuỗi iv
+                    ebook.encryptedKey = encryptedKey;
+                    ebook.iv = iv;
                     ebook.encrypted = true;
                     await ebook.save();
                 }
@@ -223,10 +221,8 @@ class AdminController{
                 const currentUser = await User.findById({ _id: id });
     
                 if (currentUser) {
-                    // Xóa tất cả các ebook có author là username của user bị xóa
                     await Ebook.deleteMany({ author: currentUser.username });
     
-                    // Xóa user
                     await User.deleteOne({ _id: id });
     
                     req.session.successMessage = `User ${currentUser.username} and all their ebooks have been deleted successfully.`;
@@ -602,17 +598,14 @@ class AdminController{
             try {
                 const { id } = req.body;
     
-                // Tìm admin hiện tại
                 const currentAdmin = await Admin.findById(id);
     
                 if (!currentAdmin) {
                     return res.status(404).send("Admin not found");
                 }
-    
-                // Xóa tất cả ebook của admin này
+
                 await Ebook.deleteMany({ author: currentAdmin.adname });
     
-                // Xóa admin
                 await Admin.deleteOne({ _id: id });
     
                 req.session.successMessage = `Admin ${currentAdmin.adname} has been deleted successfully.`;
@@ -689,16 +682,14 @@ class AdminController{
             if (!ebook) {
                 return res.status(404).send("Ebook not found");
             }
-    
-            // Generate user-specific key using the same logic as in the user approveRequest
+
             const userSpecificKey = EncryptionService.generateUserSpecificKey(ebook.encryptedKey, request.requestBy);
-    
-            // Encrypt user-specific key using RSA
+
             const encryptedUserSpecificKey = EncryptionService.encryptKeyRSA(Buffer.from(userSpecificKey, 'base64'));
     
             request.state = "Approved";
             request.key = encryptedUserSpecificKey;
-            request.iv = ebook.iv; // Sử dụng iv đã được lưu từ trước khi mã hóa ebook
+            request.iv = ebook.iv;
             request.handleAt = new Date();
     
             await request.save();
@@ -805,7 +796,7 @@ class AdminController{
                     } else {
                         await EncryptionService.decryptFile(ebook.ebookFile, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
-                        const limitTime = 60000; // 1 minute
+                        const limitTime = 60000;
                         const newExpiresAt = now + limitTime;
                         req.session.expiresAt = newExpiresAt;
     

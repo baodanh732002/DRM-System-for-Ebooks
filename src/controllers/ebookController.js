@@ -293,9 +293,8 @@ class EbookController {
                 }
                 updateData.ebookFile = files.ebookFile[0].path;
                 updateData.ebookFileOriginalName = files.ebookFile[0].originalname;
-                updateData.encrypted = false; // Only set to false if the ebook file is updated
+                updateData.encrypted = false; 
             } else {
-                // If ebookFile is not updated, ensure encrypted field remains unchanged
                 updateData.encrypted = currentEbook.encrypted;
             }
     
@@ -381,7 +380,6 @@ class EbookController {
                             const now = new Date().getTime();
                             const expiresAt = req.session.expiresAt || 0;
     
-                            // Kiểm tra nếu file đã giải mã tồn tại và chưa hết hạn
                             if (fs.existsSync(path.join(__dirname, '..', 'public', 'temp', tempOutputFilename)) && now < expiresAt) {
                                 res.render('ebookReading', {
                                     pdfFilePath: tempOutputFilename,
@@ -393,14 +391,12 @@ class EbookController {
                                     isOwner: isOwner
                                 });
                             } else {
-                                // Giải mã file ebook
                                 await EncryptionService.decryptFile(ebookPath, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
-                                const limitTime = 60000; // 1 minute
+                                const limitTime = 60000; 
                                 const newExpiresAt = now + limitTime;
                                 req.session.expiresAt = newExpiresAt;
     
-                                // Đặt thời gian để xóa file sau khi hết hạn
                                 setTimeout(() => {
                                     const filePath = path.join(__dirname, '..', 'public', 'temp', tempOutputFilename);
     
@@ -425,12 +421,11 @@ class EbookController {
                                 });
                             }
                         } else {
-                            // Xử lý khi ebook không được mã hóa
                             res.render('ebookReading', {
                                 pdfFilePath: filename,
                                 isEncrypted: false,
                                 message: null,
-                                expiresAt: 0, // Không có hạn sử dụng
+                                expiresAt: 0,
                                 ebookId: ebook._id,
                                 ebookName: ebook.title,
                                 isOwner: isOwner
@@ -463,7 +458,6 @@ class EbookController {
                 return res.redirect("/login");
             }
     
-            // Tìm AccessRequest với accessKey của người dùng
             const accessRequest = await AccessRequest.findOne({ ebookId, key: accessKey, state: 'Approved', requestBy: user.username });
     
             if (!accessRequest) {
@@ -522,7 +516,7 @@ class EbookController {
                 } else {   
                     await EncryptionService.decryptFile(ebookPath, path.join(__dirname, '..', 'public', 'temp', tempOutputFilename), { encryptedKey: ebook.encryptedKey, iv: ebook.iv });
     
-                    const limitTime = 60000; // 1 minute
+                    const limitTime = 60000; 
                     const newExpiresAt = now + limitTime;
                     req.session.expiresAt = newExpiresAt;
     
@@ -535,7 +529,7 @@ class EbookController {
                                 req.session.expiresAt = 0;
                             });
                         } else {
-                            req.session.expiresAt = 0; // Đảm bảo vẫn reset thời gian hết hạn
+                            req.session.expiresAt = 0;
                         }
                     }, limitTime);
     

@@ -263,7 +263,6 @@ label {
     font-size: 18px;
 }
 
-/* dialog */
 #modal-container {
     position: fixed;
     z-index: 1;
@@ -346,9 +345,9 @@ input:valid ~ label {
 .inputbox input:-webkit-autofill:hover,
 .inputbox input:-webkit-autofill:focus,
 .inputbox input:-webkit-autofill:active {
-    -webkit-text-fill-color: #fff; /* Màu chữ */
-    -webkit-box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
-    box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
+    -webkit-text-fill-color: #fff; 
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset; 
+    box-shadow: 0 0 0px 1000px transparent inset;
     transition: background-color 5000s ease-in-out 0s;
 }
 

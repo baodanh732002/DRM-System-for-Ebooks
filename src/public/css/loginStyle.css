@@ -76,9 +76,9 @@ input:valid ~ label {
 .inputbox input:-webkit-autofill:hover,
 .inputbox input:-webkit-autofill:focus,
 .inputbox input:-webkit-autofill:active {
--webkit-text-fill-color: #fff; /* Màu chữ */
--webkit-box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
-box-shadow: 0 0 0px 1000px transparent inset; /* Nền trong suốt */
+-webkit-text-fill-color: #fff; 
+-webkit-box-shadow: 0 0 0px 1000px transparent inset; 
+box-shadow: 0 0 0px 1000px transparent inset; 
 transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -91,15 +91,15 @@ transition: background-color 5000s ease-in-out 0s;
   appearance: none;
   background-color: transparent;
   opacity: 0;
-  color: transparent; /* Hide the text initially */
+  color: transparent; 
 }
 
 .inputbox input[type="date"]:focus {
-    color: #000; /* Show the text on focus */
+    color: #000; 
 }
 
 .inputbox input[type="date"]:not(:placeholder-shown) {
-    color: #000; /* Show the text when a date is selected */
+    color: #000; 
 }
 
 .inputbox input[type="date"]::-webkit-inner-spin-button,
@@ -115,7 +115,7 @@ transition: background-color 5000s ease-in-out 0s;
     right: 0;
     top: 0;
     cursor: pointer;
-    z-index: 3; /* Make sure the calendar icon is clickable */
+    z-index: 3; 
 }
 
 .inputbox input[type="date"]::before {
@@ -131,7 +131,7 @@ transition: background-color 5000s ease-in-out 0s;
 
 .inputbox input[type="date"]:focus::before,
 .inputbox input[type="date"]:not(:placeholder-shown)::before {
-    display: none; /* Hide the placeholder text on focus and when a date is selected */
+    display: none; 
 }
 
 .forget {

@@ -21,10 +21,10 @@ table {
 }
 
 .your-request .key-column {
-    word-wrap: break-word; /* Đảm bảo từ dài được chia nhỏ và xuống dòng */
-    word-break: break-all; /* Chia từ dài khi cần thiết */
-    max-width: 150px; /* Chiều rộng tối đa cho cột key, bạn có thể thay đổi giá trị này */
-    white-space: normal; /* Cho phép xuống dòng */
+    word-wrap: break-word; 
+    word-break: break-all; 
+    max-width: 150px; 
+    white-space: normal; 
 }
 
 .notification-container {

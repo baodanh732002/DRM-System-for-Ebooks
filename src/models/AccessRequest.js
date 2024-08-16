@@ -8,7 +8,7 @@ const accessRequestSchema = new Schema({
     requestAt: { type: Date, required: true },
     handleAt: { type: Date },
     key: { type: String },
-    iv: { type: String }, // Added iv field
+    iv: { type: String },
     state: { type: String, required: true }
 });
 

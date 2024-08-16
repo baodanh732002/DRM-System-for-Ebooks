@@ -43,13 +43,10 @@ const EncryptionService = {
 
             const key = this.decryptKeyRSA(encryptedKey);
             const decryptedKey = this.decryptKeyRSA(encryptedKey);
-            console.log("Decrypted Key:", decryptedKey);
 
             const testKey = Buffer.from('test-key-32byteslength', 'utf8');
             const encryptedTestKey = crypto.publicEncrypt(publicKey, testKey);
             const decryptedTestKey = crypto.privateDecrypt(privateKey, encryptedTestKey);
-            console.log("Original Test Key:", testKey);
-            console.log("Decrypted Test Key:", decryptedTestKey);
 
 
 

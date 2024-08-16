@@ -182,15 +182,13 @@ class AccessController {
                 return res.status(404).send("Ebook not found");
             }
     
-            // Generate user-specific key
             const userSpecificKey = EncryptionService.generateUserSpecificKey(ebook.encryptedKey, request.requestBy);
     
-            // Encrypt user-specific key using RSA
             const encryptedUserSpecificKey = EncryptionService.encryptKeyRSA(Buffer.from(userSpecificKey, 'base64'));
     
             request.state = "Approved";
             request.key = encryptedUserSpecificKey;
-            request.iv = ebook.iv; // Sử dụng iv đã được lưu từ trước khi mã hóa ebook
+            request.iv = ebook.iv; 
             request.handleAt = new Date();
     
             await request.save();
@@ -209,11 +207,6 @@ class AccessController {
         }
     }
     
-    
-    
-    
-    
-
     async rejectRequest(req, res){
         try{
             const user = req.session.user;

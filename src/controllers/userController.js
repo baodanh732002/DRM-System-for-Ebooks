@@ -52,6 +52,17 @@ class UserController {
                 });
             }
 
+            const existUsernameInUser = await User.findOne({ username: username });
+            const existUsernameInAdmin = await Admin.findOne({ adname: username });
+            if (existUsernameInUser || existUsernameInAdmin) {
+                return res.render("userProfile", {
+                    userData,
+                    message: "Username already exist.",
+                    userBirthDateFormat,
+                    user
+                });
+            }
+
             req.session.newUserInfo = { username, phone, birthDate };
 
             const sendAuthCodeEmail = async (email, res, redirectPath) => {

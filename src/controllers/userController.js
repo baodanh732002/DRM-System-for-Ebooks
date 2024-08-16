@@ -110,6 +110,7 @@ class UserController {
         try {
             const { currentPassword, newPassword, confirmPassword } = req.body;
             const user = req.session.user;
+            let regPassword = /^[a-zA-Z0-9!?@]{6,}$/;
 
             if (!user) {
                 return res.redirect("/login");
@@ -130,6 +131,10 @@ class UserController {
 
             if (newPassword !== confirmPassword) {
                 return res.render('userProfile', { user, message: "New password and confirm password do not match.", userData, userBirthDateFormat });
+            }
+
+            if (!regPassword.test(password)) {
+                return res.render('userProfile', { user, message: "Password must be at least 6 characters long and contain only letters, numbers, and the special characters !?@.", userData, userBirthDateFormat });
             }
 
             const salt = await bcrypt.genSalt(10);

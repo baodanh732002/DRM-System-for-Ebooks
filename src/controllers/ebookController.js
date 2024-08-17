@@ -100,7 +100,7 @@ class EbookController {
         } catch (error) {
             const user = req.session.user || null;
             console.error(error);
-            res.status(500).render("myEbooks", { message: 'Fail to upload new Ebook, please try again later!', messageType: 'error', user, formattedEbookData });
+            res.status(500).send("Internal Server Error");
         }
     }
     
@@ -373,12 +373,7 @@ class EbookController {
             res.status(500).send('Internal Server Error');
         }
     }
-    
-    
-    
-    
-    
-    
+      
     async deleteMyEbookDetail(req, res) {
         try {
             const user = req.session.user || null;
@@ -509,8 +504,6 @@ class EbookController {
             res.status(500).send("Không thể mở ebook để đọc.");
         }
     }
-    
-    
     
     
     async accessEbookReading(req, res) {

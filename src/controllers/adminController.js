@@ -522,9 +522,7 @@ class AdminController{
                 res.redirect("/ebookManagement");
             } catch (error) {
                 console.error(error);
-                res.status(500).render("ebookManagement", {
-                    message: "Failed to delete ebook.",
-                });
+                res.status(500).send("Internal Server Error");
             }
         } else {
             return res.redirect('/login');
@@ -654,10 +652,7 @@ class AdminController{
                 res.redirect("/adminManagement");
             } catch (error) {
                 console.log(error);
-                res.status(500).render("adminManagement", {
-                    message: "Failed to create account.",
-                    admin
-                });
+                res.status(500).send("Internal Server Error");
             }
         } else {
             return res.redirect('/login');

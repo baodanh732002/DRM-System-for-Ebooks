@@ -43,7 +43,6 @@ class UserController {
             const userBirthDateFormat = moment(userData.birthDate).format('YYYY-MM-DD');
 
             let regPhone = /^0\d{9,10}$/;
-            console.log(phone);
             if (!regPhone.test(phone)) {
                 return res.render("userProfile", {
                     userData,
@@ -92,7 +91,6 @@ class UserController {
                         console.log(error);
                         return res.status(500).send("Failed to send verification email.");
                     } else {
-                        console.log('Email sent: ' + info.response);
                         return res.redirect(redirectPath);
                     }
                 });
@@ -168,7 +166,6 @@ class UserController {
                         console.log(error);
                         return res.status(500).send("Failed to send verification email.");
                     } else {
-                        console.log('Email sent: ' + info.response);
                         return res.redirect(redirectPath);
                     }
                 });
@@ -254,7 +251,6 @@ class UserController {
                         console.log(error);
                         return res.status(500).render("verifyChange", { message: "Failed to send verification email." });
                     } else {
-                        console.log('Email sent: ' + info.response);
                         const countdown = 60;
                         return res.render("verifyChange", { countdown });
                     }

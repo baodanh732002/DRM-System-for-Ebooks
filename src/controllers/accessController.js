@@ -145,9 +145,6 @@ class AccessController {
                 key: request.key 
             })));
 
-            console.log("Formatted Key Requests: ", formattedKeyRequests);
-            console.log("Formatted Your Requests: ", formattedYourRequests);
-
             const successMessage = req.session.successMessage;
 
             res.render('notification', {

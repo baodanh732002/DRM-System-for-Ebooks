@@ -113,7 +113,6 @@ class RegisterController {
                     console.log(error);
                     return res.status(500).render("register", { message: "Failed to send verification email." });
                 } else {
-                    console.log('Email sent: ' + info.response);
                     return res.redirect("/verify-email");
                 }
             });
@@ -193,7 +192,6 @@ class RegisterController {
                     console.log(error);
                     return res.status(500).render("authenEmail", { message: "Failed to send verification email." });
                 } else {
-                    console.log('Email sent: ' + info.response);
                     const countdown = 60;
                     return res.render("authenEmail", { countdown });
                 }

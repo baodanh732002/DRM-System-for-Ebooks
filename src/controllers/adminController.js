@@ -138,8 +138,6 @@ class AdminController{
     
                     fs.renameSync(outputPath, inputPath);
     
-                    console.log('encryptedKey:', encryptedKey);
-                    console.log('iv:', iv);
     
                     ebook.encryptedKey = encryptedKey;
                     ebook.iv = iv;

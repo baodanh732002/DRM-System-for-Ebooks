@@ -693,28 +693,45 @@ class AdminController{
                 if (!currentAdmin) {
                     return res.status(404).send("Admin not found");
                 }
-
+    
                 const adminEbooks = await Ebook.find({ author: currentAdmin.adname });
-
+                const basePath = path.join(__dirname, '../../src/public/contents/');
+    
                 for (const ebook of adminEbooks) {
+                    if (ebook.imageFile) {
+                        const imageFilename = path.basename(ebook.imageFile);
+                        const imagePath = path.join(basePath, imageFilename);
+                        if (fs.existsSync(imagePath)) {
+                            fs.unlinkSync(imagePath);
+                        }
+                    }
+    
+                    if (ebook.ebookFile) {
+                        const ebookFilename = path.basename(ebook.ebookFile);
+                        const ebookPath = path.join(basePath, ebookFilename);
+                        if (fs.existsSync(ebookPath)) {
+                            fs.unlinkSync(ebookPath);
+                        }
+                    }
+    
                     await AccessRequest.deleteMany({ ebookId: ebook._id });
                 }
-
-                await Ebook.deleteMany({ author: currentAdmin.adname });
     
+                await Ebook.deleteMany({ author: currentAdmin.adname });
+                
                 await Admin.deleteOne({ _id: id });
     
-                req.session.successMessage = `Admin ${currentAdmin.adname} has been deleted successfully.`;
+                req.session.successMessage = `Admin ${currentAdmin.adname} và tất cả các ebook của họ đã được xóa thành công.`;
     
                 res.redirect("/adminManagement");
             } catch (error) {
                 console.error(error);
-                res.status(500).send("Failed to delete admin");
+                res.status(500).send("Failed to delete admin and their ebooks.");
             }
         } else {
             return res.redirect('/login');
         }
-    }
+    }    
     
 
     async getRequestManagement(req, res){

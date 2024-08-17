@@ -302,7 +302,8 @@ class EbookController {
                 isbn,
                 description,
                 state: 'Pending',
-                action_by: ""
+                action_by: "",
+                note: ""
             };
     
             const basePath = path.join(__dirname, '../../src/public/contents/');

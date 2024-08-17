@@ -249,8 +249,11 @@ class AdminController{
                                 fs.unlinkSync(ebookPath);
                             }
                         }
+
+                        await AccessRequest.deleteMany({ ebookId: ebook._id });
                     }
     
+                    await AccessRequest.deleteMany({ userId: currentUser._id });
                     await Ebook.deleteMany({ author: currentUser.username });
                     await User.deleteOne({ _id: id });
     

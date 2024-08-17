@@ -694,6 +694,12 @@ class AdminController{
                     return res.status(404).send("Admin not found");
                 }
 
+                const adminEbooks = await Ebook.find({ author: currentAdmin.adname });
+
+                for (const ebook of adminEbooks) {
+                    await AccessRequest.deleteMany({ ebookId: ebook._id });
+                }
+
                 await Ebook.deleteMany({ author: currentAdmin.adname });
     
                 await Admin.deleteOne({ _id: id });

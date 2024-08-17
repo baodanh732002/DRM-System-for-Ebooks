@@ -721,7 +721,7 @@ class AdminController{
                 
                 await Admin.deleteOne({ _id: id });
     
-                req.session.successMessage = `Admin ${currentAdmin.adname} và tất cả các ebook của họ đã được xóa thành công.`;
+                req.session.successMessage = `Admin ${currentAdmin.adname} and all their ebooks have been deleted successfully.`;
     
                 res.redirect("/adminManagement");
             } catch (error) {

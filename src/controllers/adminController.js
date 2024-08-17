@@ -230,8 +230,28 @@ class AdminController{
                 const currentUser = await User.findById({ _id: id });
     
                 if (currentUser) {
-                    await Ebook.deleteMany({ author: currentUser.username });
+                    const userEbooks = await Ebook.find({ author: currentUser.username });
+                    const basePath = path.join(__dirname, '../../src/public/contents/');
     
+                    for (const ebook of userEbooks) {
+                        if (ebook.imageFile) {
+                            const imageFilename = path.basename(ebook.imageFile);
+                            const imagePath = path.join(basePath, imageFilename);
+                            if (fs.existsSync(imagePath)) {
+                                fs.unlinkSync(imagePath);
+                            }
+                        }
+    
+                        if (ebook.ebookFile) {
+                            const ebookFilename = path.basename(ebook.ebookFile);
+                            const ebookPath = path.join(basePath, ebookFilename);
+                            if (fs.existsSync(ebookPath)) {
+                                fs.unlinkSync(ebookPath);
+                            }
+                        }
+                    }
+    
+                    await Ebook.deleteMany({ author: currentUser.username });
                     await User.deleteOne({ _id: id });
     
                     req.session.successMessage = `User ${currentUser.username} and all their ebooks have been deleted successfully.`;
@@ -248,7 +268,7 @@ class AdminController{
         } else {
             return res.redirect('/login');
         }
-    }
+    }    
     
 
     async handleAddNewEbook(req, res) {

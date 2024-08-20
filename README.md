@@ -111,7 +111,7 @@ Connect link MongoDB: mongodb+srv://baodanh7302:Baodanh732002@drmsytemforebooks.
 
 Tài khoản Admin System:
 `Username: AdminSystem
-   `Password: Baodanh732002
+`Password: Baodanh732002
 
 - Thêm Ebook mới bên phía Admin: Tại giao diện trang quản lý Ebook, Admin nhấn vào nút "New" ở phía bên phải của Filter để hiển thị form nhập thông tin Ebook. Sau đó Admin nhập đầy đủ các thông tin của Ebook và nhấn nút "Submit".
 
